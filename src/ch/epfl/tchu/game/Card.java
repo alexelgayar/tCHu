@@ -14,7 +14,7 @@ public enum Card {
     WHITE(Color.WHITE),
     LOCOMOTIVE(null);
 
-    Card(Color color){
+    Card(Color color) {
         this.color = color;
     }
 
@@ -26,19 +26,21 @@ public enum Card {
 
     public static final int COUNT = ALL.size();
 
-    public static final List<Card> CARS = List.of(BLACK, VIOLET, BLUE,GREEN, YELLOW, ORANGE, RED, WHITE);
+    public static final List<Card> CARS = List.of(BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE);
 
-    public static Card of(Color color){
+    public static Card of(Color color) {
 
-        for(int i = 0; i < COUNT; ++i){
-           if (color == CARS.get(i).color)
-               return CARS.get(i);
+        for (int i = 0; i < COUNT; ++i) {
+            if (color == CARS.get(i).color)
+                return CARS.get(i);
         }
         return null;
     }
 
-    public Color color(){
+    public Color color() {
         return this.color;
     }
 
 }
+
+

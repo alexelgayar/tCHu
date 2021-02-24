@@ -7,7 +7,7 @@ public final class Preconditions {
 
     }
 
-    void checkArgument(boolean shouldBeTrue){
+    public static void checkArgument(boolean shouldBeTrue){
         if(!shouldBeTrue){
             throw new IllegalArgumentException();
         }

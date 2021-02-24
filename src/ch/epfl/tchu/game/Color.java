@@ -14,11 +14,11 @@ public enum Color {
     WHITE;
 
 
-public static final Color[] AllArray = Color.values();
+    public static final Color[] AllArray = Color.values();
 
-public static final List<Color> ALL = List.of(AllArray);
+    public static final List<Color> ALL = List.of(AllArray);
 
-public static final int COUNT = ALL.size();
+    public static final int COUNT = ALL.size();
 
 }
 
