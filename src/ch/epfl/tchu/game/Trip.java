@@ -40,7 +40,7 @@ public final class Trip {
      * @return a list containing the different trips
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
-        Preconditions.checkArgument((points > 0) || (from != null) || (to != null));
+        Preconditions.checkArgument((points > 0) && (from != null) && (to != null));
 
         List<Trip> allTrips = new ArrayList<>();
 
