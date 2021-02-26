@@ -14,26 +14,22 @@ public final class Ticket implements Comparable<Ticket> {
 
     private final String TEXT;
 
-    private List<Trip> trips;
+    private final List<Trip> trips;
 
     /**
-     * Contrusts a ticket out a list of trips
+     * Constructs a ticket out a list of trips
      * @param trips list containing all the trips
      */
    public Ticket(List<Trip> trips) {
-
         Preconditions.checkArgument(trips != null);
         Preconditions.checkArgument(!trips.isEmpty());
-
 
         for (Trip w : trips) {
             Preconditions.checkArgument(trips.get(0).from().toString().equals(w.from().toString()));
         }
 
-
         this.trips = trips;
         TEXT = computeText();
-
     }
 
     /**
@@ -43,12 +39,11 @@ public final class Ticket implements Comparable<Ticket> {
      * @param points points if both stations are connected
      */
    public Ticket(Station from, Station to, int points) {
-
         this(List.of(new Trip(from, to, points)));
     }
 
+    //TODO: This should ideally be static
     private String computeText() {
-
         TreeSet<String> to = new TreeSet<>();
 
         for (Trip w : trips) {

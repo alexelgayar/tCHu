@@ -6,7 +6,9 @@ package ch.epfl.tchu;
  */
 public final class Preconditions {
 
-
+    /**
+     * Private constructor class for the Preconditions class
+     */
     private Preconditions() {
 
     }
