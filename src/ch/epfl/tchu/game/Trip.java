@@ -52,18 +52,36 @@ public final class Trip {
         return allTrips;
     }
 
+    /**
+     *
+     * @return Departure station
+     */
     public Station from() {
         return from;
     }
 
+    /**
+     *
+     * @return Arrival station
+     */
     public Station to() {
         return to;
     }
 
+    /**
+     *
+     * @return points corresponding to the trip
+     */
     public int points() {
         return points;
     }
 
+    /**
+     *
+     * @param connectivity true if both stations are connected
+     * @return adds the number of points if the stations are
+     * connected or removes the points if they are not
+     */
     public int points(StationConnectivity connectivity) {
         if (connectivity.connected(from, to))
             return points;
