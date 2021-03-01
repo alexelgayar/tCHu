@@ -5,6 +5,8 @@ import java.util.List;
 /**
  * Public, final and immutable class
  * Contains no constructor, but contains a static method to compute the longest trail of a given route network
+ * @Author Alexandre Iskandar (324406)
+ * @Author Anirudhh Ramesh (329806)
  */
 public final class Trail {
 

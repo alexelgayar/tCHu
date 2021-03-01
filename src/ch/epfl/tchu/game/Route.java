@@ -3,12 +3,16 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Public, final immutable class
  * Represents a road connecting two neighboring towns
- */
+ * @Author Alexandre Iskandar (324406)
+ * @Author Anirudhh Ramesh (329806)
+ * */
 public final class Route {
 
     private String id;
@@ -36,11 +40,11 @@ public final class Route {
 
         Preconditions.checkArgument(stationsNotSame && lengthIsValid);
 
-        this.id = id;
-        this.station1 = station1;
-        this.station2 = station2;
+        this.id = Objects.requireNonNull(id);
+        this.station1 = Objects.requireNonNull(station1);
+        this.station2 = Objects.requireNonNull(station2);
         this.length = length;
-        this.level = level;
+        this.level = Objects.requireNonNull(level);
         this.color = color;
     }
 
@@ -48,7 +52,7 @@ public final class Route {
      * Getter method for route id
      * @return Returns the route id
      */
-    public String getId() {
+    public String id() {
         return id;
     }
 
@@ -56,7 +60,7 @@ public final class Route {
      * Getter method for the first station of the route
      * @return Returns the first station of the route
      */
-    public Station getStation1() {
+    public Station station1() {
         return station1;
     }
 
@@ -64,7 +68,7 @@ public final class Route {
      * Getter method for the second station of the route
      * @return Returns the second station of the route
      */
-    public Station getStation2() {
+    public Station station2() {
         return station2;
     }
 
@@ -72,7 +76,7 @@ public final class Route {
      * Getter method for the length of the route
      * @return Returns the (int) length of the route
      */
-    public int getLength() {
+    public int length() {
         return length;
     }
 
@@ -80,7 +84,7 @@ public final class Route {
      * Getter method for the level
      * @return Returns the level type for the route (Surface level or Tunnel level)
      */
-    public Level getLevel() {
+    public Level level() {
         return level;
     }
 
@@ -88,7 +92,7 @@ public final class Route {
      * Getter method for the color
      * @return Returns the color of the route, or null if the route is of neutral colour
      */
-    public Color getColor() {
+    public Color color() {
         return color;
     }
 
@@ -118,8 +122,29 @@ public final class Route {
      * @return Returns the list of all the sets of cards that could be played to (attempt to) grab the road, sorted in ascending order of number of locomotive cards, then by suit
      */
     public List<SortedBag<Card>> possibleClaimCards(){
-        //TODO: Hard to solve => Solution should directly generate all possible cards in demanded
-        return null;
+        /*
+        Returns the list of all the sets of cards that could be played to attempt to grab the road
+        => Sorted in ascending order of number of locomotive cards (0, 1, 2, ...)
+        => Then sorted by car colours
+         */
+
+        //TODO: Apparently I can't obtain OVERGROUND roads with locomotives, this code is wrong then?
+        int cardsRequired = this.length;
+        var cardsBuilder = new SortedBag.Builder<Card>();
+        List<SortedBag<Card>> cardsContainer = new ArrayList<>();
+
+        //Outside loop for locomotives, i represents locomotive cards used
+        for (int i = 0; i <= length; ++i){
+            cardsBuilder.add(i, Card.LOCOMOTIVE);
+            //Inside, order it based on the Colour of Cars (not including Locomotives)
+            for (Card card : Card.CARS)
+                cardsBuilder.add(length - i, card);
+            assert cardsBuilder.size() == length;
+
+            cardsContainer.add(cardsBuilder.build());
+        }
+
+        return cardsContainer;
     }
 
     /**
@@ -130,8 +155,10 @@ public final class Route {
      * @throws IllegalArgumentException if the road to which it is applied is not a tunnel, or if drawnCards does not contain exactly 3 cards
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards){
-        Preconditions.checkArgument((level.Tunnel) && (drawnCards.size() = 3));
+        Preconditions.checkArgument((level.UNDERGROUND) && (drawnCards.size() = 3));
         //TODO: Hard to solve, do after possibleClaimCards is finished
+
+
 
         return 0;
     }
@@ -148,6 +175,7 @@ public final class Route {
      * These values, in order, are: OVERGROUND (surface route) and UNDERGROUND (tunnel route)
      */
     public enum Level{
-
+        OVERGROUND,
+        UNDERGROUND;
     }
 }
