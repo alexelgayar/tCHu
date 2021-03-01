@@ -10,6 +10,11 @@ import java.util.List;
  */
 public final class Trail {
 
+    /**
+     *
+     * @param routes
+     * @return
+     */
     static Trail longest(List<Route> routes){
         //Use method List.contains to check if object inputted is contained in the receptor (this)
         if (routes.contains(this)){
