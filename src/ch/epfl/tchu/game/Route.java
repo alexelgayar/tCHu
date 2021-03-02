@@ -155,7 +155,7 @@ public final class Route {
      * @throws IllegalArgumentException if the road to which it is applied is not a tunnel, or if drawnCards does not contain exactly 3 cards
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards){
-        Preconditions.checkArgument((level.UNDERGROUND) && (drawnCards.size() = 3));
+        Preconditions.checkArgument((level == Level.UNDERGROUND) && (drawnCards.size() == 3));
         //TODO: Hard to solve, do after possibleClaimCards is finished
 
 
