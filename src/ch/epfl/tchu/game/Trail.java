@@ -1,5 +1,6 @@
 package ch.epfl.tchu.game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,27 +11,43 @@ import java.util.List;
  */
 public final class Trail {
 
+    int length = 0;
+    List<Route> routes;
+    Station s1;
+    Station s2;
+
+    private Trail(List<Route> routes, Station s1, Station s2){
+        this.routes = routes;
+        this.s1 = s1;
+        this.s2 = s2;
+
+
+    }
+
     /**
      *
      * @param routes
      * @return
      */
-    static Trail longest(List<Route> routes){
-        //Use method List.contains to check if object inputted is contained in the receptor (this)
-        if (routes.contains(this)){
-
-        }
-
-        //Use method List.removeAll to remove all elements of collection that we pass in as argument => Allows us to calculate total routes still not used
-    }
+//    static Trail longest(List<Route> routes){
+//        //Use method List.contains to check if object inputted is contained in the receptor (this)
+//
+//        }
+//
+//        //Use method List.removeAll to remove all elements of collection that we pass in as argument => Allows us to calculate total routes still not used
+//    }
 
     /**
      *
      * @return returns the length of the path
      */
     public int length(){
-        //TODO: Code this
-        return 0;
+
+        for(Route w: routes){
+            length += w.length();
+        }
+
+        return length;
     }
 
     /**
@@ -38,8 +55,13 @@ public final class Trail {
      * @return Returns the first station of the path, else null (IFF) route has length 0
      */
     public Station station1(){
-        //TODO: Code this
-        return null;
+
+        if(length() > 0){
+            return s1;
+        }
+        else{
+            return null;
+        }
     }
 
     /**
@@ -47,8 +69,13 @@ public final class Trail {
      * @return Returns the last station of the path, else null (IFF) route has length 0
      */
     public Station station2(){
-        //TODO: Code this
-        return null;
+
+        if(length() > 0){
+            return s2;
+        }
+        else{
+            return null;
+        }
     }
 
     /**
@@ -57,11 +84,17 @@ public final class Trail {
      */
     @Override
     public String toString() {
-        //Use a stringbuilder representation here
 
-        //Lucerne - Fribourg (13)
+        String text = null;
+        List<String> stations = new ArrayList<>();
 
-        //Recommended for debugging purposes
-        //Lucerne - Berne - Neuchâtel - Soleure - Berne - Fribourg (13)
+        for(Route w: routes){
+            stations.add(w.station2().toString());
+        }
+
+        text = routes.get(0).station1().toString() + " - " + String.join( " - " ,  stations) + " (" + length() + ")";
+
+        return text;
     }
+
 }
