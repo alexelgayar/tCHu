@@ -165,11 +165,16 @@ public final class Route {
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards){
         Preconditions.checkArgument((level == Level.UNDERGROUND) && (drawnCards.size() == 3));
-        //TODO: Hard to solve, do after possibleClaimCards is finished
 
+        int counter = 0;
 
+        for(Card w: drawnCards){
+            if(claimCards.contains(w) || w.color() == null) {
+                counter += 1;
+            }
+        }
 
-        return 0;
+        return counter;
     }
 
     /**
