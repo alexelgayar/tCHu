@@ -121,30 +121,39 @@ public final class Route {
      *
      * @return Returns the list of all the sets of cards that could be played to (attempt to) grab the road, sorted in ascending order of number of locomotive cards, then by suit
      */
-    public List<SortedBag<Card>> possibleClaimCards(){
-        /*
-        Returns the list of all the sets of cards that could be played to attempt to grab the road
-        => Sorted in ascending order of number of locomotive cards (0, 1, 2, ...)
-        => Then sorted by car colours
-         */
+    public List<SortedBag<Card>> possibleClaimCards() {
 
-        //TODO: Apparently I can't obtain OVERGROUND roads with locomotives, this code is wrong then?
-        int cardsRequired = this.length;
-        var cardsBuilder = new SortedBag.Builder<Card>();
-        List<SortedBag<Card>> cardsContainer = new ArrayList<>();
+        List<SortedBag<Card>> possibleCards = new ArrayList<>();
 
-        //Outside loop for locomotives, i represents locomotive cards used
-        for (int i = 0; i <= length; ++i){
-            cardsBuilder.add(i, Card.LOCOMOTIVE);
-            //Inside, order it based on the Colour of Cars (not including Locomotives)
-            for (Card card : Card.CARS)
-                cardsBuilder.add(length - i, card);
-            assert cardsBuilder.size() == length;
+        if (level == Level.OVERGROUND) {
+            if (color != null) {
+                possibleCards.add(SortedBag.of(length, Card.of(color)));
+            }
 
-            cardsContainer.add(cardsBuilder.build());
+         else {
+             for(Card w: Card.CARS){
+                 possibleCards.add(SortedBag.of(length, w));
+             }
         }
+    }
 
-        return cardsContainer;
+        else{
+            if (color != null){
+                for(int i = 0; i <= length; ++i){
+                    possibleCards.add(SortedBag.of(length - i, Card.of(color), i ,Card.LOCOMOTIVE));
+                }
+            }
+
+            else{
+                for(int i =0; i <= length - 1; ++i){
+                    for(Card w: Card.CARS){
+                        possibleCards.add(SortedBag.of(length - i, w, i, Card.LOCOMOTIVE));
+                    }
+                }
+                possibleCards.add(SortedBag.of(length, Card.LOCOMOTIVE));
+            }
+        }
+        return possibleCards;
     }
 
     /**
