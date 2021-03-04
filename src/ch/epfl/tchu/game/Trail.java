@@ -26,11 +26,11 @@ public final class Trail {
     }
 
     /**
-     * Receives list of all usable routes. => If
+     * Receives list of all player-owned routes, returns the longest route of the player
      * @param routes All the routes that are owned by the player
-     * @return Returns the longest path of the network made up of th egiven routes. If multiple paths of max length => Returned path is not specified
+     * @return Returns the longest path of the network made up of the given routes. If multiple paths of max length => Returned path is not specified
      */
-    static Trail longest(List<Route> routes){
+    public static Trail longest(List<Route> routes){
         /*
         - Create a modifiable copy of the list of all the usable routes
         - Remove all currently used routes, using removeAll
