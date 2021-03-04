@@ -33,6 +33,7 @@ public final class Trail {
      * @return Returns the longest path of the network made up of the given routes. If multiple paths of max length => Returned path is not specified
      */
     public static Trail longest(List<Route> routes) {
+        //TODO: Create 2 paths for each route at the initialisation of the algorithm!!!
         /*
         - Create a modifiable copy of the list of all the usable routes
         - Remove all currently used routes, using removeAll
@@ -42,11 +43,20 @@ public final class Trail {
         //1. Create a local, modifiable copy of routes owned by the player
         //----List of trails constituted of single routes, as long as smallestTrails is not empty----
         List<List<Route>> cs = new ArrayList<>();
+
+        //Here we create two paths for each route
         for (Route route : routes) {
             List<Route> routeContainer = new ArrayList<>();
+            //Route in forward direction
             routeContainer.add(route);
             cs.add(routeContainer);
+            routeContainer.remove(0);
+            //Route in backward direction
+            Route backRoute = new Route(route.id(), route.station2(), route.station1(), route.length(), route.level(), route.color());
+            routeContainer.add(backRoute);
+            cs.add(routeContainer);
         }
+        //TODO: Create two paths for each route when algorithm is initialized, one in each direction!!
 
         //Will be used to save the final paths stored in cs
         List<List<Route>> csSaver = new ArrayList<>();
@@ -65,9 +75,12 @@ public final class Trail {
                 rs.removeAll(c); //Removes all routes that belong to path c
 
                 List<Route> rsCopy = new ArrayList<>(rs); //Using a copy to avoid ConcurrentModificationException, as we can't directly alter rs while iterating through
-                //Check if routes in rs can extend c?: (Therefore path.station2 must = route.station1)
+                //Check if routes in rs can extend c?: (Therefore path.station2 must = route.station1 or path.station1 must = route.station2)
+
                 for (Route r : rsCopy) {
-                    if (!(c.get(c.size() - 1).station2().equals(r.station1()))) {
+                    boolean routeExtendsPathForward = c.get(c.size() - 1).station2().equals(r.station1());
+
+                    if (!routeExtendsPathForward) {
                         //Checks if the end station = start station, else route cannot extend path
                         rs.remove(r); //Removes all routes that can't extend path c
                     }
@@ -76,8 +89,9 @@ public final class Trail {
                 //Extend the path c with the route rs
                 for (Route r : rs) {
                     List<Route> cExtended = new ArrayList<>(c);
+                    boolean routeExtendsPathForward = c.get(c.size() - 1).station2().equals(r.station1());
+                    boolean routeExtendsPathBackward = c.get(0).station1().equals(r.station2());
                     cExtended.add(r);
-
                     cs1.add(cExtended);
                 }
             }
