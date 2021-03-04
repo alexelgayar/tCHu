@@ -20,7 +20,7 @@ public final class Trail {
     private final Station s1;
     private final Station s2;
 
-    private Trail(List<Route> routes, Station s1, Station s2) {
+    public Trail(List<Route> routes, Station s1, Station s2) {
         this.routes = routes;
         this.s1 = s1;
         this.s2 = s2;
