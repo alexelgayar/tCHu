@@ -1,7 +1,10 @@
 package ch.epfl.tchu.game;
 
+import ch.epfl.tchu.Preconditions;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Public, final and immutable class
@@ -11,35 +14,102 @@ import java.util.List;
  */
 public final class Trail {
 
-    int length = 0;
-    List<Route> routes;
-    Station s1;
-    Station s2;
+    private int length = 0;
+    private final List<Route> routes;
+    private final Station s1;
+    private final Station s2;
 
     private Trail(List<Route> routes, Station s1, Station s2){
         this.routes = routes;
         this.s1 = s1;
         this.s2 = s2;
+    }
 
+    /**
+     * Receives list of all usable routes. => If
+     * @param routes All the routes that are owned by the player
+     * @return Returns the longest path of the network made up of th egiven routes. If multiple paths of max length => Returned path is not specified
+     */
+    static Trail longest(List<Route> routes){
+        /*
+        - Create a modifiable copy of the list of all the usable routes
+        - Remove all currently used routes, using removeAll
+        - Run through the remaining routes to see if they can extend the route (provided they are owned)
+         */
 
+        //1. Create a local, modifiable copy of routes owned by the player
+        //----List of trails constituted of single routes, as long as smallestTrails is not empty----
+        List<List<Route>> cs = new ArrayList<>();
+        for (Route route: routes) {
+            List<Route> routeContainer = new ArrayList<>();
+            routeContainer.add(route);
+            cs.add(routeContainer);
+        }
+
+        //Will be used to save the final paths stored in cs
+        List<List<Route>> csSaver = new ArrayList<>();
+
+        //While loop, to extend the paths stored in cs
+        while (cs.size() > 0) {
+            List<List<Route>> cs1 = new ArrayList<>();
+
+            for (List<Route> c : cs) {
+                /* rs:
+                    - Routes belonging to player
+                    - Not belonging to c
+                    - Can extend c
+                 */
+                List<Route> rs = new ArrayList<>(routes); //Routes belonging to player
+                rs.removeAll(c); //Removes all routes that belong to path c
+
+                List<Route> rsCopy = new ArrayList<>(rs); //Using a copy to avoid ConcurrentModificationException, as we can't directly alter rs while iterating through
+                //Check if routes in rs can extend c?: (Therefore path.station2 must = route.station1)
+                for (Route r: rsCopy) {
+                    if (!(c.get(c.size()-1).station2().equals(r.station1()))) {
+                        //Checks if the end station = start station, else route cannot extend path
+                        rs.remove(r); //Removes all routes that can't extend path c
+                    }
+                }
+
+                //Extend the path c with the route rs
+                for (Route r : rs) {
+                    List<Route> cExtended = new ArrayList<>(c);
+                    cExtended.add(r);
+
+                    cs1.add(cExtended);
+                }
+            }
+
+            csSaver = new ArrayList<>(cs);
+            cs = cs1;
+        }
+
+        int maxPathLength = 0;
+        int maxPathLengthIndex = 0;
+
+        //TODO: Incorporate this method into above algorithm
+        //Iterates through each path of the longestPaths, and retrieves path with longest length
+        for (int i = 0; i < csSaver.size(); ++i){
+            int pathLength = 0;
+
+            for (Route route: csSaver.get(i)){
+                pathLength += route.length();
+            }
+
+            if (maxPathLengthIndex < pathLength){
+                maxPathLengthIndex = pathLength;
+                maxPathLengthIndex = i;
+            }
+        }
+        Station station1 = csSaver.get(maxPathLengthIndex).get(0).station1();
+        Station station2 = csSaver.get(maxPathLengthIndex).get(csSaver.get(maxPathLengthIndex).size()-1).station2();
+
+        return new Trail(csSaver.get(maxPathLengthIndex), station1, station2);
     }
 
     /**
      *
-     * @param routes
-     * @return
-     */
-//    static Trail longest(List<Route> routes){
-//        //Use method List.contains to check if object inputted is contained in the receptor (this)
-//
-//        }
-//
-//        //Use method List.removeAll to remove all elements of collection that we pass in as argument => Allows us to calculate total routes still not used
-//    }
-
-    /**
-     *
-     * @return returns the length of the path
+     * @return returns the length of the trail
      */
     public int length(){
 
@@ -52,30 +122,18 @@ public final class Trail {
 
     /**
      *
-     * @return Returns the first station of the path, else null (IFF) route has length 0
+     * @return Returns the first station of the path, else null (IFF) trail has length 0
      */
     public Station station1(){
-
-        if(length() > 0){
-            return s1;
-        }
-        else{
-            return null;
-        }
+        return ((length() > 0) ? s1: null);
     }
 
     /**
      *
-     * @return Returns the last station of the path, else null (IFF) route has length 0
+     * @return Returns the last station of the path, else null (IFF) trail has length 0
      */
     public Station station2(){
-
-        if(length() > 0){
-            return s2;
-        }
-        else{
-            return null;
-        }
+        return ((length() > 0) ? s2: null);
     }
 
     /**
