@@ -164,12 +164,12 @@ public final class Route {
      * @throws IllegalArgumentException if the road to which it is applied is not a tunnel, or if drawnCards does not contain exactly 3 cards
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards){
-        Preconditions.checkArgument((level == Level.UNDERGROUND) && (drawnCards.size() == 3));
+        Preconditions.checkArgument((level == Level.UNDERGROUND) && (drawnCards.size() == Constants.ADDITIONAL_TUNNEL_CARDS));
 
         int counter = 0;
 
         for(Card w: drawnCards){
-            if(claimCards.contains(w) || w.color() == null) {
+            if(claimCards.contains(w) || (w == Card.LOCOMOTIVE) ){
                 counter += 1;
             }
         }
