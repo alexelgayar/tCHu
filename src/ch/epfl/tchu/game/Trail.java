@@ -24,6 +24,7 @@ public final class Trail {
         this.length = length;
     }
 
+
     private static List<Trail> generateTrails(List<Route> routes){
         List<Trail> trailContainer = new ArrayList<>();
         for (Route route : routes){
@@ -100,6 +101,7 @@ public final class Trail {
 
         return longestTrail;
     }
+
 
     /**
      * @return returns the length of the trail
