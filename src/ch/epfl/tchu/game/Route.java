@@ -15,12 +15,12 @@ import java.util.Objects;
  * */
 public final class Route {
 
-    private String id;
-    private Station station1;
-    private Station station2;
-    private int length;
-    private Level level;
-    private Color color;
+    private final String id;
+    private final Station station1;
+    private final Station station2;
+    private final int length;
+    private final Level level;
+    private final Color color;
 
     /**
      *

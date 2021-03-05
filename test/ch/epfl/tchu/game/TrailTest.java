@@ -10,18 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TrailTest {
 
     @Test
-    void textIsCorrect(){
-        var s1 = new Station(11, "Interlaken");
-        var s2 = new Station(33, "Zürich");
-        List<Route> routes = List.of(
-                new Route("INT_LUC_1", new Station(11, "Interlaken"), new Station(16, "Lucerne"), 4, Route.Level.OVERGROUND, Color.VIOLET),
-                new Route("LUC_ZOU_1", new Station(16, "Lucerne"), new Station(32, "Zoug"), 1, Route.Level.OVERGROUND, Color.ORANGE),
-                new Route("ZOU_ZUR_1", new Station(32, "Zoug"), new Station(33, "Zürich"), 1, Route.Level.OVERGROUND, Color.GREEN));
-
-        var r1 = new Trail(routes, s1, s2);
+    void textIsCorrectWithStationNotInOrder(){
+        List<Route> routes = List.of(ChMap.routes().get(2)
+                ,ChMap.routes().get(3));
+        Station s1 = ChMap.stations().get(0);
+        var r1 = new Trail(routes, ChMap.stations().get(1), ChMap.stations().get(20));
 
         assertEquals(
-                "Interlaken - Lucerne - Zoug - Zürich (6)", r1.toString());
+                "Bâle - Baden - Olten (5)", r1.toString());
     }
 
     @Test

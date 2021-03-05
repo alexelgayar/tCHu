@@ -143,12 +143,29 @@ public final class Trail {
 
         String text = null;
         List<String> stations = new ArrayList<>();
+        Station temp = null;
 
-        for (Route w : routes) {
-            stations.add(w.station2().toString());
+        for(int i = 0; i < routes.size() - 1; ++i){
+
+            if(routes.get(i).station1().toString().equals(routes.get(i+1).station1().toString())){
+                temp = routes.get(i).station1();
+            }
+            if(routes.get(i).station1().toString().equals(routes.get(i+1).station2().toString())){
+                temp = routes.get(i).station1();
+            }
+            if(routes.get(i).station2().toString().equals(routes.get(i+1).station1().toString())){
+                temp = routes.get(i).station2();
+            }
+            if(routes.get(i).station2().toString().equals(routes.get(i+1).station2().toString())){
+                temp = routes.get(i).station2();
+            }
+
+            stations.add(temp.toString());
         }
 
-        text = routes.get(0).station1().toString() + " - " + String.join(" - ", stations) + " (" + length() + ")";
+
+
+        text = s1.toString() + " - " + String.join(" - ", stations) + " - " + s2.toString() + " (" + length() + ")";
 
         return text;
     }
