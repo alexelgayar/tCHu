@@ -1,10 +1,7 @@
 package ch.epfl.tchu.game;
 
-import ch.epfl.tchu.Preconditions;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Public, final and immutable class
@@ -15,15 +12,59 @@ import java.util.Objects;
  */
 public final class Trail {
 
-    private int length = 0;
+    private final int length;
     private final List<Route> routes;
     private final Station s1;
     private final Station s2;
 
-    public Trail(List<Route> routes, Station s1, Station s2) {
-        this.routes = routes;
+    private Trail(Station s1, Station s2, List<Route> routes, int length) {
         this.s1 = s1;
         this.s2 = s2;
+        this.routes = routes;
+        this.length = length;
+    }
+
+    private static List<Trail> generateTrails(List<Route> routes){
+        List<Trail> trailContainer = new ArrayList<>();
+        for (Route route : routes){
+            trailContainer.add(new Trail(route.station1(), route.station2(), List.of(route), route.length()));
+            trailContainer.add(new Trail(route.station2(), route.station1(), List.of(route), route.length()));
+        }
+
+        return trailContainer;
+    }
+
+    private static Trail extendTrail(Trail trail, List<Route> routes){
+        List<Route> rs = new ArrayList<>(routes);
+        int length = 0;
+
+        //Remove all routes that are already part of the trail
+        rs.removeAll(trail.routes);
+
+        List<Route> rsCopy = new ArrayList<>(rs);
+
+        //Prevents ConcurrentModificationException
+        for (Route r: rsCopy){
+            boolean routeExtendsPathForward = trail.station2().equals(r.station1());
+
+            if (!routeExtendsPathForward){
+                rs.remove(r);
+            }
+        }
+
+        Trail extendedTrail = new Trail(null, trail.station2(), trail.routes, length);
+
+        for (Route r: rs){
+            length += r.length();
+
+            List<Route> extendedTrailRoutes = new ArrayList<>();
+            extendedTrailRoutes.addAll(trail.routes);
+            extendedTrailRoutes.add(r);
+
+            extendedTrail = new Trail(trail.station1(), r.station2(), extendedTrailRoutes, length);
+        }
+
+        return extendedTrail;
     }
 
     /**
@@ -33,106 +74,43 @@ public final class Trail {
      * @return Returns the longest path of the network made up of the given routes. If multiple paths of max length => Returned path is not specified
      */
     public static Trail longest(List<Route> routes) {
-        //TODO: Create 2 paths for each route at the initialisation of the algorithm!!!
-        /*
-        - Create a modifiable copy of the list of all the usable routes
-        - Remove all currently used routes, using removeAll
-        - Run through the remaining routes to see if they can extend the route (provided they are owned)
-         */
+        //Step 1: Create trail for each route, two trails for each route
+        List<Trail> cs = generateTrails(routes);
+        Trail longestTrail = cs.get(0);
 
-        //1. Create a local, modifiable copy of routes owned by the player
-        //----List of trails constituted of single routes, as long as smallestTrails is not empty----
-        List<List<Route>> cs = new ArrayList<>();
-
-        //Here we create two paths for each route
-        for (Route route : routes) {
-            List<Route> routeContainer = new ArrayList<>();
-            //Route in forward direction
-            routeContainer.add(route);
-            cs.add(routeContainer);
-            routeContainer.remove(0);
-            //Route in backward direction
-            Route backRoute = new Route(route.id(), route.station2(), route.station1(), route.length(), route.level(), route.color());
-            routeContainer.add(backRoute);
-            cs.add(routeContainer);
-        }
-        //TODO: Create two paths for each route when algorithm is initialized, one in each direction!!
-
-        //Will be used to save the final paths stored in cs
-        List<List<Route>> csSaver = new ArrayList<>();
-
-        //While loop, to extend the paths stored in cs
+        int iterationCounter = 0;
+        //Step 2: Extend each trail
         while (cs.size() > 0) {
-            List<List<Route>> cs1 = new ArrayList<>();
+            System.out.println("Number of iterations: " + iterationCounter);
+            ++iterationCounter;
+            List<Trail> cs1 = new ArrayList<>();
 
-            for (List<Route> c : cs) {
-                /* rs:
-                    - Routes belonging to player
-                    - Not belonging to c
-                    - Can extend c
-                 */
-                List<Route> rs = new ArrayList<>(routes); //Routes belonging to player
-                rs.removeAll(c); //Removes all routes that belong to path c
-
-                List<Route> rsCopy = new ArrayList<>(rs); //Using a copy to avoid ConcurrentModificationException, as we can't directly alter rs while iterating through
-                //Check if routes in rs can extend c?: (Therefore path.station2 must = route.station1 or path.station1 must = route.station2)
-
-                for (Route r : rsCopy) {
-                    boolean routeExtendsPathForward = c.get(c.size() - 1).station2().equals(r.station1());
-
-                    if (!routeExtendsPathForward) {
-                        //Checks if the end station = start station, else route cannot extend path
-                        rs.remove(r); //Removes all routes that can't extend path c
-                    }
+            for (Trail c : cs) {
+                Trail extendedTrail = extendTrail(c, routes);
+                if (longestTrail.length() < extendedTrail.length()){
+                    longestTrail = extendedTrail;
                 }
 
-                //Extend the path c with the route rs
-                for (Route r : rs) {
-                    List<Route> cExtended = new ArrayList<>(c);
-                    boolean routeExtendsPathForward = c.get(c.size() - 1).station2().equals(r.station1());
-                    boolean routeExtendsPathBackward = c.get(0).station1().equals(r.station2());
-                    cExtended.add(r);
-                    cs1.add(cExtended);
+                if (extendedTrail.station1() != null){
+                    cs1.add(extendedTrail);
                 }
             }
-
-            csSaver = new ArrayList<>(cs);
             cs = cs1;
         }
 
-        int maxPathLength = 0;
-        int maxPathLengthIndex = 0;
-
-        //TODO: Incorporate this method into above algorithm
-        //Iterates through each path of the longestPaths, and retrieves path with longest length
-        for (int i = 0; i < csSaver.size(); ++i) {
-            int pathLength = 0;
-
-            for (Route route : csSaver.get(i)) {
-                pathLength += route.length();
-            }
-
-            if (maxPathLengthIndex < pathLength) {
-                maxPathLengthIndex = pathLength;
-                maxPathLengthIndex = i;
-            }
-        }
-        Station station1 = csSaver.get(maxPathLengthIndex).get(0).station1();
-        Station station2 = csSaver.get(maxPathLengthIndex).get(csSaver.get(maxPathLengthIndex).size() - 1).station2();
-
-        return new Trail(csSaver.get(maxPathLengthIndex), station1, station2);
+        return longestTrail;
     }
 
     /**
      * @return returns the length of the trail
      */
     public int length() {
-
+        int lengthHolder = length;
         for (Route w : routes) {
-            length += w.length();
+            lengthHolder += w.length();
         }
 
-        return length;
+        return lengthHolder;
     }
 
     /**
