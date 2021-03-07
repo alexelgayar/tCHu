@@ -1,0 +1,108 @@
+package ch.epfl.tchu.game;
+
+import ch.epfl.tchu.Preconditions;
+import ch.epfl.tchu.SortedBag;
+
+import java.util.List;
+import java.util.Random;
+
+import static java.util.Collections.shuffle;
+
+/**
+ * @Author Alexandre Iskandar (324406)
+ * @Author Anirudhh Ramesh (329806)
+ */
+public final class Deck <C extends Comparable<C>> {
+
+   private final List<C> cards;
+
+    private Deck(List<C> cards){
+
+        this.cards = cards;
+
+    }
+
+    public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng){
+
+        List<C> shuffledCards = cards.toList();
+
+        shuffle(shuffledCards, rng);
+
+        return new Deck<C>(shuffledCards);
+    }
+
+    /**
+     *
+     * @return size of deck
+     */
+    public int size(){
+
+        return cards.size();
+
+    }
+
+    /**
+     *
+     * @return true iff Deck is empty
+     */
+    boolean isEmpty(){
+        return cards.isEmpty();
+    }
+
+    /**
+     *
+     * @return top card of deck
+     * Throws IllegalArgumentException if the deck is empty
+     */
+    C topCard(){
+        Preconditions.checkArgument(!cards.isEmpty() && cards != null);
+        return cards.get(size() - 1);
+    }
+
+    /**
+     *
+     * @return a new Deck similar to this but without the top card
+     */
+    public Deck<C> withoutTopCard(){
+
+        Preconditions.checkArgument(!cards.isEmpty() && cards != null);
+
+        List<C> copy = cards.subList(0, this.size() - 1);
+
+        return new Deck<C>(copy);
+    }
+
+    /**
+     *
+     * @param count number of cards to be selected
+     * @return the top count cards of this
+     */
+    public SortedBag<C> topCards(int count){
+
+        Preconditions.checkArgument(0 <= count && count <= this.size());
+
+        SortedBag<C> cardsBag = SortedBag.of(cards.subList(this.size() - count, this.size()));
+
+       return cardsBag;
+    }
+
+    /**
+     *
+     * @param count number of cards to be removed
+     * @return a new Deck similar to this but without the last count cards
+     */
+    public Deck<C> withoutTopCards(int count){
+
+        Preconditions.checkArgument(0 <= count && count <= this.size());
+
+        List<C> copy = cards.subList(0, this.size() - count);
+
+        return new Deck<C>(copy);
+
+    }
+
+
+
+
+
+}
