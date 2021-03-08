@@ -42,7 +42,6 @@ public final class Ticket implements Comparable<Ticket> {
         this(List.of(new Trip(from, to, points)));
     }
 
-    //TODO: This should ideally be static
     private String computeText() {
         TreeSet<String> to = new TreeSet<>();
 
@@ -109,8 +108,7 @@ public final class Ticket implements Comparable<Ticket> {
      */
     @Override
     public int compareTo(Ticket that) {
-
-        return this.toString().compareTo(that.toString());
+        return this.text().compareTo(that.text());
     }
 
 

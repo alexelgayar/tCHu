@@ -30,9 +30,7 @@ public class TrailTest {
         //            new Route("GEN_YVE_1", GEN, YVE, 6, Level.OVERGROUND, null), 49
         //            new Route("LAU_NEU_1", LAU, NEU, 4, Level.OVERGROUND, null), 57
         List<Route> routes = List.of(ChMap.routes().get(47), ChMap.routes().get(48), ChMap.routes().get(56));
-        for (Route route:routes){
-            System.out.println(route.station1() + " to " + route.station2());
-        }
+
         Trail longest = Trail.longest(routes);
         assertEquals("Yverdon - Genève - Lausanne - Neuchâtel (14)", longest.toString());
     }
@@ -47,9 +45,6 @@ public class TrailTest {
         //            new Route("BER_FRI_1", BER, FRI, 1, Level.OVERGROUND, Color.ORANGE),
         List<Route> routes = List.of(ChMap.routes().get(66), ChMap.routes().get(65), ChMap.routes().get(18),
                 ChMap.routes().get(19), ChMap.routes().get(17), ChMap.routes().get(14));
-        for (Route route:routes){
-            System.out.println(route.station1() + " to " + route.station2());
-        }
         Trail longest = Trail.longest(routes);
         assertEquals("Lucerne - Berne - Neuchâtel - Soleure - Berne - Fribourg (13)", longest.toString());
     }
@@ -69,9 +64,7 @@ public class TrailTest {
                 ChMap.routes().get(44), ChMap.routes().get(48),
                 ChMap.routes().get(56));
         Trail longest = Trail.longest(routes2);
-        for (Route route:routes2){
-            System.out.println(route.station1() + " to " + route.station2());
-        }
+
         assertEquals("Lucerne - Sion (38)", longest.toString());
 
     }
