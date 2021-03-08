@@ -3,6 +3,7 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -24,7 +25,7 @@ public final class Deck <C extends Comparable<C>> {
 
     public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng){
 
-        List<C> shuffledCards = cards.toList();
+        List<C> shuffledCards = List.copyOf(cards.toList());
 
         shuffle(shuffledCards, rng);
 
@@ -67,9 +68,9 @@ public final class Deck <C extends Comparable<C>> {
 
         Preconditions.checkArgument(!cards.isEmpty() && cards != null);
 
-        List<C> copy = cards.subList(0, this.size() - 1);
+        List<C> copie = List.copyOf(cards.subList(0, this.size() - 1));
 
-        return new Deck<C>(copy);
+        return new Deck<C>(copie);
     }
 
     /**
@@ -81,7 +82,9 @@ public final class Deck <C extends Comparable<C>> {
 
         Preconditions.checkArgument(0 <= count && count <= this.size());
 
-        SortedBag<C> cardsBag = SortedBag.of(cards.subList(this.size() - count, this.size()));
+        List<C> copie = List.copyOf(cards.subList(this.size() - count, this.size()));
+
+        SortedBag<C> cardsBag = SortedBag.of(copie);
 
        return cardsBag;
     }
@@ -95,7 +98,7 @@ public final class Deck <C extends Comparable<C>> {
 
         Preconditions.checkArgument(0 <= count && count <= this.size());
 
-        List<C> copy = cards.subList(0, this.size() - count);
+        List<C> copy = List.copyOf(cards.subList(0, this.size() - count));
 
         return new Deck<C>(copy);
 
