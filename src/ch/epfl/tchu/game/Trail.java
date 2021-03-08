@@ -126,7 +126,7 @@ public final class Trail {
     @Override
     public String toString() {
 
-        String text = null;
+        String text;
         List<String> stations = new ArrayList<>();
         Station temp = null;
 
