@@ -12,61 +12,40 @@ import java.util.List;
  */
 public final class Trail {
 
-    private final int length;
-    private final List<Route> routes;
     private final Station s1;
     private final Station s2;
+    private final List<Route> routes;
+    private final int length;
 
-    private Trail(Station s1, Station s2, List<Route> routes, int length) {
+    private Trail(Station s1, Station s2, List<Route> r) {
         this.s1 = s1;
         this.s2 = s2;
-        this.routes = routes;
-        this.length = length;
+        this.routes = r;
+        this.length = computeTrailLength(routes);
     }
 
-
-    private static List<Trail> generateTrails(List<Route> routes){
-        List<Trail> trailContainer = new ArrayList<>();
+    private static List<Trail> generateShortTrails(List<Route> routes){
+        List<Trail> shortTrailsContainer = new ArrayList<>();
         for (Route route : routes){
-            trailContainer.add(new Trail(route.station1(), route.station2(), List.of(route), route.length()));
-            trailContainer.add(new Trail(route.station2(), route.station1(), List.of(route), route.length()));
+            shortTrailsContainer.add(new Trail(route.station1(), route.station2(), List.of(route)));
+            shortTrailsContainer.add(new Trail(route.station2(), route.station1(), List.of(route)));
         }
 
-        return trailContainer;
+        return shortTrailsContainer;
     }
 
-    private static Trail extendTrail(Trail trail, List<Route> routes){
-        List<Route> rs = new ArrayList<>(routes);
-        int length = 0;
-
-        //Remove all routes that are already part of the trail
-        rs.removeAll(trail.routes);
-
-        List<Route> rsCopy = new ArrayList<>(rs);
-
-        //Prevents ConcurrentModificationException
-        for (Route r: rsCopy){
-            boolean routeExtendsPathForward = trail.station2().equals(r.station1());
-
-            if (!routeExtendsPathForward){
-                rs.remove(r);
+    private static List<Route> computeRouteExtensions(Trail trail, List<Route> routes){
+        List<Route> possibleRouteExtensions = new ArrayList<>();
+        for (Route route : routes){
+            boolean routeCanExtendTrail = (trail.station2().equals(route.station1()) || trail.station2().equals(route.station2())) && (!trail.routes.contains(route));
+            if (routeCanExtendTrail){
+                possibleRouteExtensions.add(route);
             }
         }
-
-        Trail extendedTrail = new Trail(null, trail.station2(), trail.routes, length);
-
-        for (Route r: rs){
-            length += r.length();
-
-            List<Route> extendedTrailRoutes = new ArrayList<>();
-            extendedTrailRoutes.addAll(trail.routes);
-            extendedTrailRoutes.add(r);
-
-            extendedTrail = new Trail(trail.station1(), r.station2(), extendedTrailRoutes, length);
-        }
-
-        return extendedTrail;
+        return possibleRouteExtensions;
     }
+
+
 
     /**
      * Receives list of all player-owned routes, returns the longest route of the player
@@ -74,31 +53,39 @@ public final class Trail {
      * @param routes All the routes that are owned by the player
      * @return Returns the longest path of the network made up of the given routes. If multiple paths of max length => Returned path is not specified
      */
-    public static Trail longest(List<Route> routes) {
-        //Step 1: Create trail for each route, two trails for each route
-        List<Trail> cs = generateTrails(routes);
-        Trail longestTrail = cs.get(0);
 
-        int iterationCounter = 0;
-        //Step 2: Extend each trail
-        while (cs.size() > 0) {
-            System.out.println("Number of iterations: " + iterationCounter);
-            ++iterationCounter;
-            List<Trail> cs1 = new ArrayList<>();
+    public static Trail longest(List<Route> routes){
+        //1. Create 2 trails for each route
+        List<Trail> shortTrails = generateShortTrails(routes);
+        Trail longestTrail = shortTrails.get(0);
 
-            for (Trail c : cs) {
-                Trail extendedTrail = extendTrail(c, routes);
-                if (longestTrail.length() < extendedTrail.length()){
-                    longestTrail = extendedTrail;
-                }
-
-                if (extendedTrail.station1() != null){
-                    cs1.add(extendedTrail);
-                }
-            }
-            cs = cs1;
+        //2. Extend each trail
+        if (routes.isEmpty()){
+            return new Trail(null, null, routes);
         }
+        else{
+            while (!shortTrails.isEmpty()){
+                List<Trail> tempTrail = new ArrayList<>();
+                for (Trail trail : shortTrails){
+                    List<Route> possibleRouteExtensions = computeRouteExtensions(trail, routes);
 
+                    for(Route trailExtension:possibleRouteExtensions){
+                        List<Route> extendedRoute = new ArrayList<>();
+                        extendedRoute.addAll(trail.routes);
+                        extendedRoute.add(trailExtension);
+                        Trail extendedTrail = new Trail(trail.station1(), trailExtension.stationOpposite(trail.station2()), extendedRoute);
+                        tempTrail.add(extendedTrail);
+
+                        //Compute longest trail
+                        if (longestTrail.length() < extendedTrail.length()){
+                            longestTrail = extendedTrail;
+                        }
+                    }
+                }
+                shortTrails = tempTrail;
+            }
+        }
+        //3. Return the longest trail from the generated Trails
         return longestTrail;
     }
 
@@ -107,14 +94,18 @@ public final class Trail {
      * @return returns the length of the trail
      */
     public int length() {
-        int lengthHolder = length;
-        for (Route w : routes) {
-            lengthHolder += w.length();
-        }
-
-        return lengthHolder;
+        return length;
     }
 
+    private int computeTrailLength(List<Route> routes){
+        int length = 0;
+        //For-each loop not executed if routes.isEmpty => returns length 0
+        for (Route w : routes) {
+            length += w.length();
+        }
+
+        return length;
+    }
     /**
      * @return Returns the first station of the path, else null (IFF) trail has length 0
      */

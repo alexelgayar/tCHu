@@ -24,7 +24,7 @@ public class TrailTest {
         //assertEquals("Interlaken - Lucerne - Zoug - Zürich (6)", r1.toString());
     }
 
-    //@Test
+    @Test
     void LongestTestTrivialTest() {
         //            new Route("GEN_LAU_2", GEN, LAU, 4, Level.OVERGROUND, Color.BLUE), 47
         //            new Route("GEN_YVE_1", GEN, YVE, 6, Level.OVERGROUND, null), 49
