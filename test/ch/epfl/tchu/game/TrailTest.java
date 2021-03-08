@@ -66,6 +66,10 @@ public class TrailTest {
         Trail longest = Trail.longest(routes2);
 
         assertEquals("Lucerne - Sion (38)", longest.toString());
+    }
 
+    @Test
+    void LongestTestNonTrivialTest2(){
+        assertEquals(54,Trail.longest(ChMap.routes().subList(0,40)).length());
     }
 }
