@@ -29,7 +29,7 @@ public class PublicCardState {
     public PublicCardState(List<Card> faceUpCards, int deckSize, int discardsSize){
         Preconditions.checkArgument(faceUpCards.size() == 5 && deckSize >= 0 && discardsSize >= 0);
 
-        this.faceUpCards = faceUpCards;
+        this.faceUpCards = List.copyOf(faceUpCards);
         this.deckSize = deckSize;
         this.discardsSize = discardsSize;
     }
@@ -37,7 +37,7 @@ public class PublicCardState {
     /**
      * Returns the total number of cards that are not in the players' hand
      * Namely, the 5 whose face is up, those from the draw pile and from the discard pile
-     * @return
+     * @return the total number of cards that are not in the players' hand
      */
     public int totalSize(){
         return faceUpCards.size() + deckSize + discardsSize;
@@ -53,7 +53,7 @@ public class PublicCardState {
 
     /**
      * Turns the card face up at the given index or throws IndexOutOfBoundsException if this index is not between 0 (inclusive) and 5 (excluded)
-     * @param slot
+     * @param slot the index for the faceUp card that should be returned
      * @return the card at the given "slot" index
      * @throws IndexOutOfBoundsException if the given "slot" index is not between 0 (inclusive) and 5 (exclusive)
      */

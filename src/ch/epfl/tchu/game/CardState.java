@@ -21,36 +21,26 @@ public final class CardState extends PublicCardState{
     private final Deck<Card> drawPile;
     private final SortedBag<Card> discardsPile;
 
-    //TODO: Is this constructor correct?
     private CardState(List<Card> faceUpCards, Deck<Card> drawPile, SortedBag<Card> discardsPile){
         super(faceUpCards, drawPile.size(), discardsPile.size());
-        this.faceUpCards = faceUpCards;
+        this.faceUpCards = List.copyOf(faceUpCards);
         this.drawPile = drawPile;
         this.discardsPile = discardsPile;
     }
 
-    //TODO: Unsure if this is what the instructions have asked me to do
     /**
      * Class does not provide a public constructor, but instead this public static construction method
-     * This construction method returns the state in which the 5 face-up cards
-     * @param deck
-     * @return
-     * @throws
+     * This construction method returns a new cardstate in which the 5 face-up cards are first 5 of given deck, the drawPile is the remaining cards and the discardsPile is empty
+     * @param deck The deck inputted for the game
+     * @return Returns a cardstate of which the 5 face-up cards are first 5 of given deck, the drawPile is the remaining cards and the discardsPile is empty
+     * @throws IllegalArgumentException if the deck given contains less than 5 cards
      */
     public static CardState of(Deck<Card> deck){
         Preconditions.checkArgument(deck.size() >= 5);
-        /*
-        Returns a CardState in which:
-        - 5 cards placed face up are first 5 of given pile
-        - draw pile consists of remeaining cards of the pile
-        - discard pile is empty
-        Throws illegalArgumentExcpetion if the given pile contains less than 5 cards
-         */
-        //TODO: Unsure what instructions want me to do
+
         List<Card> faceUpCards = deck.topCards(5).toList();
         Deck<Card> drawPile = deck.withoutTopCards(5);
 
-        //TODO: Is this how we create a discard Pile with size 0?
         SortedBag<Card> discardsPile = SortedBag.of();
 
         return new CardState(faceUpCards, drawPile, discardsPile);
@@ -65,15 +55,11 @@ public final class CardState extends PublicCardState{
      */
     public CardState withDrawnFaceUpCard(int slot){
         Preconditions.checkArgument(!drawPile.isEmpty());
-        //TODO: Is this good Object-Oriented Programming?
-        faceUpCards.set(Objects.checkIndex(slot, 5), drawPile.topCard());
 
-        //TODO: Check this, Remove the topcard from the drawPile
-        drawPile.withoutTopCard();
+        List<Card> faceUpCardsCopy = new ArrayList<>(faceUpCards);
+        faceUpCardsCopy.set(Objects.checkIndex(slot, 5), drawPile.topCard());
 
-        faceUpCard(Objects.checkIndex(slot, 5));
-
-        return new CardState(faceUpCards, drawPile.withoutTopCard(), discardsPile);
+        return new CardState(faceUpCardsCopy, drawPile.withoutTopCard(), discardsPile);
     }
 
     /**
@@ -106,13 +92,14 @@ public final class CardState extends PublicCardState{
         Preconditions.checkArgument(drawPile.isEmpty());
 
         Deck<Card> newDrawPile = Deck.of(SortedBag.of(discardsPile), rng);
+        SortedBag<Card> emptyDiscardsPile = SortedBag.of();
 
-        return new CardState(faceUpCards, newDrawPile, discardsPile.difference(discardsPile));
+        return new CardState(faceUpCards, newDrawPile, emptyDiscardsPile);
     }
 
     /**
      * Method returns a set of cards identical to the receiver (this) but with the given cards added to the discard pile
-     * @param additionalDiscards
+     * @param additionalDiscards the discard cards that should be added to the discardsPile
      * @return a new cardstate with set of cards identical to the receiver(this) but with the given cards added to the discard pile
      */
     public CardState withMoreDiscardedCards(SortedBag<Card> additionalDiscards){

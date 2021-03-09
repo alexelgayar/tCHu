@@ -12,6 +12,7 @@ import static java.util.Collections.shuffle;
 /**
  * @Author Alexandre Iskandar (324406)
  * @Author Anirudhh Ramesh (329806)
+ * Public, final, immutable class
  */
 public final class Deck<C extends Comparable<C>> {
 
@@ -19,7 +20,7 @@ public final class Deck<C extends Comparable<C>> {
 
     private Deck(List<C> cards) {
 
-        this.cards = cards;
+        this.cards = List.copyOf(cards);
 
     }
 
