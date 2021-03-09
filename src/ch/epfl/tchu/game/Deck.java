@@ -13,17 +13,17 @@ import static java.util.Collections.shuffle;
  * @Author Alexandre Iskandar (324406)
  * @Author Anirudhh Ramesh (329806)
  */
-public final class Deck <C extends Comparable<C>> {
+public final class Deck<C extends Comparable<C>> {
 
-   private final List<C> cards;
+    private final List<C> cards;
 
-    private Deck(List<C> cards){
+    private Deck(List<C> cards) {
 
         this.cards = cards;
 
     }
 
-    public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng){
+    public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng) {
 
         List<C> shuffledCards = List.copyOf(cards.toList());
 
@@ -33,38 +33,34 @@ public final class Deck <C extends Comparable<C>> {
     }
 
     /**
-     *
      * @return size of deck
      */
-    public int size(){
+    public int size() {
 
         return cards.size();
 
     }
 
     /**
-     *
      * @return true iff Deck is empty
      */
-    boolean isEmpty(){
+    public boolean isEmpty() {
         return cards.isEmpty();
     }
 
     /**
-     *
      * @return top card of deck
      * Throws IllegalArgumentException if the deck is empty
      */
-    C topCard(){
+    public C topCard() {
         Preconditions.checkArgument(!cards.isEmpty() && cards != null);
         return cards.get(size() - 1);
     }
 
     /**
-     *
      * @return a new Deck similar to this but without the top card
      */
-    public Deck<C> withoutTopCard(){
+    public Deck<C> withoutTopCard() {
 
         Preconditions.checkArgument(!cards.isEmpty() && cards != null);
 
@@ -74,11 +70,10 @@ public final class Deck <C extends Comparable<C>> {
     }
 
     /**
-     *
      * @param count number of cards to be selected
      * @return the top count cards of this
      */
-    public SortedBag<C> topCards(int count){
+    public SortedBag<C> topCards(int count) {
 
         Preconditions.checkArgument(0 <= count && count <= this.size());
 
@@ -86,15 +81,14 @@ public final class Deck <C extends Comparable<C>> {
 
         SortedBag<C> cardsBag = SortedBag.of(copie);
 
-       return cardsBag;
+        return cardsBag;
     }
 
     /**
-     *
      * @param count number of cards to be removed
      * @return a new Deck similar to this but without the last count cards
      */
-    public Deck<C> withoutTopCards(int count){
+    public Deck<C> withoutTopCards(int count) {
 
         Preconditions.checkArgument(0 <= count && count <= this.size());
 
@@ -103,9 +97,6 @@ public final class Deck <C extends Comparable<C>> {
         return new Deck<C>(copy);
 
     }
-
-
-
 
 
 }

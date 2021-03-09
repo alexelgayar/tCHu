@@ -76,6 +76,11 @@ public final class Info {
         return String.format(StringsFr.WILL_PLAY_FIRST, playerName);
     }
 
+    public String keptTickets(int count){
+
+        return String.format(StringsFr.KEPT_N_TICKETS, playerName, count, StringsFr.plural(count));
+    }
+
     /**
      * Returns message declaring that a player can play
      * @return
@@ -215,7 +220,7 @@ public final class Info {
 
         for (Card w : cards.toSet()) {
             int n = cards.countOf(w);
-            cardList.add(n + cardName(w, n));
+            cardList.add(n + " " + cardName(w, n));
         }
 
         for (int i = 0; i < cardList.size() - 2; ++i) {
