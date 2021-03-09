@@ -28,7 +28,6 @@ public final class CardState extends PublicCardState{
         this.discardsPile = discardsPile;
     }
 
-    //TODO: Unsure if this is what the instructions have asked me to do
     /**
      * Class does not provide a public constructor, but instead this public static construction method
      * This construction method returns a new cardstate in which the 5 face-up cards are first 5 of given deck, the drawPile is the remaining cards and the discardsPile is empty
