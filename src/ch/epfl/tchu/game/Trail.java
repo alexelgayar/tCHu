@@ -45,6 +45,9 @@ public final class Trail {
         return possibleRouteExtensions;
     }
 
+    private static Trail computeLongestTrail(Trail originalTrail, Trail compareToTrail){
+        return (originalTrail.length() < compareToTrail.length() ? compareToTrail : originalTrail);
+    }
 
 
     /**
@@ -73,9 +76,7 @@ public final class Trail {
                     List<Route> possibleRouteExtensions = computeRouteExtensions(trail, routes);
 
                     //Ensures if trails are disconnected, we are returned the longest trail
-                    if (longestTrail.length() < trail.length()){
-                        longestTrail = trail;
-                    }
+                    longestTrail = computeLongestTrail(longestTrail, trail);
 
                     for(Route trailExtension:possibleRouteExtensions){
                         List<Route> extendedRoute = new ArrayList<>();
@@ -85,9 +86,8 @@ public final class Trail {
                         tempTrail.add(extendedTrail);
 
                         //Compute longest trail
-                        if (longestTrail.length() < extendedTrail.length()){
-                            longestTrail = extendedTrail;
-                        }
+                        longestTrail = computeLongestTrail(longestTrail, extendedTrail);
+
                     }
                 }
                 shortTrails = tempTrail;
