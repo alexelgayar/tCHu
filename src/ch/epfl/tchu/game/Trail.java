@@ -57,17 +57,25 @@ public final class Trail {
     public static Trail longest(List<Route> routes){
         //1. Create 2 trails for each route
         List<Trail> shortTrails = generateShortTrails(routes);
-        Trail longestTrail = shortTrails.get(0);
+
+        Trail longestTrail;
 
         //2. Extend each trail
         if (routes.isEmpty()){
-            return new Trail(null, null, routes);
+            longestTrail = new Trail(null, null, routes);
+            return longestTrail;
         }
         else{
+            longestTrail = shortTrails.get(0);
             while (!shortTrails.isEmpty()){
                 List<Trail> tempTrail = new ArrayList<>();
                 for (Trail trail : shortTrails){
                     List<Route> possibleRouteExtensions = computeRouteExtensions(trail, routes);
+
+                    //Ensures if trails are disconnected, we are returned the longest trail
+                    if (longestTrail.length() < trail.length()){
+                        longestTrail = trail;
+                    }
 
                     for(Route trailExtension:possibleRouteExtensions){
                         List<Route> extendedRoute = new ArrayList<>();

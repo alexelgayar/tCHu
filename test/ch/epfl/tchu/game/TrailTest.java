@@ -52,6 +52,7 @@ class TrailTest {
                 chRoutes.GEN_YVE_1,
                 chRoutes.IT3_LUG_1);
         var longest = Trail.longest(routes);
+        System.out.println("Longest: " + longest.station1() + " s2: " + longest.station2() + " length:" + longest.length());
         assertEquals(6, longest.length());
         if (longest.station1().equals(chRoutes.GEN))
             assertEquals(longest.station2(), chRoutes.YVE);
