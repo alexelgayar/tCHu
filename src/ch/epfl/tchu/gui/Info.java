@@ -228,7 +228,7 @@ public final class Info {
 
     private static String cardsName(SortedBag<Card> cards) {
 
-        String name = "";
+        String cardsName = "";
         List<String> cardList = new ArrayList<>();
 
         for (Card w : cards.toSet()) {
@@ -245,12 +245,12 @@ public final class Info {
         else {
 
         for (int i = 0; i < cardList.size() - 2; ++i) {
-            name += cardList.get(i) + ", ";
+            cardsName += cardList.get(i) + ", ";
         }
 
-        name += cardList.get(cardList.size() - 2) + StringsFr.AND_SEPARATOR + cardList.get(cardList.size() - 1);
+        cardsName += cardList.get(cardList.size() - 2) + StringsFr.AND_SEPARATOR + cardList.get(cardList.size() - 1);
 
-        return name;
+        return cardsName;
     }
 
 }
