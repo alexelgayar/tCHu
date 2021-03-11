@@ -18,7 +18,7 @@ public final class Deck<C extends Comparable<C>> {
 
     private final List<C> cards;
 
-    private Deck(List<C> cards) {
+    public Deck(List<C> cards) {
 
         this.cards = List.copyOf(cards);
 

@@ -14,6 +14,7 @@ public final class Info {
 
     /**
      * Constructor for Info takes a player's name
+     *
      * @param playerName
      */
     public Info(String playerName) {
@@ -24,6 +25,7 @@ public final class Info {
 
     /**
      * Returns card name in french, adds an s if it's more than 1 card
+     *
      * @param card
      * @param count
      * @return
@@ -58,6 +60,7 @@ public final class Info {
 
     /**
      * Returns message saying that the game is a draw
+     *
      * @param playerNames
      * @param points
      * @return
@@ -69,6 +72,7 @@ public final class Info {
 
     /**
      * Returns the name of the player that will play first
+     *
      * @return
      */
     public String willPlayFirst() {
@@ -76,13 +80,14 @@ public final class Info {
         return String.format(StringsFr.WILL_PLAY_FIRST, playerName);
     }
 
-    public String keptTickets(int count){
+    public String keptTickets(int count) {
 
         return String.format(StringsFr.KEPT_N_TICKETS, playerName, count, StringsFr.plural(count));
     }
 
     /**
      * Returns message declaring that a player can play
+     *
      * @return
      */
     public String canPlay() {
@@ -92,6 +97,7 @@ public final class Info {
 
     /**
      * Returns message declaring that a player drew tickets, and saying which tickets have been drawn
+     *
      * @param count
      * @return
      */
@@ -102,6 +108,7 @@ public final class Info {
 
     /**
      * Returns message saying that a player drew a card from the deck
+     *
      * @return
      */
     public String drewBlindCard() {
@@ -111,16 +118,18 @@ public final class Info {
 
     /**
      * Returns a message saying that a player drew a visible card, and saying which card it is
+     *
      * @param card
      * @return
      */
     public String drewVisibleCard(Card card) {
 
-        return String.format(StringsFr.DREW_VISIBLE_CARD, playerName, card.name());
+        return String.format(StringsFr.DREW_VISIBLE_CARD, playerName, cardName(card, 1));
     }
 
     /**
      * Returns a message saying that a players has claimed a route, then saying which route it is and with which cards it was claimed
+     *
      * @param route
      * @param cards
      * @return
@@ -132,6 +141,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a player attempted to claim a tunnel, then saying with which cards this attempt was made
+     *
      * @param route
      * @param initialCards
      * @return
@@ -144,30 +154,31 @@ public final class Info {
     /**
      * Returns a message saying that the player drew the 3 additional cards, then saying if it requires an additional cost,
      * and if it does, this cost is specified
+     *
      * @param drawnCards
      * @param additionalCost
      * @return
      */
     public String drewAdditionalCards(SortedBag<Card> drawnCards, int additionalCost) {
 
-        String text = String.format(StringsFr.ADDITIONAL_CARDS_ARE, cardsName(drawnCards)) + "\n";
+        String text = String.format(StringsFr.ADDITIONAL_CARDS_ARE, cardsName(drawnCards));
 
         if (additionalCost == 0) {
             text += String.format(StringsFr.NO_ADDITIONAL_COST);
-        } else {
+        } else if (additionalCost > 0) {
             text += String.format(StringsFr.SOME_ADDITIONAL_COST, additionalCost, StringsFr.plural(additionalCost));
         }
-
 
         return text;
     }
 
     /**
      * Returns a message saying that a player couldn't (or didn't want to) claim a tunnel, then specifying which tunnel it is
+     *
      * @param route
      * @return
      */
-    public String didNotClaimRoute(Route route){
+    public String didNotClaimRoute(Route route) {
 
         return String.format(StringsFr.DID_NOT_CLAIM_ROUTE, playerName, routeName(route));
     }
@@ -186,17 +197,19 @@ public final class Info {
 
     /**
      * Returns a message saying that a player gets a bonus for the longest trail, then specifying which trail it is
+     *
      * @param longestTrail
      * @return
      */
     public String getsLongestTrailBonus(Trail longestTrail) {
 
-        return String.format(StringsFr.GETS_BONUS, playerName, longestTrail.station1().name() + StringsFr.EN_DASH_SEPARATOR + longestTrail.station2().name());
+        return String.format(StringsFr.GETS_BONUS, playerName, longestTrail.toString());
 
     }
 
     /**
      * Returns a message saying that a player has won the game, then specifying his points and then the number of points of the loser
+     *
      * @param points
      * @param loserPoints
      * @return
@@ -215,13 +228,21 @@ public final class Info {
 
     private static String cardsName(SortedBag<Card> cards) {
 
-        String name = null;
+        String name = "";
         List<String> cardList = new ArrayList<>();
 
         for (Card w : cards.toSet()) {
             int n = cards.countOf(w);
             cardList.add(n + " " + cardName(w, n));
         }
+
+        if (cardList.size() == 1) {
+            return cardList.get(0);
+        }
+        else if (cardList.size() == 2) {
+            return cardList.get(0) + StringsFr.AND_SEPARATOR + cardList.get(1);
+        }
+        else {
 
         for (int i = 0; i < cardList.size() - 2; ++i) {
             name += cardList.get(i) + ", ";
@@ -231,6 +252,8 @@ public final class Info {
 
         return name;
     }
+
+}
 
 
 }
