@@ -17,13 +17,11 @@ import java.util.Random;
  */
 public final class CardState extends PublicCardState{
 
-    private final List<Card> faceUpCards;
     private final Deck<Card> drawPile;
     private final SortedBag<Card> discardsPile;
 
     private CardState(List<Card> faceUpCards, Deck<Card> drawPile, SortedBag<Card> discardsPile){
         super(faceUpCards, drawPile.size(), discardsPile.size());
-        this.faceUpCards = List.copyOf(faceUpCards);
         this.drawPile = drawPile;
         this.discardsPile = discardsPile;
     }
@@ -37,8 +35,8 @@ public final class CardState extends PublicCardState{
      */
     public static CardState of(Deck<Card> deck){
         Preconditions.checkArgument(deck.size() >= 5);
-        //TODO: When to use copyOf?
-        List<Card> faceUpCards = List.copyOf(deck.topCards(5).toList());
+
+        List<Card> faceUpCards = deck.topCards(5).toList();
         Deck<Card> drawPile = deck.withoutTopCards(5);
 
         SortedBag<Card> discardsPile = SortedBag.of();
@@ -56,7 +54,7 @@ public final class CardState extends PublicCardState{
     public CardState withDrawnFaceUpCard(int slot){
         Preconditions.checkArgument(!drawPile.isEmpty());
 
-        List<Card> faceUpCardsCopy = new ArrayList<>(faceUpCards);
+        List<Card> faceUpCardsCopy = new ArrayList<>(faceUpCards());
         faceUpCardsCopy.set(Objects.checkIndex(slot, 5), drawPile.topCard());
 
         return new CardState(faceUpCardsCopy, drawPile.withoutTopCard(), discardsPile);
@@ -80,7 +78,7 @@ public final class CardState extends PublicCardState{
      */
     public CardState withoutTopDeckCard(){
         Preconditions.checkArgument(!drawPile.isEmpty());
-        return new CardState(faceUpCards, drawPile.withoutTopCard(), discardsPile);
+        return new CardState(faceUpCards(), drawPile.withoutTopCard(), discardsPile);
     }
 
     /**
@@ -93,11 +91,10 @@ public final class CardState extends PublicCardState{
     public CardState withDeckRecreatedFromDiscards(Random rng){
         Preconditions.checkArgument(drawPile.isEmpty());
 
-        //TODO: newDrawPile is not being made
         Deck<Card> newDrawPile = Deck.of(SortedBag.of(discardsPile), rng);
         SortedBag<Card> emptyDiscardsPile = SortedBag.of();
 
-        return new CardState(faceUpCards, newDrawPile, emptyDiscardsPile);
+        return new CardState(faceUpCards(), newDrawPile, emptyDiscardsPile);
     }
 
     /**
@@ -106,7 +103,6 @@ public final class CardState extends PublicCardState{
      * @return a new cardstate with set of cards identical to the receiver(this) but with the given cards added to the discard pile
      */
     public CardState withMoreDiscardedCards(SortedBag<Card> additionalDiscards){
-        //TODO: Code fails here
-        return new CardState(faceUpCards, drawPile, discardsPile.union(additionalDiscards));
+        return new CardState(faceUpCards(), drawPile, discardsPile.union(additionalDiscards));
     }
 }

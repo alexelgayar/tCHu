@@ -130,9 +130,9 @@ public class CardStateTest {
         Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 2, Card.RED).toList());
         CardState cardState = CardState.of(f1);
 
-        cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
+        CardState initialCardState = cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
 
-        CardState newCardState = cardState.withDeckRecreatedFromDiscards(TestRandomizer.newRandom());
+        CardState newCardState = initialCardState.withDeckRecreatedFromDiscards(TestRandomizer.newRandom());
 
         assertEquals(0, newCardState.discardsSize());
         assertEquals(23, newCardState.deckSize());
@@ -144,10 +144,10 @@ public class CardStateTest {
         CardState cardState = CardState.of(f1);
 
         CardState startDiscardsCardState = cardState.withMoreDiscardedCards(SortedBag.of(3, Card.BLUE, 2, Card.RED));
-
-        CardState additionalDiscardsCardState = cardState.withMoreDiscardedCards(SortedBag.of(13, Card.BLUE, 8, Card.RED));
-
         assertEquals(5, startDiscardsCardState.discardsSize());
+
+        CardState additionalDiscardsCardState = startDiscardsCardState.withMoreDiscardedCards(SortedBag.of(13, Card.BLUE, 8, Card.RED));
+
         assertEquals(26, additionalDiscardsCardState.discardsSize());
     }
 
@@ -157,10 +157,10 @@ public class CardStateTest {
         CardState cardState = CardState.of(f1);
 
         int initialDiscardsSize = cardState.discardsSize();
-        cardState.withMoreDiscardedCards(SortedBag.of());
+        CardState newCardState = cardState.withMoreDiscardedCards(SortedBag.of());
 
-        assertEquals(0, cardState.discardsSize());
-        assertEquals(initialDiscardsSize, cardState.discardsSize());
+        assertEquals(0, newCardState.discardsSize());
+        assertEquals(initialDiscardsSize, newCardState.discardsSize());
     }
 
     @Test
@@ -168,12 +168,12 @@ public class CardStateTest {
         Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 2, Card.RED).toList());
         CardState cardState = CardState.of(f1);
 
-        cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
-        int initialDiscardsSize = cardState.discardsSize();
-        cardState.withMoreDiscardedCards(SortedBag.of());
+        CardState initialCardState = cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
 
-        assertEquals(23, cardState.deckSize());
-        assertEquals(23, initialDiscardsSize);
+        CardState newCardState = initialCardState.withMoreDiscardedCards(SortedBag.of());
+
+        assertEquals(23, initialCardState.discardsSize());
+        assertEquals(23, newCardState.discardsSize());
     }
 
 
