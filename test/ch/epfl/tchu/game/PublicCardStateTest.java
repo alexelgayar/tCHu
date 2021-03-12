@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PublicCardStateTest {
 
     @Test
-    void ConstructorFailsWithaceUpCardsNot5(){
+    void ConstructorFailsWithFaceUpCardsNot5(){
         List<Card> f1= List.of(Card.BLUE, Card.GREEN, Card.ORANGE);
         assertThrows(IllegalArgumentException.class, () -> {
             new PublicCardState(f1, 1, 1);
@@ -19,7 +19,7 @@ public class PublicCardStateTest {
     }
 
     @Test
-    void ConstructorfailsWithNegativeDeck(){
+    void ConstructorFailsWithNegativeDeck(){
         List<Card> f1= List.of(Card.BLUE, Card.GREEN, Card.ORANGE, Card.WHITE, Card.LOCOMOTIVE);
         assertThrows(IllegalArgumentException.class, () -> {
             new PublicCardState(f1, -1, 1);

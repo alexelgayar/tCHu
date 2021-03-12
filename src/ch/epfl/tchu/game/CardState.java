@@ -37,8 +37,8 @@ public final class CardState extends PublicCardState{
      */
     public static CardState of(Deck<Card> deck){
         Preconditions.checkArgument(deck.size() >= 5);
-
-        List<Card> faceUpCards = deck.topCards(5).toList();
+        //TODO: When to use copyOf?
+        List<Card> faceUpCards = List.copyOf(deck.topCards(5).toList());
         Deck<Card> drawPile = deck.withoutTopCards(5);
 
         SortedBag<Card> discardsPile = SortedBag.of();
@@ -76,8 +76,10 @@ public final class CardState extends PublicCardState{
     /**
      * Method returns a set of cards identical to the receiver(this) but without the card at the top of the deck
      * @return set of cards identical to the reciever(this) but without the card at the top of the deck
+     * @throws IllegalArgumentException if the drawPile is empty
      */
     public CardState withoutTopDeckCard(){
+        Preconditions.checkArgument(!drawPile.isEmpty());
         return new CardState(faceUpCards, drawPile.withoutTopCard(), discardsPile);
     }
 
@@ -86,11 +88,12 @@ public final class CardState extends PublicCardState{
      * In order to constitute the new draw pile
      * @param rng Randomly generated number used to shuffle the cards
      * @return A set of identical cards to the receiver(this) except that the cards from the discard pile have been shuffled by means of the given random generator and forms new drawPile
-     * @throws IllegalArgumentException uf the receiver's deck is not empty
+     * @throws IllegalArgumentException if the receiver's deck is not empty
      */
     public CardState withDeckRecreatedFromDiscards(Random rng){
         Preconditions.checkArgument(drawPile.isEmpty());
 
+        //TODO: newDrawPile is not being made
         Deck<Card> newDrawPile = Deck.of(SortedBag.of(discardsPile), rng);
         SortedBag<Card> emptyDiscardsPile = SortedBag.of();
 
@@ -103,6 +106,7 @@ public final class CardState extends PublicCardState{
      * @return a new cardstate with set of cards identical to the receiver(this) but with the given cards added to the discard pile
      */
     public CardState withMoreDiscardedCards(SortedBag<Card> additionalDiscards){
-        return new CardState(faceUpCards, drawPile.withoutTopCards(additionalDiscards.size()), discardsPile.union(additionalDiscards));
+        //TODO: Code fails here
+        return new CardState(faceUpCards, drawPile, discardsPile.union(additionalDiscards));
     }
 }
