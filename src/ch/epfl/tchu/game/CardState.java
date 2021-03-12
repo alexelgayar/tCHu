@@ -37,8 +37,8 @@ public final class CardState extends PublicCardState{
      */
     public static CardState of(Deck<Card> deck){
         Preconditions.checkArgument(deck.size() >= 5);
-
-        List<Card> faceUpCards = deck.topCards(5).toList();
+        //TODO: When to use copyOf?
+        List<Card> faceUpCards = List.copyOf(deck.topCards(5).toList());
         Deck<Card> drawPile = deck.withoutTopCards(5);
 
         SortedBag<Card> discardsPile = SortedBag.of();
@@ -73,12 +73,13 @@ public final class CardState extends PublicCardState{
         return drawPile.topCard();
     }
 
-    //TODO: Does the topcard go to the discardPile?
     /**
      * Method returns a set of cards identical to the receiver(this) but without the card at the top of the deck
      * @return set of cards identical to the reciever(this) but without the card at the top of the deck
+     * @throws IllegalArgumentException if the drawPile is empty
      */
     public CardState withoutTopDeckCard(){
+        Preconditions.checkArgument(!drawPile.isEmpty());
         return new CardState(faceUpCards, drawPile.withoutTopCard(), discardsPile);
     }
 
@@ -92,6 +93,7 @@ public final class CardState extends PublicCardState{
     public CardState withDeckRecreatedFromDiscards(Random rng){
         Preconditions.checkArgument(drawPile.isEmpty());
 
+        //TODO: newDrawPile is not being made
         Deck<Card> newDrawPile = Deck.of(SortedBag.of(discardsPile), rng);
         SortedBag<Card> emptyDiscardsPile = SortedBag.of();
 
@@ -104,6 +106,7 @@ public final class CardState extends PublicCardState{
      * @return a new cardstate with set of cards identical to the receiver(this) but with the given cards added to the discard pile
      */
     public CardState withMoreDiscardedCards(SortedBag<Card> additionalDiscards){
-        return new CardState(faceUpCards, drawPile.withoutTopCards(additionalDiscards.size()), discardsPile.union(additionalDiscards));
+        //TODO: Code fails here
+        return new CardState(faceUpCards, drawPile, discardsPile.union(additionalDiscards));
     }
 }
