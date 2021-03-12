@@ -73,6 +73,7 @@ public final class CardState extends PublicCardState{
         return drawPile.topCard();
     }
 
+    //TODO: Does the topcard go to the discardPile?
     /**
      * Method returns a set of cards identical to the receiver(this) but without the card at the top of the deck
      * @return set of cards identical to the reciever(this) but without the card at the top of the deck
@@ -86,7 +87,7 @@ public final class CardState extends PublicCardState{
      * In order to constitute the new draw pile
      * @param rng Randomly generated number used to shuffle the cards
      * @return A set of identical cards to the receiver(this) except that the cards from the discard pile have been shuffled by means of the given random generator and forms new drawPile
-     * @throws IllegalArgumentException uf the receiver's deck is not empty
+     * @throws IllegalArgumentException if the receiver's deck is not empty
      */
     public CardState withDeckRecreatedFromDiscards(Random rng){
         Preconditions.checkArgument(drawPile.isEmpty());
