@@ -35,7 +35,7 @@ public final class Route {
      */
     public Route(String id, Station station1, Station station2, int length, Level level, Color color) {
 
-        boolean stationsNotSame = !(station1.toString().equals(station2.toString()));
+        boolean stationsNotSame = !(station1.id() == (station2.id()));
         boolean lengthIsValid = ((length) >= Constants.MIN_ROUTE_LENGTH) && ((length <= Constants.MAX_ROUTE_LENGTH));
 
         Preconditions.checkArgument(stationsNotSame && lengthIsValid);

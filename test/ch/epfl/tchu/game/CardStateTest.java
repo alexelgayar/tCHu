@@ -1,184 +1,205 @@
 package ch.epfl.tchu.game;
+
 import ch.epfl.tchu.SortedBag;
-import org.junit.jupiter.api.Test;
 import ch.epfl.test.TestRandomizer;
+import org.junit.jupiter.api.Test;
 
-import ch.epfl.tchu.game.CardState;
+import java.util.*;
 
-import java.util.List;
-import java.util.Random;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-public class CardStateTest {
+public final class CardStateTest {
+    private static final List<Card> ALL_CARDS = List.of(Card.values());
+    private static final int FACE_UP_CARDS_COUNT = 5;
 
     @Test
-    void ofFailsWithDeckSmallerThanFive(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(1, Card.BLUE, 3, Card.RED).toList());
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            CardState.of(f1);
-        });
+    void cardStateOfFailsIfDeckIsTooSmall() {
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; i++) {
+            var deck = Deck.of(SortedBag.of(i, Card.RED), new Random(i));
+            assertThrows(IllegalArgumentException.class, () -> {
+                CardState.of(deck);
+            });
+        }
     }
 
     @Test
-    void ofWorksWithNormalDeck(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(5, Card.BLUE, 3, Card.RED).toList());
+    void cardStateOfCorrectlyDrawsFaceUpCards() {
+        var cards = allCards();
 
-        System.out.println("Deck:" + f1.topCard() + " " + f1.withoutTopCard().topCard() + " " + f1.withoutTopCard().withoutTopCard().topCard());
-        CardState cardState = CardState.of(f1);
-        assertEquals(5, cardState.faceUpCards().size());
-        System.out.println(cardState.faceUpCards());
+        for (int i = 0; i < 10; i++) {
+            var deck = Deck.of(cards, new Random(i));
 
-        assertEquals(3, cardState.deckSize());
+            var top5 = new ArrayList<Card>();
+            var deck1 = deck;
+            for (int j = 0; j < 5; j++) {
+                top5.add(deck1.topCard());
+                deck1 = deck1.withoutTopCard();
+            }
 
-        assertEquals(Card.BLUE, cardState.topDeckCard());
-        System.out.println(cardState.topDeckCard());
+            var cardState = CardState.of(deck);
+            var faceUpCards = new ArrayList<>(cardState.faceUpCards());
 
-        assertEquals(0, cardState.discardsSize());
+            // Sort the cards, as the assignment was not explicit about preserving order
+            Collections.sort(top5);
+            Collections.sort(faceUpCards);
+
+            assertEquals(top5, faceUpCards);
+            assertEquals(deck.size() - 5, cardState.deckSize());
+            assertEquals(0, cardState.discardsSize());
+        }
     }
 
     @Test
-    void withDrawnFaceUpCardFailsWithIndexOutsideRangeZeroToFive(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(5, Card.BLUE, 3, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
+    void cardStateWithDrawnFaceUpCardCorrectlyReplacesIt() {
+        var cards = allCards();
 
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            cardState.withDrawnFaceUpCard(5);
-        });
+        for (int i = 0; i < 10; i++) {
+            var deck = Deck.of(cards, new Random(-i));
+
+            var deck1 = deck.withoutTopCards(5);
+            var next5 = new ArrayList<Card>();
+            for (int j = 0; j < 5; j++) {
+                next5.add(deck1.topCard());
+                deck1 = deck1.withoutTopCard();
+            }
+
+            var cardState = CardState.of(deck);
+            var next5It = next5.iterator();
+            var slots = new ArrayList<>(List.of(0, 1, 2, 3, 4));
+            Collections.shuffle(slots, new Random(i * i));
+            for (int slot : slots) {
+                cardState = cardState.withDrawnFaceUpCard(slot);
+                assertEquals(next5It.next(), cardState.faceUpCard(slot));
+            }
+        }
     }
 
     @Test
-    void withDrawnFaceUpCardFailsWithEmptyDrawPile(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(2, Card.BLUE, 3, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            cardState.withDrawnFaceUpCard(4);
-        });
-    }
-
-    @Test
-    void withDrawnFaceUpCardWorksWithSlotIndex(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(2, Card.BLUE, 4, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-        System.out.println(cardState.faceUpCards());
-        CardState switchedCardState = cardState.withDrawnFaceUpCard(2); //Set blue instead of red
-        assertEquals(Card.BLUE, switchedCardState.faceUpCard(2));
-        assertEquals(Card.RED, cardState.faceUpCard(2));
-    }
-
-    @Test
-    void topDeckCardFailsWithEmptyDrawPile(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(2, Card.BLUE, 3, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-
+    void cardStateTopDeckCardFailsWithEmptyDeck() {
+        var cardState = CardState.of(Deck.of(SortedBag.of(5, Card.ORANGE), TestRandomizer.newRandom()));
         assertThrows(IllegalArgumentException.class, () -> {
             cardState.topDeckCard();
         });
     }
 
     @Test
-    void topDeckCardWorksWithNormalPile(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(2, Card.BLUE, 4, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-        assertEquals(Card.BLUE,cardState.topDeckCard());
+    void cardStateTopDeckCardReturnsTopDeckCard() {
+        var cards = allCards();
+        for (int i = 0; i < 10; i++) {
+            var deck = Deck.of(cards, new Random((i + 35) * 7));
+            var topDeckCard = deck.withoutTopCards(5).topCard();
+            var cardState = CardState.of(deck);
+            assertEquals(topDeckCard, cardState.topDeckCard());
+        }
     }
 
     @Test
-    void withoutTopDeckCardFailsWithEmptyDeck(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(2, Card.BLUE, 3, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-
+    void cardStateWithoutTopDeckCardFailsWithEmptyDeck() {
+        var cardState = CardState.of(Deck.of(SortedBag.of(5, Card.ORANGE), TestRandomizer.newRandom()));
         assertThrows(IllegalArgumentException.class, () -> {
             cardState.withoutTopDeckCard();
         });
     }
 
     @Test
-    void withoutTopDeckCardWorksWithSingleCardDeck(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 3, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-        System.out.println(cardState.faceUpCards());
+    void cardStateWithoutTopDeckCardWorks() {
+        var cards = allCards();
 
-        assertEquals(0, cardState.withoutTopDeckCard().deckSize());
+        for (int i = 0; i < 10; i++) {
+            var deck = Deck.of(cards, new Random(2021 - i));
+
+            var expectedCards = new ArrayList<Card>();
+            var deck1 = deck.withoutTopCards(5);
+            while (!deck1.isEmpty()) {
+                expectedCards.add(deck1.topCard());
+                deck1 = deck1.withoutTopCard();
+            }
+
+            var actualCards = new ArrayList<Card>();
+            var cardState = CardState.of(deck);
+            while (!cardState.isDeckEmpty()) {
+                actualCards.add(cardState.topDeckCard());
+                cardState = cardState.withoutTopDeckCard();
+            }
+
+            assertEquals(expectedCards, actualCards);
+        }
     }
 
     @Test
-    void withoutTopDeckCardWorksWithNormalDeck(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(4, Card.BLUE, 5, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-        System.out.println(cardState.faceUpCards());
-
-        assertEquals(3, cardState.withoutTopDeckCard().deckSize());
-    }
-
-    @Test
-    void withDeckRecreatedFromDiscardsFailsWithNonEmptyDeck(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(4, Card.BLUE, 5, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-        cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
-
+    void cardStateWithDeckRecreatedFromDiscardsFailsWhenDeckIsNotEmpty() {
+        var deck = Deck.of(SortedBag.of(6, Card.RED), TestRandomizer.newRandom());
+        var cardState = CardState.of(deck);
         assertThrows(IllegalArgumentException.class, () -> {
             cardState.withDeckRecreatedFromDiscards(TestRandomizer.newRandom());
         });
     }
 
     @Test
-    void withDeckRecreatedFromDiscardsWorksWithEmptyDeck(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 2, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-
-        CardState initialCardState = cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
-
-        CardState newCardState = initialCardState.withDeckRecreatedFromDiscards(TestRandomizer.newRandom());
-
-        assertEquals(0, newCardState.discardsSize());
-        assertEquals(23, newCardState.deckSize());
+    void cardStateWithDeckRecreatedFromDiscardsWorksWithEmptyDiscards() {
+        var deck = Deck.of(
+                SortedBag.of(FACE_UP_CARDS_COUNT, Card.RED),
+                TestRandomizer.newRandom());
+        var cardState = CardState.of(deck);
+        var cardState1 = cardState.withDeckRecreatedFromDiscards(TestRandomizer.newRandom());
+        assertEquals(0, cardState1.deckSize());
+        assertEquals(0, cardState1.discardsSize());
     }
 
     @Test
-    void withMoreDiscardedCardsWorksWithNormalAdditionalDiscards(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 2, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-
-        CardState startDiscardsCardState = cardState.withMoreDiscardedCards(SortedBag.of(3, Card.BLUE, 2, Card.RED));
-        assertEquals(5, startDiscardsCardState.discardsSize());
-
-        CardState additionalDiscardsCardState = startDiscardsCardState.withMoreDiscardedCards(SortedBag.of(13, Card.BLUE, 8, Card.RED));
-
-        assertEquals(26, additionalDiscardsCardState.discardsSize());
+    void cardStateWithDeckRecreatedFromDiscardsWorksWithNonEmptyDiscards() {
+        var deck = Deck.of(
+                SortedBag.of(FACE_UP_CARDS_COUNT, Card.RED),
+                TestRandomizer.newRandom());
+        var discardsCount = 10;
+        var discards = SortedBag.of(discardsCount, Card.BLUE);
+        var cardState = CardState.of(deck)
+                .withMoreDiscardedCards(discards)
+                .withDeckRecreatedFromDiscards(TestRandomizer.newRandom());
+        assertEquals(discardsCount, cardState.deckSize());
+        var deckCards = new SortedBag.Builder<Card>();
+        for (int i = 0; i < discardsCount; i++) {
+            var topDeckCard = cardState.topDeckCard();
+            cardState = cardState.withoutTopDeckCard();
+            deckCards.add(topDeckCard);
+        }
+        assertTrue(cardState.isDeckEmpty());
+        assertEquals(discards, deckCards.build());
     }
 
     @Test
-    void withMoreDiscardedCardsWorksWithEmptyAdditionalDiscards1(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 2, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
+    void cardStateWithMoreDiscardedCardsWorks() {
+        var rng = TestRandomizer.newRandom();
+        var deck = Deck.of(
+                SortedBag.of(FACE_UP_CARDS_COUNT, Card.RED),
+                TestRandomizer.newRandom());
+        var expectedDeckBuilder = new SortedBag.Builder<Card>();
+        var cardState = CardState.of(deck);
+        for (Card card : ALL_CARDS) {
+            var count = rng.nextInt(12);
+            var discards = SortedBag.of(count, card);
+            cardState = cardState.withMoreDiscardedCards(discards);
+            expectedDeckBuilder.add(count, card);
+        }
+        cardState = cardState.withDeckRecreatedFromDiscards(new Random(rng.nextLong()));
+        var expectedDeck = expectedDeckBuilder.build();
 
-        int initialDiscardsSize = cardState.discardsSize();
-        CardState newCardState = cardState.withMoreDiscardedCards(SortedBag.of());
-
-        assertEquals(0, newCardState.discardsSize());
-        assertEquals(initialDiscardsSize, newCardState.discardsSize());
+        var actualDeck = new SortedBag.Builder<Card>();
+        for (int i = 0; i < expectedDeck.size(); i++) {
+            var topDeckCard = cardState.topDeckCard();
+            cardState = cardState.withoutTopDeckCard();
+            actualDeck.add(topDeckCard);
+        }
+        assertTrue(cardState.isDeckEmpty());
+        assertEquals(expectedDeck, actualDeck.build());
     }
 
-    @Test
-    void withMoreDiscardedCardsWorksWithEmptyAdditionalDiscards2(){
-        Deck<Card> f1= new Deck<>(SortedBag.of(3, Card.BLUE, 2, Card.RED).toList());
-        CardState cardState = CardState.of(f1);
-
-        CardState initialCardState = cardState.withMoreDiscardedCards(SortedBag.of(15, Card.BLUE, 8, Card.RED));
-
-        CardState newCardState = initialCardState.withMoreDiscardedCards(SortedBag.of());
-
-        assertEquals(23, initialCardState.discardsSize());
-        assertEquals(23, newCardState.discardsSize());
+    private SortedBag<Card> allCards() {
+        var cardsBuilder = new SortedBag.Builder<Card>();
+        cardsBuilder.add(14, Card.LOCOMOTIVE);
+        for (Card card : Card.CARS)
+            cardsBuilder.add(12, card);
+        var cards = cardsBuilder.build();
+        return cards;
     }
-
-
-
-
-
-
 }
