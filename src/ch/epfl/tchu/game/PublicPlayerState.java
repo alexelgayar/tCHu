@@ -15,18 +15,7 @@ public class PublicPlayerState {
 
     private final int ticketCount, cardCount;
     private final List<Route> routes;
-    private final int carsCount, earnedClaimPoints;
-
-    /*
-    1. tickets
-    2. wagon/locomotive cards
-    3. roads seized
-    4. wagons in possession
-    5. construction points already earned
-    6. points his tickets will earn him
-
-    => 4,5,6 can be computed from the others
-     */
+    private final int carCount, earnedClaimPoints;
 
     /**
      * Unique Contructor for the PublicPlayerState class
@@ -38,34 +27,20 @@ public class PublicPlayerState {
     public PublicPlayerState(int ticketCount, int cardCount, List<Route> routes){
         Preconditions.checkArgument(ticketCount >= 0 && cardCount >= 0);
 
-        //TODO: How do I store the values in an immutable way?
         this.ticketCount = ticketCount;
         this.cardCount = cardCount;
         this.routes = List.copyOf(routes);
 
-
-        HashMap<String, Integer> carPointsPair = computeCarsPointsPair(routes);
-
-        int carsUsed = carPointsPair.get("length");
-        this.carsCount = Constants.INITIAL_CAR_COUNT - carsUsed;
-        this.earnedClaimPoints = carPointsPair.get("claimPoints");
-    }
-
-    //TODO: Is this a clean/good way of storing the points?
-    private HashMap<String, Integer> computeCarsPointsPair(List<Route> routes){
-        int totalLength = 0;
+        int carsUsed = 0;
         int totalClaimPoints = 0;
+
         for (Route route : routes){
-            totalLength += route.length();
+            carsUsed += route.length();
             totalClaimPoints += route.claimPoints();
         }
 
-        HashMap<String, Integer> lengthPointsPair = new HashMap<>();
-
-        lengthPointsPair.put("length", totalLength);
-        lengthPointsPair.put("claimPoints", totalClaimPoints);
-
-        return lengthPointsPair;
+        this.carCount = Constants.INITIAL_CAR_COUNT - carsUsed;
+        this.earnedClaimPoints = totalClaimPoints;
     }
 
     public int ticketCount(){
@@ -80,13 +55,11 @@ public class PublicPlayerState {
         return routes;
     }
 
-    public int carsCount(){
-        return carsCount;
+    public int carCount(){
+        return carCount;
     }
 
     public int claimPoints(){
         return earnedClaimPoints;
     }
-
-
 }
