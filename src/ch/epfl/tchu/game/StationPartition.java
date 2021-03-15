@@ -11,11 +11,11 @@ import java.util.ArrayList;
  */
 public final class StationPartition implements StationConnectivity{
 
-    private ArrayList<Integer> representant = new ArrayList<>();
+    private int[] stationRepresentant;
 
-    private StationPartition(ArrayList<Integer> representant){
+    private StationPartition(int[] stationRepresentant){
 
-        this.representant = representant;
+        this.stationRepresentant = stationRepresentant.clone();
 
     }
 
@@ -23,7 +23,22 @@ public final class StationPartition implements StationConnectivity{
     @Override
     public boolean connected(Station s1, Station s2) {
 
-        return false;
+       if(s1.id() > stationRepresentant.length || s2.id() > stationRepresentant.length){
+           if(s1.id() == s2.id()){
+               return true;
+           }
+           else return false;
+       }
+
+       else {
+
+           if (stationRepresentant[s1.id()] == stationRepresentant[s2.id()]) {
+               return true;
+           }
+           else return false;
+       }
+
+
     }
 
     /**
@@ -32,8 +47,56 @@ public final class StationPartition implements StationConnectivity{
      */
    public static final class Builder{
 
+       private int[] stationRepresentant;
+       private int stationCount;
+
         public Builder(int stationCount){
+
             Preconditions.checkArgument(stationCount >= 0);
+
+            this.stationCount = stationCount;
+
+            stationRepresentant = new int[stationCount];
+
+            for(int i = 0; i < stationCount; ++i){
+                stationRepresentant[i] = i;
+            }
+
+        }
+
+        public Builder connect(Station s1, Station s2){
+
+           stationRepresentant[s2.id()] = representative(s1.id());
+
+           return
+
+
+
+
+        }
+
+        public StationPartition build(){
+
+            for(int i = 0; i < stationRepresentant.length; ++i){
+
+                stationRepresentant[i] = representative(stationRepresentant[i]);
+            }
+
+            return new StationPartition(stationRepresentant);
+
+
+
+        }
+
+        private int representative(int id){
+
+            int a = id;
+
+            while(stationRepresentant[a] != stationRepresentant[stationRepresentant[a]]){
+                a = stationRepresentant[a];
+            }
+
+            return stationRepresentant[a];
         }
 
    }
