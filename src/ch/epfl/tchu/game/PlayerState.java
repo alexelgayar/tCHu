@@ -4,7 +4,9 @@ import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author Alexandre Iskandar (324406)
@@ -27,16 +29,11 @@ public final class PlayerState extends PublicPlayerState {
      */
     public PlayerState(SortedBag<Ticket> tickets, SortedBag<Card> cards, List<Route> routes){
         super(tickets.size(), cards.size(), routes);
-
-        //TODO: How do I store the values in an immutable way?
         this.tickets = tickets;
         this.cards = cards;
-
-        //TODO: Should the ticketPoints be stored as an attribute of the class?
         this.ticketPoints = ticketPoints();
     }
 
-    //TODO: Is this a public static method or simply static?
 
     /**
      * Method which returns the initial state of a player to whom the given initial cards were dealt.
@@ -45,7 +42,7 @@ public final class PlayerState extends PublicPlayerState {
      * @return Returns the initial state of a player to whom the given initial cards were dealt.
      * @throws IllegalArgumentException if the number of initial cards is not equal to 4
      */
-    static PlayerState initial(SortedBag<Card> initialCards){
+    public static PlayerState initial(SortedBag<Card> initialCards){
         Preconditions.checkArgument(initialCards.size() == 4);
 
         SortedBag<Ticket> initialTickets = SortedBag.of();
@@ -68,8 +65,7 @@ public final class PlayerState extends PublicPlayerState {
      * @return
      */
     public PlayerState withAddedTickets(SortedBag<Ticket> newTickets){
-        //TODO: Is this how to create a union with a new sortedBag?
-        SortedBag<Ticket> additionalTickets = SortedBag.of(tickets).union(newTickets);
+        SortedBag<Ticket> additionalTickets = tickets.union(newTickets);
         return new PlayerState(additionalTickets, cards, routes());
     }
 
@@ -87,8 +83,7 @@ public final class PlayerState extends PublicPlayerState {
      * @return returns an identical state to the receiver, except that the player also has the given card
      */
     public PlayerState withAddedCard(Card card){
-        //TODO: Is this how to create a union with a new SortedBag?
-        SortedBag<Card> newCards = SortedBag.of(cards).union(SortedBag.of(card));
+        SortedBag<Card> newCards = cards.union(SortedBag.of(card));
         return new PlayerState(tickets, newCards, routes());
     }
 
@@ -98,8 +93,7 @@ public final class PlayerState extends PublicPlayerState {
      * @return returns an identical state to the receiver, except that the player also has the given cards
      */
     public PlayerState withAddedCards(SortedBag<Card> additionalCards){
-        //TODO: Is this how to create a union with a new SortedBag?
-        SortedBag<Card> newCards = SortedBag.of(cards).union(additionalCards);
+        SortedBag<Card> newCards = cards.union(additionalCards);
         return new PlayerState(tickets, newCards, routes());
     }
 
@@ -109,23 +103,27 @@ public final class PlayerState extends PublicPlayerState {
      * @return returns true IFF the player can seize the given route, i.e. if they have enough cars left and they have the necessary cards
      */
     public boolean canClaimRoute(Route route){
-        //TODO: What are the necessary cards?
-        boolean playerHasNecessaryCards = cardCount() >= route.length();
-
-        return (carsCount() >= route.length() && cardCount() >= route.length());
+        //No need to throw exception here if player does not have enough cards, since possibleClaimCards throws an exception already
+        boolean playerHasEnoughCars = (carCount() >= route.length());
+        boolean playerHasNecessaryCards = (possibleClaimCards(route).contains(cards));
+        return (playerHasEnoughCars && playerHasNecessaryCards);
     }
 
     /**
      * Method which returns the list of all the sets of cards the player could use to take possession of the given route
      * @param route
-     * @return returns the list of all the sets of cards the player could use to take possession of the given route
+     * @return returns the list of all the sets of cards the player could use from their hand to take possession of the given route
      * @throws IllegalArgumentException if the player does not have enough cars to take the route
      */
     public List<SortedBag<Card>> possibleClaimCards(Route route){
-        Preconditions.checkArgument(carsCount() >= route.length());
+        Preconditions.checkArgument(carCount() >= route.length());
+        List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
 
-        //TODO: How do I check all the routes here?
-        return null;
+        //Remove all the cards that the player does not have from allPossibleRouteCards
+        //TODO: Would this cause ConcurrentModificationException?
+        allPossibleRouteCards.removeIf(sortedBag -> !sortedBag.contains(cards));
+
+        return allPossibleRouteCards;
     }
 
     /**
@@ -139,6 +137,16 @@ public final class PlayerState extends PublicPlayerState {
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards){
+        //TODO: Complete this
+
+        boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
+        boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
+        boolean initialCardsContainsNoMoreThanTwoCardTypes = (false); //TODO: Check whether card contains more than 2 different card types
+
+        boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
+        Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
+
+
 
         return null;
     }
@@ -149,9 +157,8 @@ public final class PlayerState extends PublicPlayerState {
      * @param claimCards
      * @return
      */
-    PlayerState withClaimedRoute(Route route, SortedBag<Card> claimCards){
-        //TODO: Do I remove the claimCards from the the player list?
-        SortedBag<Card> playerCards = SortedBag.of(cards.difference(claimCards));
+    public PlayerState withClaimedRoute(Route route, SortedBag<Card> claimCards){
+        SortedBag<Card> playerCards = cards.difference(claimCards);
         List<Route> playerRoutes = new ArrayList<>(routes());
         playerRoutes.add(route);
 
@@ -162,8 +169,11 @@ public final class PlayerState extends PublicPlayerState {
      * Method which returns the number of points - possibly negative- obtained by the player thanks to his tickets
      * @return returns the number of points - possibly negative- obtained by the player thanks to his tickets
      */
-    int ticketPoints(){
+    public int ticketPoints(){
+        //TODO: Complete this
+        for (Ticket ticket : tickets){
 
+        }
         return 0;
     }
 
@@ -171,7 +181,7 @@ public final class PlayerState extends PublicPlayerState {
      * Method which returns all the points obtained by the player at the end of the game, namely the sum of the points returned by the methods claimPoints and ticketPoints.
      * @return returns all the points obtained by the player at the end of the game, namely the sum of the points returned by the methods claimPoints and ticketPoints.
      */
-    int finalPoints(){
+    public int finalPoints(){
         return claimPoints() + ticketPoints;
     }
 }
