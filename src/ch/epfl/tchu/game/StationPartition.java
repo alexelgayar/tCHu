@@ -26,11 +26,13 @@ public final class StationPartition implements StationConnectivity{
         return false;
     }
 
-
-   static class Builder{
+    /**
+     * Nested Class Builder
+     * public, static, final class
+     */
+   public static final class Builder{
 
         public Builder(int stationCount){
-
             Preconditions.checkArgument(stationCount >= 0);
         }
 
