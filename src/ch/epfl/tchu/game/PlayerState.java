@@ -138,21 +138,38 @@ public final class PlayerState extends PublicPlayerState {
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards){
 
+        List<SortedBag<Card>> possibleCards = new ArrayList<>();
+
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
-        boolean initialCardsContainsNoMoreThanTwoCardTypes = (false); //TODO: Check whether card contains more than 2 different card types
+        boolean initialCardsContainsNoMoreThanTwoCardTypes = (true);
+
+        Card carte1 = initialCards.get(0);
+
+        for(Card w: initialCards){
+            if(w.color() != null){
+                if(w.color() != carte1.color()){
+                    initialCardsContainsNoMoreThanTwoCardTypes = false;
+                }
+            }
+        }
+
         boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
         Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
-        //TODO: Complete this
+
+        for(Card w: drawnCards){
+            if(initialCards.contains(w) && (w != Card.LOCOMOTIVE) ){
+                for(int i = 0; i < additionalCardsCount; ++i){
+                    possibleCards.add(SortedBag.of(additionalCardsCount - i, w, i, Card.LOCOMOTIVE));
+                }
+                break;
+            }
+        }
+
+        possibleCards.add(SortedBag.of(additionalCardsCount, Card.LOCOMOTIVE));
 
 
-
-
-
-
-
-
-        return null;
+        return possibleCards;
     }
 
     /**
