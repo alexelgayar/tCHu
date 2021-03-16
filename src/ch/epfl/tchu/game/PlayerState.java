@@ -191,11 +191,34 @@ public final class PlayerState extends PublicPlayerState {
      * @return returns the number of points - possibly negative- obtained by the player thanks to his tickets
      */
     public int ticketPoints(){
-        //TODO: Complete this
-        for (Ticket ticket : tickets){
+
+        int temp = 0;
+        int points = 0;
+
+        for (Route w : routes()){
+
+            if(w.station1().id() > temp){
+                temp = w.station1().id();
+            }
+            if(w.station2().id() > temp){
+                temp = w.station2().id();
+            }
 
         }
-        return 0;
+
+       StationPartition.Builder partitionBuilder = new StationPartition.Builder(temp) ;
+
+        for(Route w : routes()){
+            partitionBuilder.connect(w.station1(), w.station2());
+        }
+
+      StationPartition partition = partitionBuilder.build();
+
+        for(Ticket w: tickets){
+            points += w.points(partition);
+
+        }
+        return points;
     }
 
     /**
