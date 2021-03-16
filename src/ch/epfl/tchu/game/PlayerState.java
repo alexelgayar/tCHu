@@ -137,14 +137,18 @@ public final class PlayerState extends PublicPlayerState {
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards){
-        //TODO: Complete this
 
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
         boolean initialCardsContainsNoMoreThanTwoCardTypes = (false); //TODO: Check whether card contains more than 2 different card types
-
         boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
         Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
+        //TODO: Complete this
+
+
+
+
+
 
 
 
