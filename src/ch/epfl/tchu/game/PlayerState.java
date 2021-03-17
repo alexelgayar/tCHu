@@ -3,10 +3,7 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @Author Alexandre Iskandar (324406)
@@ -119,8 +116,8 @@ public final class PlayerState extends PublicPlayerState {
         Preconditions.checkArgument(carCount() >= route.length());
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
 
-        //Remove all the cards that the player does not have from allPossibleRouteCards
         //TODO: Would this cause ConcurrentModificationException?
+        //Remove all the cards that the player does not have from allPossibleRouteCards
         allPossibleRouteCards.removeIf(sortedBag -> !sortedBag.contains(cards));
 
         return allPossibleRouteCards;
@@ -137,25 +134,16 @@ public final class PlayerState extends PublicPlayerState {
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards){
-
-        List<SortedBag<Card>> possibleCards = new ArrayList<>();
-
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
-        boolean initialCardsContainsNoMoreThanTwoCardTypes = (true);
-
-        Card carte1 = initialCards.get(0);
-
-        for(Card w: initialCards){
-            if(w.color() != null){
-                if(w.color() != carte1.color()){
-                    initialCardsContainsNoMoreThanTwoCardTypes = false;
-                }
-            }
-        }
-
         boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
+
+        Collection<Card> initialCardsSet = initialCards.toSet(); //Removes doubles
+        boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCardsSet.size() <= 2);
+
         Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
+
+        List<SortedBag<Card>> possibleCards = new ArrayList<>();
 
         for(Card w: drawnCards){
             if(initialCards.contains(w) && (w != Card.LOCOMOTIVE) ){
@@ -165,9 +153,7 @@ public final class PlayerState extends PublicPlayerState {
                 break;
             }
         }
-
         possibleCards.add(SortedBag.of(additionalCardsCount, Card.LOCOMOTIVE));
-
 
         return possibleCards;
     }
