@@ -110,47 +110,41 @@ public final class PlayerState extends PublicPlayerState {
     public boolean canClaimRoute(Route route) {
         //No need to throw exception here if player does not have enough cards, since possibleClaimCards throws an exception already
         boolean playerHasEnoughCars = (carCount() >= route.length());
-        boolean playerHasNecessaryCards = (possibleClaimCards(route).contains(cards));
+        boolean playerHasNecessaryCards = (!possibleClaimCards(route).isEmpty());
         return (playerHasEnoughCars && playerHasNecessaryCards);
     }
 
     /**
      * Method which returns the list of all the sets of cards the player could use to take possession of the given route
      *
-     * @param route
+     * @param route the route that the player wishes to claim
      * @return returns the list of all the sets of cards the player could use from their hand to take possession of the given route
      * @throws IllegalArgumentException if the player does not have enough cars to take the route
      */
     public List<SortedBag<Card>> possibleClaimCards(Route route) {
         Preconditions.checkArgument(carCount() >= route.length());
+
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
+        Set<SortedBag<Card>> allPlayerCardCombinations = cards.subsetsOfSize(route.length());
 
-        System.out.println("All possibleCards: " + allPossibleRouteCards);
+        List<SortedBag<Card>> filteredCards = new ArrayList<>();
 
-        System.out.println("Route: " + route.stations() + " Cards owned by player: " + cards);
-        //TODO: Use an Iterator here to avoid ConcurrentModificationException
-
-        Iterator possibleRouteCardsIterator = allPossibleRouteCards.iterator();
-
-
-
-        while (possibleRouteCardsIterator.hasNext()){
-            //Filter through the possible cards and the cards the player owns
-            //if(cards.contains(possibleRouteCardsIterator.next())){
-
-            //}
-
-            if (!allPossibleRouteCards.contains(cards)){
-                possibleRouteCardsIterator.next();
-                possibleRouteCardsIterator.remove();
+        for (SortedBag<Card> cardCombination: allPlayerCardCombinations){
+            if (allPossibleRouteCards.contains(cardCombination)) {
+                filteredCards.add(cardCombination);
             }
         }
-        //Remove all the cards that the player does not have from allPossibleRouteCards
-        //allPossibleRouteCards.removeIf(sortedBag -> !sortedBag.contains(cards));
 
-        System.out.println("All possibleCards after removal: " + allPossibleRouteCards); //Empty
+        return new ArrayList<>(sortList(filteredCards));
+    }
 
-        return allPossibleRouteCards;
+    //Sort cards in ascending locomotive order
+    private List<SortedBag<Card>> sortList(List<SortedBag<Card>> unsortedList){
+        List<SortedBag<Card>> list = new ArrayList<>(unsortedList);
+        list.sort(
+                Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
+
+        return new ArrayList<>(list);
     }
 
     /**
@@ -165,15 +159,14 @@ public final class PlayerState extends PublicPlayerState {
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
+        //===== Preconditions Check =====//
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
         boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
-
-        Collection<Card> initialCardsSet = initialCards.toSet(); //Removes doubles
-        boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCardsSet.size() <= 2);
-
+        boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCards.toSet().size() <= 2);
         Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
 
+        //===== Computing Possible Cards =====//
         SortedBag<Card> remainingCards = cards.difference(initialCards);
         Set<SortedBag<Card>> allSubsets = remainingCards.subsetsOfSize(additionalCardsCount);
 
@@ -196,10 +189,8 @@ public final class PlayerState extends PublicPlayerState {
         }
 
         List<SortedBag<Card>> options = new ArrayList<>(possibleAdditionalCards);
-        options.sort(
-                Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
 
-        return options;
+        return sortList(options);
     }
 
     /**
