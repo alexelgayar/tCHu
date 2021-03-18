@@ -134,9 +134,17 @@ public class PlayerStateTest {
 
     @Test
     void possibleClaimCardsWorks() {
-        List<SortedBag<Card>> expected = List.of(SortedBag.of(3, Card.BLUE), SortedBag.of(2, Card.BLUE, 1, Card.LOCOMOTIVE),
-                SortedBag.of(1, Card.BLUE, 2, Card.LOCOMOTIVE), SortedBag.of(3, Card.LOCOMOTIVE));
+        //Cards owned by player:
+        //SortedBag<Card> cards = SortedBag.of(5, Card.BLUE, 3, Card.LOCOMOTIVE);
+
+        List<SortedBag<Card>> expected = List.of(
+                SortedBag.of(3, Card.BLUE),
+                SortedBag.of(2, Card.BLUE, 1, Card.LOCOMOTIVE),
+                SortedBag.of(1, Card.BLUE, 2, Card.LOCOMOTIVE),
+                SortedBag.of(3, Card.LOCOMOTIVE));
+
         Route route = ChMap.routes().get(31);
+
         assertEquals(expected, state.possibleClaimCards(route));
     }
 

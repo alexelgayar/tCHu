@@ -125,9 +125,30 @@ public final class PlayerState extends PublicPlayerState {
         Preconditions.checkArgument(carCount() >= route.length());
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
 
-        //TODO: Would this cause ConcurrentModificationException?
+        System.out.println("All possibleCards: " + allPossibleRouteCards);
+
+        System.out.println("Route: " + route.stations() + " Cards owned by player: " + cards);
+        //TODO: Use an Iterator here to avoid ConcurrentModificationException
+
+        Iterator possibleRouteCardsIterator = allPossibleRouteCards.iterator();
+
+
+
+        while (possibleRouteCardsIterator.hasNext()){
+            //Filter through the possible cards and the cards the player owns
+            //if(cards.contains(possibleRouteCardsIterator.next())){
+
+            //}
+
+            if (!allPossibleRouteCards.contains(cards)){
+                possibleRouteCardsIterator.next();
+                possibleRouteCardsIterator.remove();
+            }
+        }
         //Remove all the cards that the player does not have from allPossibleRouteCards
-        allPossibleRouteCards.removeIf(sortedBag -> !sortedBag.contains(cards));
+        //allPossibleRouteCards.removeIf(sortedBag -> !sortedBag.contains(cards));
+
+        System.out.println("All possibleCards after removal: " + allPossibleRouteCards); //Empty
 
         return allPossibleRouteCards;
     }
