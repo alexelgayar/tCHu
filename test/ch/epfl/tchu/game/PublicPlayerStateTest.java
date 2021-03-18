@@ -1,12 +1,10 @@
 package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.SortedBag;
-import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,7 +13,6 @@ public class PublicPlayerStateTest {
     private static final List<Card> ALL_CARDS = List.of(Card.values());
     private static final List<Route> ALL_ROUTES = ChMap.routes();
     private static final List<Ticket> ALL_TICKETS = ChMap.tickets();
-    private static final int carCount = Constants.INITIAL_CAR_COUNT;
 
     //Creates a list for testing purposes, of the given size
     private <E> List<E> generateList(List<E> list, int nbrOfItems, int startIndex){
