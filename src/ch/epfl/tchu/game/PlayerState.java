@@ -155,8 +155,10 @@ public final class PlayerState extends PublicPlayerState {
 
         SortedBag<Card> remainingCards = cards.difference(initialCards);
         Set<SortedBag<Card>> allSubsets = remainingCards.subsetsOfSize(additionalCardsCount);
-
         List<Card> possibleClaimCards = new ArrayList<>();
+
+        possibleClaimCards.add(Card.LOCOMOTIVE);
+        possibleClaimCards.add(Card.LOCOMOTIVE);
         possibleClaimCards.add(Card.LOCOMOTIVE);
 
         for (Card w : drawnCards) {
