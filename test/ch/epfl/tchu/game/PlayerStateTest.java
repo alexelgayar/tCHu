@@ -363,13 +363,56 @@ public class PlayerStateTest {
         PlayerState player1 = new PlayerState(ticketBuilder.build(), cards, routes);
 
         assertEquals(37,player1.ticketPoints());
-
     }
 
 
     //TODO: Complete Test
     @Test
-    void ticketPointsWorks(){}
+    void ticketPointsWorks(){
+        Ticket ticket1 = ChMap.tickets().get(1); //new Ticket(BAL, Brigue, 10)
+
+        Route route2 = ChMap.routes().get(6);//Bal to Del
+        Route route4 = ChMap.routes().get(40);///
+        Route route5 = ChMap.routes().get(19);///
+        Route route1 = ChMap.routes().get(13);
+        Route route3 = ChMap.routes().get(44);
+        Route route6 = ChMap.routes().get(55);
+        Route route7 = ChMap.routes().get(64);//
+        Route route8 = ChMap.routes().get(23);//
+
+        Route route14 = ChMap.routes().get(40);
+//        Route route15 = ChMap.routes().get(69);
+//        Route route16 = ChMap.routes().get(72);
+//        Route route17 = ChMap.routes().get(73);
+//        Route route18 = ChMap.routes().get(1);
+
+        List<Route> routes = List.of(route2, route4, route5, route1, route3, route6, route7, route8, route14);
+               // route14, route15, route16, route17, route18);
+
+        for (Route route: routes){
+            System.out.println(" pts: " + route.claimPoints() + "   s1: " + route.station1() + " s2:" + route.station2());
+        }
+//        System.out.println(routes.get(routes.size()-1).station2());
+        System.out.println(ticket1.text());
+
+        PlayerState player1 = new PlayerState(SortedBag.of(ticket1), cards, routes);
+
+        assertEquals(10,player1.ticketPoints());
+        assertEquals(34, player1.finalPoints());
+
+
+        List<Route> routes1 = List.of(route2, route4, route5, route1, route3, route6, route7);
+
+        System.out.println();
+        for (Route route: routes1){
+            System.out.println(" pts: " + route.claimPoints() + "   s1: " + route.station1() + " s2:" + route.station2());
+        }
+
+        PlayerState player2 = new PlayerState(SortedBag.of(ticket1), cards, routes1);
+
+        assertEquals(-10,player2.ticketPoints());
+        assertEquals(9, player2.finalPoints());
+    }
 
     //TODO: Complete Test
     @Test
