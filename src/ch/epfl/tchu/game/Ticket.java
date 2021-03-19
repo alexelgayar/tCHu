@@ -80,7 +80,7 @@ public final class Ticket implements Comparable<Ticket> {
         int temp = 0;
 
         for (Trip w : trips) {
-            if (connectivity.connected(w.from(), w.to()) == true) {
+            if (connectivity.connected(w.from(), w.to())) {
                 if (w.points() > temp)
                     temp = w.points();
             }
