@@ -74,7 +74,6 @@ public class PlayerStateTest {
 
     }
 
-
     @Test
     void canClaimRouteWorks() {
         assertTrue(state.canClaimRoute(route));
@@ -316,8 +315,13 @@ public class PlayerStateTest {
                 SortedBag.of(1, Card.BLUE, 2, Card.LOCOMOTIVE),
                 SortedBag.of(3, Card.LOCOMOTIVE));
 
+        //new Route("DAV_AT3_1", DAV, AT3, 3, Level.UNDERGROUND, null) => length = 3
         Route route = ChMap.routes().get(31);
 
+        System.out.println("playerCards: " + cards);
+        for (SortedBag<Card> sortedBag: state.possibleClaimCards(route)){
+            System.out.println(sortedBag);
+        }
         assertEquals(expected, state.possibleClaimCards(route));
     }
 
@@ -365,8 +369,6 @@ public class PlayerStateTest {
         assertEquals(37,player1.ticketPoints());
     }
 
-
-    //TODO: Complete Test
     @Test
     void ticketPointsWorks(){
         Ticket ticket1 = ChMap.tickets().get(1); //new Ticket(BAL, Brigue, 10)
@@ -414,9 +416,7 @@ public class PlayerStateTest {
         assertEquals(9, player2.finalPoints());
     }
 
-    //TODO: Complete Test
-    @Test
-    void finalPointsWorks(){}
+
 }
 
 
