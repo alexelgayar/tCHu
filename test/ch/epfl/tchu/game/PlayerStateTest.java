@@ -326,6 +326,14 @@ public class PlayerStateTest {
     }
 
     @Test
+    void possibleClaimCardsFails() {
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new PlayerState(tickets, cards, ChMap.routes()).possibleClaimCards(route);
+        });
+    }
+
+    @Test
     void ticketPointsTest() {
         SortedBag.Builder<Ticket> ticketBuilder = new SortedBag.Builder<Ticket>();
 
