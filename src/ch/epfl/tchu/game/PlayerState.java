@@ -162,8 +162,8 @@ public final class PlayerState extends PublicPlayerState {
         //===== Preconditions Check =====//
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
-        boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
         boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCards.toSet().size() <= 2);
+        boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
         Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
 
         //===== Computing Possible Cards =====//
@@ -172,11 +172,14 @@ public final class PlayerState extends PublicPlayerState {
 
         List<Card> possibleClaimCards = new ArrayList<>();
 
+        //TODO: Really inefficient, fix this
         for (Card w : drawnCards) {
-            if (initialCards.contains(w)) {
-                possibleClaimCards.add(w);
-                if (w != Card.LOCOMOTIVE){
-                    possibleClaimCards.add(Card.LOCOMOTIVE);
+            if (initialCards.contains(w)) { //TODO: Case when ic = blue, dc = only locomotives
+                for (int i = 0; i<= additionalCardsCount; ++i) {
+                    possibleClaimCards.add(w);
+                    if (w != Card.LOCOMOTIVE) {
+                        possibleClaimCards.add(Card.LOCOMOTIVE);
+                    }
                 }
             }
         }

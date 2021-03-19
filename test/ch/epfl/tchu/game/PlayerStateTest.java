@@ -97,6 +97,175 @@ public class PlayerStateTest {
     }
 
     @Test
+    void possibleAdditionalCardsWorksExample() {
+        SortedBag<Ticket> tickets = SortedBag.of(1, ChMap.tickets().get(0), 1, ChMap.tickets().get(1));
+
+        SortedBag<Card> playerCards = new SortedBag.Builder<Card>()
+                .add(6, Card.ORANGE)
+                .add(2, Card.LOCOMOTIVE)
+                .build();
+
+        SortedBag<Card> ic = new SortedBag.Builder<Card>()
+                .add(1, Card.ORANGE)
+                .build();
+
+        SortedBag<Card> dc = new SortedBag.Builder<Card>()
+                .add(1, Card.ORANGE)
+                .add(1, Card.GREEN)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+
+        Route tunnelRoute = ChMap.routes().get(57);
+        System.out.println("TunnelRoute:" + tunnelRoute.stations());
+        PlayerState playerState = new PlayerState(tickets, playerCards, routes);
+
+        List<SortedBag<Card>> possibleAdditionalCards = playerState.possibleAdditionalCards(tunnelRoute.additionalClaimCardsCount(ic, dc), ic, dc);
+
+        SortedBag<Card> expected11 = new SortedBag.Builder<Card>()
+                .add(2, Card.ORANGE)
+                .build();
+        SortedBag<Card> expected12 = new SortedBag.Builder<Card>()
+                .add(1, Card.ORANGE)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+        SortedBag<Card> expected13 = new SortedBag.Builder<Card>()
+                .add(2, Card.LOCOMOTIVE)
+                .build();
+        List<SortedBag<Card>> expected1 = List.of(expected11, expected12, expected13);
+
+        assertEquals(expected1, possibleAdditionalCards);
+    }
+
+    @Test
+    void possibleAdditionalCardsWorks2(){
+        SortedBag<Ticket> tickets = SortedBag.of(1, ChMap.tickets().get(0), 1, ChMap.tickets().get(1));
+
+        SortedBag<Card> playerCards = new SortedBag.Builder<Card>()
+                .add(7, Card.BLUE)
+                .add(3, Card.LOCOMOTIVE)
+                .build();
+
+        SortedBag<Card> ic = new SortedBag.Builder<Card>()
+                .add(2, Card.BLUE)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+
+        SortedBag<Card> dc = new SortedBag.Builder<Card>()
+                .add(1, Card.BLUE)
+                .add(1, Card.RED)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+
+        Route tunnelRoute = ChMap.routes().get(39);
+        System.out.println("TunnelRoute:" + tunnelRoute.stations());
+        PlayerState playerState = new PlayerState(tickets, playerCards, routes);
+
+        List<SortedBag<Card>> possibleAdditionalCards = playerState.possibleAdditionalCards(tunnelRoute.additionalClaimCardsCount(ic, dc), ic, dc);
+
+        SortedBag<Card> expected11 = new SortedBag.Builder<Card>()
+                .add(2, Card.BLUE)
+                .build();
+        SortedBag<Card> expected12 = new SortedBag.Builder<Card>()
+                .add(1, Card.BLUE)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+        SortedBag<Card> expected13 = new SortedBag.Builder<Card>()
+                .add(2, Card.LOCOMOTIVE)
+                .build();
+
+        List<SortedBag<Card>> expected1 = List.of(expected11, expected12, expected13);
+        System.out.println(expected1);
+        assertEquals(expected1, possibleAdditionalCards);
+    }
+
+    @Test
+    void possibleAdditionalCardsWorks3(){
+        SortedBag<Ticket> tickets = SortedBag.of(1, ChMap.tickets().get(0), 1, ChMap.tickets().get(1));
+
+        SortedBag<Card> playerCards = new SortedBag.Builder<Card>()
+                .add(7, Card.BLUE)
+                .add(4, Card.LOCOMOTIVE)
+                .build();
+
+        SortedBag<Card> ic = new SortedBag.Builder<Card>()
+                .add(2, Card.BLUE)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+
+        SortedBag<Card> dc = new SortedBag.Builder<Card>()
+                .add(3, Card.LOCOMOTIVE)
+                .build();
+
+        Route tunnelRoute = ChMap.routes().get(39);
+        System.out.println("TunnelRoute:" + tunnelRoute.stations());
+        PlayerState playerState = new PlayerState(tickets, playerCards, routes);
+
+        List<SortedBag<Card>> possibleAdditionalCards = playerState.possibleAdditionalCards(tunnelRoute.additionalClaimCardsCount(ic, dc), ic, dc);
+
+        SortedBag<Card> expected11 = new SortedBag.Builder<Card>()
+                .add(2, Card.BLUE)
+                .build();
+        SortedBag<Card> expected12 = new SortedBag.Builder<Card>()
+                .add(1, Card.BLUE)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+        SortedBag<Card> expected13 = new SortedBag.Builder<Card>()
+                .add(2, Card.LOCOMOTIVE)
+                .build();
+
+        List<SortedBag<Card>> expected1 = List.of(expected11, expected12, expected13);
+
+        assertEquals(expected1, possibleAdditionalCards);
+    }
+
+    @Test
+    void possibleAdditionalCardsWorksLocomotives(){
+        SortedBag<Ticket> tickets = SortedBag.of(1, ChMap.tickets().get(0), 1, ChMap.tickets().get(1));
+
+        SortedBag<Card> playerCards = new SortedBag.Builder<Card>()
+                .add(6, Card.LOCOMOTIVE)
+                .add(3, Card.BLUE)
+                .build();
+
+        SortedBag<Card> ic = new SortedBag.Builder<Card>()
+                .add(3, Card.LOCOMOTIVE)
+                .build();
+
+        SortedBag<Card> dc = new SortedBag.Builder<Card>()
+                .add(2, Card.BLUE)
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+
+        Route tunnelRoute = ChMap.routes().get(39);
+        System.out.println("TunnelRoute:" + tunnelRoute.stations());
+        PlayerState playerState = new PlayerState(tickets, playerCards, routes);
+
+        List<SortedBag<Card>> possibleAdditionalCards = playerState.possibleAdditionalCards(tunnelRoute.additionalClaimCardsCount(ic, dc), ic, dc);
+
+        SortedBag<Card> expected11 = new SortedBag.Builder<Card>()
+                .add(1, Card.LOCOMOTIVE)
+                .build();
+        List<SortedBag<Card>> expected1 = List.of(expected11);
+
+        assertEquals(expected1, possibleAdditionalCards);
+        //======
+        SortedBag<Card> dc2 = new SortedBag.Builder<Card>()
+                .add(3, Card.LOCOMOTIVE)
+                .build();
+
+        List<SortedBag<Card>> possibleAdditionalCards2 = playerState.possibleAdditionalCards(tunnelRoute.additionalClaimCardsCount(ic, dc2), ic, dc2);
+
+        SortedBag<Card> expected12 = new SortedBag.Builder<Card>()
+                .add(3, Card.LOCOMOTIVE)
+                .build();
+
+        List<SortedBag<Card>> expected2 = List.of(expected12);
+
+        assertEquals(expected2, possibleAdditionalCards2);
+
+    }
+
+    @Test
     void possibleAdditionalCardsFailsWithWrongNumberOfCards() {
         SortedBag<Card> initialCards = SortedBag.of(4, Card.BLUE);
         SortedBag<Card> drawnCards = SortedBag.of(2, Card.BLUE, 1, Card.WHITE);
@@ -148,8 +317,14 @@ public class PlayerStateTest {
         assertEquals(expected, state.possibleClaimCards(route));
     }
 
-    private static PlayerState player;
-    private static List<Card> initCards = new ArrayList<>();
+
+    //TODO: Complete Test
+    @Test
+    void ticketPointsWorks(){}
+
+    //TODO: Complete Test
+    @Test
+    void finalPointsWorks(){}
 }
 
 
