@@ -173,7 +173,7 @@ public final class PlayerState extends PublicPlayerState {
         List<Card> possibleClaimCards = new ArrayList<>();
 
         for (Card w : drawnCards) {
-            if (initialCards.contains(w) && w != Card.LOCOMOTIVE) {
+            if (initialCards.contains(w)) {
                 possibleClaimCards.add(w);
                 if (w != Card.LOCOMOTIVE){
                     possibleClaimCards.add(Card.LOCOMOTIVE);
