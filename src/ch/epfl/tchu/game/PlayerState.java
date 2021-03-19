@@ -172,15 +172,9 @@ public final class PlayerState extends PublicPlayerState {
 
         List<Card> possibleClaimCards = new ArrayList<>();
 
-        //TODO: Really inefficient, fix this
-        for (Card w : drawnCards) {
-            if (initialCards.contains(w)) { //TODO: Case when ic = blue, dc = only locomotives
-                for (int i = 0; i<= additionalCardsCount; ++i) {
-                    possibleClaimCards.add(w);
-                    if (w != Card.LOCOMOTIVE) {
-                        possibleClaimCards.add(Card.LOCOMOTIVE);
-                    }
-                }
+        for (Card card: remainingCards){
+            if(initialCards.contains((card)) || card == Card.LOCOMOTIVE){
+                possibleClaimCards.add(card);
             }
         }
 

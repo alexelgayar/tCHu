@@ -178,6 +178,7 @@ public class PlayerStateTest {
         assertEquals(expected1, possibleAdditionalCards);
     }
 
+    //Case: ClaimCardsUsed: 3x Blue, DrawnCards: 3x Locomotives
     @Test
     void possibleAdditionalCardsWorks3(){
         SortedBag<Ticket> tickets = SortedBag.of(1, ChMap.tickets().get(0), 1, ChMap.tickets().get(1));
@@ -188,8 +189,7 @@ public class PlayerStateTest {
                 .build();
 
         SortedBag<Card> ic = new SortedBag.Builder<Card>()
-                .add(2, Card.BLUE)
-                .add(1, Card.LOCOMOTIVE)
+                .add(3, Card.BLUE)
                 .build();
 
         SortedBag<Card> dc = new SortedBag.Builder<Card>()
@@ -203,17 +203,21 @@ public class PlayerStateTest {
         List<SortedBag<Card>> possibleAdditionalCards = playerState.possibleAdditionalCards(tunnelRoute.additionalClaimCardsCount(ic, dc), ic, dc);
 
         SortedBag<Card> expected11 = new SortedBag.Builder<Card>()
-                .add(2, Card.BLUE)
+                .add(3, Card.BLUE)
                 .build();
         SortedBag<Card> expected12 = new SortedBag.Builder<Card>()
-                .add(1, Card.BLUE)
+                .add(2, Card.BLUE)
                 .add(1, Card.LOCOMOTIVE)
                 .build();
         SortedBag<Card> expected13 = new SortedBag.Builder<Card>()
+                .add(1, Card.BLUE)
                 .add(2, Card.LOCOMOTIVE)
                 .build();
+        SortedBag<Card> expected14 = new SortedBag.Builder<Card>()
+                .add(3, Card.LOCOMOTIVE)
+                .build();
 
-        List<SortedBag<Card>> expected1 = List.of(expected11, expected12, expected13);
+        List<SortedBag<Card>> expected1 = List.of(expected11, expected12, expected13, expected14);
 
         assertEquals(expected1, possibleAdditionalCards);
     }
