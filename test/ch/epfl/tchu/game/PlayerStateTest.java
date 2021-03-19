@@ -321,6 +321,51 @@ public class PlayerStateTest {
         assertEquals(expected, state.possibleClaimCards(route));
     }
 
+    @Test
+    void ticketPointsTest() {
+        SortedBag.Builder<Ticket> ticketBuilder = new SortedBag.Builder<Ticket>();
+
+
+        Ticket ticket1 = ChMap.tickets().get(0); //new Ticket(BAL, BER, 5)
+        //Ticket ticket2 = ChMap.tickets().get(31);
+        //Ticket ticket3 = ChMap.tickets().get(10);
+        Ticket ticket4 = ChMap.tickets().get(45); // hors borne
+        Ticket ticket5 = ChMap.tickets().get(34);
+        Ticket ticket6 = ChMap.tickets().get(37);
+
+
+        Route route2 = ChMap.routes().get(6);///
+        Route route4 = ChMap.routes().get(40);///
+        Route route5 = ChMap.routes().get(19);///
+        Route route1 = ChMap.routes().get(38);
+        Route route3 = ChMap.routes().get(5);
+
+
+        Route route6 = ChMap.routes().get(72);
+        Route route7 = ChMap.routes().get(46);//
+        Route route8 = ChMap.routes().get(55);//
+        Route route9 = ChMap.routes().get(64);//
+
+        Route route10 = ChMap.routes().get(67);
+        Route route11 = ChMap.routes().get(68);
+
+        Route route12 = ChMap.routes().get(14);
+        Route route13 = ChMap.routes().get(44);
+        Route route14 = ChMap.routes().get(41);
+        Route route15 = ChMap.routes().get(69);
+        Route route16 = ChMap.routes().get(72);
+        Route route17 = ChMap.routes().get(73);
+        Route route18 = ChMap.routes().get(1);
+
+        ticketBuilder.add(ticket1).add(ticket5).add(ticket6).add(ticket4);
+        List<Route> routes = List.of(route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, route12, route13, route14, route15, route16, route17, route18);
+
+        PlayerState player1 = new PlayerState(ticketBuilder.build(), cards, routes);
+
+        assertEquals(37,player1.ticketPoints());
+
+    }
+
 
     //TODO: Complete Test
     @Test
