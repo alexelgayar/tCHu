@@ -78,7 +78,9 @@ public final class StationPartition implements StationConnectivity{
          */
         public Builder connect(Station s1, Station s2){
 
-           stationRepresentant[s2.id()] = representative(s1.id());
+
+                stationRepresentant[representative(s2.id())] = stationRepresentant[representative(s1.id())];
+
 
            return this;
         }
@@ -98,7 +100,7 @@ public final class StationPartition implements StationConnectivity{
         }
 
 
-        private int representative(int id){
+        public int representative(int id){
 
             int a = id;
 
