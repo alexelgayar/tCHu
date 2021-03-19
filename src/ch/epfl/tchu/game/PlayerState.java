@@ -171,11 +171,13 @@ public final class PlayerState extends PublicPlayerState {
         Set<SortedBag<Card>> allSubsets = remainingCards.subsetsOfSize(additionalCardsCount);
 
         List<Card> possibleClaimCards = new ArrayList<>();
-        possibleClaimCards.add(Card.LOCOMOTIVE);
 
         for (Card w : drawnCards) {
             if (initialCards.contains(w) && w != Card.LOCOMOTIVE) {
                 possibleClaimCards.add(w);
+                if (w != Card.LOCOMOTIVE){
+                    possibleClaimCards.add(Card.LOCOMOTIVE);
+                }
             }
         }
 
@@ -219,14 +221,12 @@ public final class PlayerState extends PublicPlayerState {
         int points = 0;
 
         for (Route w : routes()) {
-
             if (w.station1().id() > temp) {
                 temp = w.station1().id();
             }
             if (w.station2().id() > temp) {
                 temp = w.station2().id();
             }
-
         }
 
         StationPartition.Builder partitionBuilder = new StationPartition.Builder(temp + 1);
