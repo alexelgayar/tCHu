@@ -1,5 +1,6 @@
 package ch.epfl.tchu.game;
 
+import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.Random;
@@ -12,9 +13,10 @@ import java.util.Random;
 public final class GameState extends PublicGameState{
 
     private final SortedBag<Ticket> tickets;
+    private final Random rng;
 
-    private GameState(){
-        super(tickets.size());
+    private GameState(PublicCardState cardState, PlayerId currentPlayerId, PlayerState currentPlayerState, PlayerId lastPlayer){
+        super(tickets.size(), cardState, currentPlayerId, currentPlayerState, lastPlayer);
     }
 
     //TODO: Plan out the initial constructor programming
@@ -34,9 +36,11 @@ public final class GameState extends PublicGameState{
 //        * @param playerState the public state of the players
 //        * @param lastPlayer the identity of the last player (which may be null if that identity is still unknown)
 
-        CardState cardState = new CardState();
 
-        return new GameState();
+        this.tickets = tickets;
+        this.rng = rng;
+
+        return new GameState(tickets.size(), super.cardState(), super.currentPlayerState(), super.currentPlayerState(), super.lastPlayer());
     }
 
     /**
@@ -45,9 +49,79 @@ public final class GameState extends PublicGameState{
      * @return
      */
     PlayerState playerState(PlayerId playerId){
-        super(this);
-        return
+
+        return new PlayerState();
     }
+
+    /**
+     * Method which redefine the method of the same name from PublicGameState, to return the complete state of the current player, and not only the public part
+     * @return
+     */
+    public PlayerState currentPlayerState(){
+
+        return new PlayerState();
+    }
+
+    /**
+     * Method which returns the "count" tickets from the top of the pile
+     * @param count the number of tickets to return from the top of the pile
+     * @return returns "count" tickets from the top of the pile
+     * @throws IllegalArgumentException if the count is not between 0 and the size of the pile (inclusive)
+     */
+    public SortedBag<Ticket> topTickets(int count){
+        Preconditions.checkArgument(count >= 0 && count <= tickets.size());
+        return SortedBag.of(topTickets(count));
+    }
+
+    /**
+     * Method which returns a state identical to the receptor, but without the "count" tickets from the top of the pile
+     * @param count the number of tickets to remove from the top of the pile
+     * @return returns a state identical to the receptor, but without the "count" tickets from the top of the pile
+     * @throws IllegalArgumentException if the count is not between 0 and the size of the pile (inclusive)
+     */
+    public GameState withoutTopTickets(int count){
+        Preconditions.checkArgument(count >= 0 && count <= tickets.size());
+
+        return new GameState();
+    }
+
+    /**
+     * Method which returns the card at the top of the pile
+     * @return returns the card at the top of the pile
+     * @throws IllegalArgumentException if the pile is empty
+     */
+    public Card topCard(){
+        Preconditions.checkArgument(!cardState().isDeckEmpty());
+
+    }
+
+    /**
+     * Method which returns a state identical to the receptor but without the card at the top of the deck
+     * @return returns a state identical to the receptor but without the card at the top of the deck
+     * @throws IllegalArgumentException if the pile is empty
+     */
+    public GameState withoutTopCard(){
+        Preconditions.checkArgument(!cardState().isDeckEmpty());
+    }
+
+    /**
+     * Method which returns a state identical to the receptor but with the given cards added to the discard pile
+     * @param discardedCards cards that must be added to the discards pile
+     * @return returns a state identical to the receptor but with the given cards added to the discard pile
+     */
+    public GameState withMoreDiscardedCards(SortedBag<Card> discardedCards){
+
+    }
+
+    /**
+     * Method which returns a state identical to the receptor except that if the pile of cards is empty, the pile is recreated from the discards, mixed using a random number generator
+     * @param rng the random number generator provided to mix the cards
+     * @return returns a state identical to the receptor except that if the pile of cards is empty, the pile is recreated from the discards, mixed using a random number generator
+     */
+    public GameState withCardsDeckRecreatedIfNeeded(Random rng){
+
+    }
+
 
 
 
