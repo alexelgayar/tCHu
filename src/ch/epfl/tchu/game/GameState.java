@@ -3,7 +3,13 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Random;
+
+import static ch.epfl.tchu.game.Constants.INITIAL_CARDS_COUNT;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 /**
  * Represents the state of a game of tCHu
@@ -11,12 +17,19 @@ import java.util.Random;
  * Public, final and immutable
  */
 public final class GameState extends PublicGameState{
+    private static final int TOTAL_PLAYERS = 2;
 
-    private final SortedBag<Ticket> tickets;
-    private final Random rng;
+    //TODO: Are these correct attributes + constructor
+    private final Deck<Ticket> tickets;
+    private final CardState cardstate;
+    private final Map<PlayerId, PlayerState> completePlayerState; //Complete player state
 
-    private GameState(PublicCardState cardState, PlayerId currentPlayerId, PlayerState currentPlayerState, PlayerId lastPlayer){
-        super(tickets.size(), cardState, currentPlayerId, currentPlayerState, lastPlayer);
+    private GameState(Deck<Ticket> tickets, CardState cardState, PlayerId currentPlayerId, Map<PlayerId, PlayerState> playerState, PlayerId lastPlayerId){
+        super(tickets.size(), cardState, currentPlayerId, makePublic(playerState), lastPlayerId);
+
+        this.tickets = tickets;
+        this.cardstate = cardState;
+        this.completePlayerState = playerState;
     }
 
     //TODO: Plan out the initial constructor programming
@@ -30,17 +43,29 @@ public final class GameState extends PublicGameState{
      * @return Returns the initial state of the game
      */
     public static GameState initial(SortedBag<Ticket> tickets, Random rng){
-//        * @param ticketsCount the bank of tickets has a size of ticketsCount
-//        * @param cardState the public state of the wagon/locomotive cards
-//        * @param currentPlayerId the current player
-//        * @param playerState the public state of the players
-//        * @param lastPlayer the identity of the last player (which may be null if that identity is still unknown)
+        Deck<Ticket> ticketDeck = Deck.of(SortedBag.of(tickets), rng);
+        Deck<Card> cardDeck = Deck.of(SortedBag.of(Constants.ALL_CARDS), rng);
 
+        //TODO: Fix code? It's all hardcoded :/
+        PlayerId firstPlayer = rng.nextInt(TOTAL_PLAYERS) == 0 ? PLAYER_1 : PLAYER_2;
+        PlayerState firstPlayerState = PlayerState.initial(cardDeck.topCards(INITIAL_CARDS_COUNT));
 
-        this.tickets = tickets;
-        this.rng = rng;
+        PlayerId secondPlayer = firstPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
+        PlayerState secondPlayerState = PlayerState.initial(cardDeck.withoutTopCards(INITIAL_CARDS_COUNT).topCards(INITIAL_CARDS_COUNT));
 
-        return new GameState(tickets.size(), super.cardState(), super.currentPlayerState(), super.currentPlayerState(), super.lastPlayer());
+        CardState remainingCardState = CardState.of(cardDeck.withoutTopCards(TOTAL_PLAYERS * INITIAL_CARDS_COUNT));
+
+        Map<PlayerId, PlayerState> playerStateMap = new EnumMap<>(PlayerId.class);
+        playerStateMap.put(firstPlayer, firstPlayerState);
+        playerStateMap.put(secondPlayer, secondPlayerState);
+
+        return new GameState(ticketDeck, remainingCardState, firstPlayer, playerStateMap, secondPlayer);
+    }
+
+    //Converts the Map<PlayerId, PlayerState> to a Map<PlayerId, PublicPlayerState
+    private static Map<PlayerId, PublicPlayerState> makePublic(Map<PlayerId, PlayerState> playerStateMap){
+        //TODO: Is this how you convert Map<PlayerId, PlayerState> to Map<PlayerId, PublicPlayerState>?
+        return new EnumMap<PlayerId, PublicPlayerState>(playerStateMap);
     }
 
     /**
@@ -48,9 +73,9 @@ public final class GameState extends PublicGameState{
      * @param playerId id of the player to return the public player state of
      * @return
      */
-    PlayerState playerState(PlayerId playerId){
+    public PlayerState playerState(PlayerId playerId){
 
-        return new PlayerState();
+        return completePlayerState.get(playerId);
     }
 
     /**
@@ -119,6 +144,20 @@ public final class GameState extends PublicGameState{
      * @return returns a state identical to the receptor except that if the pile of cards is empty, the pile is recreated from the discards, mixed using a random number generator
      */
     public GameState withCardsDeckRecreatedIfNeeded(Random rng){
+
+    }
+
+
+    //====== 2. ======//
+
+    /**
+     * Method which returns an identical state to the receiver but in which the given tickets have been added to the given player's hand
+     * @param playerId the player to whom the tickets should be added to
+     * @param chosenTickets the tickets that must be added to the given player
+     * @return returns an identical state to the receiver but in which the given tickets have been added to the given player's hand
+     * @throws IllegalArgumentException
+     */
+    public GameState withInitiallyChosenTickets(PlayerId playerId, SortedBag<Ticket> chosenTickets){
 
     }
 
