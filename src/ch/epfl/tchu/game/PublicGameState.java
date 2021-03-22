@@ -65,8 +65,8 @@ public class PublicGameState {
     }
 
     /**
-     * Method which returns true IFF it is possible to draw cards (=> if the (drawPile + discardsPile) >= 5)
-     * @return
+     * Method which returns true IFF it is possible to draw cards (-> if the (drawPile + discardsPile) >= 5)
+     * @return returns true IFF it is possible to draw cards (=> if the (drawPile + discardsPile) >= 5)
      */
     public boolean canDrawCards(){
         return (cardState.deckSize() + cardState.discardsSize()) >= 5;

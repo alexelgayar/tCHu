@@ -32,7 +32,6 @@ public final class PlayerState extends PublicPlayerState {
         this.ticketPoints = ticketPoints();
     }
 
-
     /**
      * Method which returns the initial state of a player to whom the given initial cards were dealt.
      * In this initial state, the player does not yet have any tickets and has not taken any roads
@@ -110,7 +109,10 @@ public final class PlayerState extends PublicPlayerState {
     public boolean canClaimRoute(Route route) {
         //No need to throw exception here if player does not have enough cards, since possibleClaimCards throws an exception already
         boolean playerHasEnoughCars = (carCount() >= route.length());
-        boolean playerHasNecessaryCards = (!possibleClaimCards(route).isEmpty());
+        boolean playerHasNecessaryCards = false;
+        if (playerHasEnoughCars){
+            playerHasNecessaryCards = (!possibleClaimCards(route).isEmpty());
+        }
         return (playerHasEnoughCars && playerHasNecessaryCards);
     }
 
@@ -119,17 +121,23 @@ public final class PlayerState extends PublicPlayerState {
      *
      * @param route the route that the player wishes to claim
      * @return returns the list of all the sets of cards the player could use from their hand to take possession of the given route
-     * @throws IllegalArgumentException if the player does not have enough cars to take the route
+     * @throws IllegalArgumentException if the player does not have enough cards to take the route
      */
     public List<SortedBag<Card>> possibleClaimCards(Route route) {
+        //TODO: List is not sorted based on colour
         Preconditions.checkArgument(carCount() >= route.length());
 
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
-        Set<SortedBag<Card>> allPlayerCardCombinations = cards.subsetsOfSize(route.length());
+        System.out.println(route.possibleClaimCards());
 
         List<SortedBag<Card>> filteredCards = new ArrayList<>();
 
-        for (SortedBag<Card> cardCombination: allPlayerCardCombinations){
+        Set<SortedBag<Card>> allPlayerCardCombinations = new HashSet<>();
+        if(cards.size() >= route.length()) {
+            allPlayerCardCombinations = cards.subsetsOfSize(route.length());
+        }
+
+        for (SortedBag<Card> cardCombination : allPlayerCardCombinations) {
             if (allPossibleRouteCards.contains(cardCombination)) {
                 filteredCards.add(cardCombination);
             }
@@ -143,7 +151,6 @@ public final class PlayerState extends PublicPlayerState {
         List<SortedBag<Card>> list = new ArrayList<>(unsortedList);
         list.sort(
                 Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
-
         return new ArrayList<>(list);
     }
 
@@ -168,8 +175,10 @@ public final class PlayerState extends PublicPlayerState {
 
         //===== Computing Possible Cards =====//
         SortedBag<Card> remainingCards = cards.difference(initialCards);
-        Set<SortedBag<Card>> allSubsets = remainingCards.subsetsOfSize(additionalCardsCount);
-
+        Set<SortedBag<Card>> allSubsets = new HashSet<>();
+        if (remainingCards.size() >= additionalCardsCount) {
+            allSubsets = remainingCards.subsetsOfSize(additionalCardsCount);
+        }
         List<Card> possibleClaimCards = new ArrayList<>();
 
         for (Card card: remainingCards){
@@ -178,7 +187,10 @@ public final class PlayerState extends PublicPlayerState {
             }
         }
 
-        Set<SortedBag<Card>> possibleSubsets = SortedBag.of(possibleClaimCards).subsetsOfSize(additionalCardsCount);
+        Set<SortedBag<Card>> possibleSubsets = new HashSet<>();
+        if (SortedBag.of(possibleClaimCards).size() >= additionalCardsCount) {
+            possibleSubsets = SortedBag.of(possibleClaimCards).subsetsOfSize(additionalCardsCount);
+        }
         Set<SortedBag<Card>> possibleAdditionalCards = new HashSet<>();
 
         for(SortedBag<Card> s : allSubsets){
