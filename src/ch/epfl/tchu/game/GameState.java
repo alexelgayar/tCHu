@@ -45,23 +45,18 @@ public final class GameState extends PublicGameState{
         Deck<Ticket> ticketDeck = Deck.of(SortedBag.of(tickets), rng);
         Deck<Card> cardDeck = Deck.of(SortedBag.of(Constants.ALL_CARDS), rng);
 
-        //TODO: Fix code? It's all hardcoded :/
-        //Boucle sur PlayerId.all
-        //Save CardDeck new value, in iteratrion
+        Map<PlayerId, PlayerState> playerStateMap = new EnumMap<>(PlayerId.class);
 
         PlayerId firstPlayer = rng.nextInt(TOTAL_PLAYERS) == 0 ? PLAYER_1 : PLAYER_2;
-        PlayerState firstPlayerState = PlayerState.initial(cardDeck.topCards(INITIAL_CARDS_COUNT));
-
         PlayerId secondPlayer = firstPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
-        PlayerState secondPlayerState = PlayerState.initial(cardDeck.withoutTopCards(INITIAL_CARDS_COUNT).topCards(INITIAL_CARDS_COUNT));
 
-        CardState remainingCardState = CardState.of(cardDeck.withoutTopCards(TOTAL_PLAYERS * INITIAL_CARDS_COUNT));
+        for (PlayerId player: PlayerId.ALL){
+            PlayerState playerState = PlayerState.initial(cardDeck.topCards(INITIAL_CARDS_COUNT));
+            cardDeck = cardDeck.withoutTopCards(INITIAL_CARDS_COUNT);
+            playerStateMap.put(player, playerState);
+        }
 
-        Map<PlayerId, PlayerState> playerStateMap = new EnumMap<>(PlayerId.class);
-        playerStateMap.put(firstPlayer, firstPlayerState);
-        playerStateMap.put(secondPlayer, secondPlayerState);
-
-        return new GameState(ticketDeck, remainingCardState, firstPlayer, playerStateMap, secondPlayer);
+        return new GameState(ticketDeck, CardState.of(cardDeck), firstPlayer, playerStateMap, secondPlayer);
     }
 
     /**
@@ -91,7 +86,7 @@ public final class GameState extends PublicGameState{
      */
     public SortedBag<Ticket> topTickets(int count){
         Preconditions.checkArgument(count >= 0 && count <= tickets.size());
-        return SortedBag.of(); //TODO: Correct
+        return SortedBag.of(tickets.topCards(count));
     }
 
     /**
@@ -159,7 +154,6 @@ public final class GameState extends PublicGameState{
      * @throws IllegalArgumentException if the currentPlayer already owns at least one ticket
      */
     public GameState withInitiallyChosenTickets(PlayerId playerId, SortedBag<Ticket> chosenTickets){
-        //Tickets already remvoed from pile
         Preconditions.checkArgument(completePlayerState.get(playerId).tickets().isEmpty());
 
         Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
@@ -177,13 +171,12 @@ public final class GameState extends PublicGameState{
      * @throws IllegalArgumentException if the list of tickets kept are not included in the drawnTickets
      */
     public GameState withChosenAdditionalTickets(SortedBag<Ticket> drawnTickets, SortedBag<Ticket> chosenTickets){
-        //drawnTickets not removed from pile
         Preconditions.checkArgument(drawnTickets.contains(chosenTickets));
-        //Delete drawtickets.size from pile
-        //Add chosenTickets to player
 
-        //TODO: RETURN METHOD IS WRONG, WE can't use another method as return (to different outcomes)
-        return withInitiallyChosenTickets(currentPlayerId(), chosenTickets);
+        Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
+        newPlayerStateMap.put(currentPlayerId(), completePlayerState.get(currentPlayerId()).withAddedTickets(chosenTickets));
+
+        return new GameState(tickets.withoutTopCards(drawnTickets.size()), cardstate, currentPlayerId(), newPlayerStateMap, lastPlayer());
     }
 
     /**
@@ -194,16 +187,71 @@ public final class GameState extends PublicGameState{
      */
     public GameState WithDrawnFaceUpCard(int slot){
         Preconditions.checkArgument(this.canDrawCards());
-        CardState newCardState = cardstate.withDrawnFaceUpCard(slot);
-        return new GameState(tickets, newCardState, currentPlayerId(), completePlayerState, lastPlayer());
+
+        Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
+
+        newPlayerStateMap.put(currentPlayerId(), completePlayerState.get(currentPlayerId()).withAddedCard(cardstate.faceUpCard(slot)));
+
+        return new GameState(tickets, cardstate.withDrawnFaceUpCard(slot), currentPlayerId(), newPlayerStateMap, lastPlayer());
     }
 
+    /**
+     * Method which returns an identical state to the receiver except that the top card of the draw pile has been placed in the current player's hand
+     * @return returns an identical state to the receiver except that the top card of the draw pile has been placed in the current player's hand
+     * @throws IllegalArgumentException if it is not possible to draw cards, i.e. if canDrawCards returns false
+     */
+    public GameState withBlindlyDrawnCard(){
+        Preconditions.checkArgument(this.canDrawCards());
 
+        Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
 
+        newPlayerStateMap.put(currentPlayerId(), completePlayerState.get(currentPlayerId()).withAddedCard(cardstate.topDeckCard()));
 
+        return new GameState(tickets, cardstate.withoutTopDeckCard(), currentPlayerId(), newPlayerStateMap, lastPlayer());
+    }
 
+    /**
+     * Method which returns an identical state to the receiver but in which the current player has seized the given route by means of the given cards
+     * @param route the route that will be seized with the given cards
+     * @param cards the cards that will be used to seize the given route
+     * @return returns an identical state to the receiver but in which the current player has seized the given route by means of the given cards
+     */
+    public GameState withClaimedRoute(Route route, SortedBag<Card> cards){
+        Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
 
+        newPlayerStateMap.put(currentPlayerId(), completePlayerState.get(currentPlayerId()).withClaimedRoute(route, cards));
 
+        return new GameState(tickets, cardstate.withoutTopDeckCard(), currentPlayerId(), newPlayerStateMap, lastPlayer());
+    }
+
+    //====== 3. ======//
+
+    /**
+     * Method which returns true IFF the last turn begins, i.e. if the identity of the last player is currently unknown but the current player has only two cars or less left. Should only be called at the end of a player's turn
+     * @return returns true IFF the last turn begins, i.e. if the identity of the last player is currently unknown but the current player has only two cars or less left. Should only be called at the end of a player's turn
+     */
+    public boolean lastTurnBegins(){
+        //Identity of last player = unknown
+        //current player has only two cars or less left
+
+        //TODO: Are these the correct conditions?
+        boolean lastPlayerIdentityUnknown = lastPlayer() == null;
+        boolean currentPlayerHasLessThanThreeCars = currentPlayerState().carCount() < 3;
+
+        return (lastPlayerIdentityUnknown && currentPlayerHasLessThanThreeCars);
+    }
+
+    /**
+     * Method which ends the current player's turn, i.e. returns an identical state to the receiver except that the current player is the one following the current currentPlayer.
+     * Moreover, if lastTurnBegins returns true, the current currentPlayer becomes the last player
+     * @return returns an identical state to the receiver except that the current player is the one following the current currentPlayer. If (lastTurnBegins), current currentPlayer becomes the last player
+     */
+    public GameState forNextTurn(){
+        //TODO: Is this what the enonce means?
+        return (lastTurnBegins())
+                ? new GameState(tickets, cardstate, lastPlayer(), completePlayerState, lastPlayer())
+                : new GameState(tickets, cardstate, lastPlayer(), completePlayerState, currentPlayerId());
+    }
 
 
 }
