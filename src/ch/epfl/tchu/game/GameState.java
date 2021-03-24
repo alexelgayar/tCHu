@@ -185,7 +185,7 @@ public final class GameState extends PublicGameState{
      * @return returns a state identical to the receptor except that the face-up card at the given location has been placed in the current player's hand, and replaced by the one at the top of the draw pile
      * @throws IllegalArgumentException if it is not possible to draw cards, i.e. if canDrawCards returns false
      */
-    public GameState WithDrawnFaceUpCard(int slot){
+    public GameState withDrawnFaceUpCard(int slot){
         Preconditions.checkArgument(this.canDrawCards());
 
         Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
