@@ -231,10 +231,7 @@ public final class GameState extends PublicGameState{
      * @return returns true IFF the last turn begins, i.e. if the identity of the last player is currently unknown but the current player has only two cars or less left. Should only be called at the end of a player's turn
      */
     public boolean lastTurnBegins(){
-        //Identity of last player = unknown
-        //current player has only two cars or less left
 
-        //TODO: Are these the correct conditions?
         boolean lastPlayerIdentityUnknown = lastPlayer() == null;
         boolean currentPlayerHasLessThanThreeCars = currentPlayerState().carCount() < 3;
 
@@ -247,10 +244,12 @@ public final class GameState extends PublicGameState{
      * @return returns an identical state to the receiver except that the current player is the one following the current currentPlayer. If (lastTurnBegins), current currentPlayer becomes the last player
      */
     public GameState forNextTurn(){
-        //TODO: Is this what the enonce means?
+        //Change current player => Current player = currentplayer.next
+        //lastplayer normally doesn't change
+        //If last turn is true=> give currenty player
         return (lastTurnBegins())
-                ? new GameState(tickets, cardstate, lastPlayer(), completePlayerState, lastPlayer())
-                : new GameState(tickets, cardstate, lastPlayer(), completePlayerState, currentPlayerId());
+                ? new GameState(tickets, cardstate, currentPlayerId().next(), completePlayerState, currentPlayerId())
+                : new GameState(tickets, cardstate, currentPlayerId().next(), completePlayerState, lastPlayer());
     }
 
 
