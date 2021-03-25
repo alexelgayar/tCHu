@@ -2,6 +2,7 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -102,8 +103,11 @@ public class PublicGameState {
      * @return returns all the routes that one or the other player has claimed
      */
     public List<Route> claimedRoutes(){
-        //TODO: Is this the correct meaning + return for this method?
-        return playerState.get(currentPlayerId).routes();
+        List<Route> allRoutes = new ArrayList<Route>();
+        allRoutes.addAll(playerState.get(currentPlayerId).routes());
+        allRoutes.addAll(playerState.get(currentPlayerId.next()).routes());
+
+        return allRoutes;
     }
 
     /**
