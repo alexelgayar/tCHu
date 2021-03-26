@@ -4,11 +4,11 @@ import ch.epfl.tchu.SortedBag;
 import org.junit.jupiter.api.Test;
 import ch.epfl.test.TestRandomizer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+import static ch.epfl.tchu.game.Constants.INITIAL_CARDS_COUNT;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -75,6 +75,7 @@ public class GameStateTest {
                 assertEquals(4, gs.playerState(playerId).cards().size());
             }
             assertEquals(Constants.ALL_CARDS.size() - 8, gs.cardState().totalSize());
+
         }
     }
 
@@ -117,44 +118,43 @@ public class GameStateTest {
         }
     }
 
-    //TODO
     @Test
     void playerStateWorks() {
-
     }
 
-    //TODO
-    @Test
-    void playerStateWorksWithNullPlayerId() {
-    }
-
-    //TODO
     @Test
     void currentPlayerStateWorks() {
     }
 
-    //TODO
-    @Test
-    void currentPlayerStateWorksWithNullCurrentPlayerId() {
-    }
-
-
-    //TODO
     @Test
     void topTicketsWorks() {
+        var rng = TestRandomizer.newRandom();
+        var routes = new ArrayList<>(ChMap.routes());
+        var tickets = new ArrayList<>(ChMap.tickets());
+        var cards = new ArrayList<>(shuffledCards(rng));
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            Collections.shuffle(routes, rng);
+            Collections.shuffle(tickets, rng);
+            Collections.shuffle(cards, rng);
+
+            var routesCount = rng.nextInt(7);
+            var ticketsCount = rng.nextInt(tickets.size());
+            var cardsCount = rng.nextInt(cards.size());
+
+            var playerRoutes = Collections.unmodifiableList(routes.subList(0, routesCount));
+            var playerTickets = SortedBag.of(tickets.subList(0, ticketsCount));
+            var playerCards = SortedBag.of(cards.subList(0, cardsCount));
+
+            var gs = GameState.initial(SortedBag.of(playerTickets), rng);
+
+            assertEquals(SortedBag.of(), gs.topTickets(0));
+            assertEquals(SortedBag.of(playerTickets), gs.topTickets(playerTickets.size()));
+            assertThrows(IllegalArgumentException.class, () -> {
+                    gs.topTickets(playerTickets.size() + 1);
+            });
+        }
     }
 
-    //TODO
-    @Test
-    void topTicketsWorksWith0() {
-    }
-
-    //TODO
-    @Test
-    void topTicketsWorksWithMax() {
-    }
-
-    //TODO
     @Test
     void topTicketsFailsWithWrongCount() {
     }
@@ -172,7 +172,6 @@ public class GameStateTest {
         assertEquals(chosenTickets,gameState.topTickets(3));
     }
 
-    //TODO
     @Test
     void withoutTopTicketsWorks() {
     }
