@@ -17,7 +17,6 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
  * Public, final and immutable
  */
 public final class GameState extends PublicGameState{
-    private static final int TOTAL_PLAYERS = 2;
 
     //TODO: Are these correct attributes + constructor
     private final Deck<Ticket> tickets;
@@ -37,7 +36,7 @@ public final class GameState extends PublicGameState{
      * the pile of tickets contains the given tickets and
      * the pile of cards contains the cards of Constants.ALL_CARDS, without the top 8 (2 x 4) which are distributed to the players
      * These piles are mixed via a given random generator, which is also used to decide the identity of the first player
-     * @param tickets the pile of tickets for the initial gamestate of tCHu
+     * @param tickets the pile of tickets for the initial gameState of tCHu
      * @param rng the random number generator
      * @return Returns the initial state of the game
      */
@@ -47,7 +46,7 @@ public final class GameState extends PublicGameState{
 
         Map<PlayerId, PlayerState> playerStateMap = new EnumMap<>(PlayerId.class);
 
-        PlayerId firstPlayer = rng.nextInt(TOTAL_PLAYERS) == 0 ? PLAYER_1 : PLAYER_2;
+        PlayerId firstPlayer = rng.nextInt(PlayerId.COUNT) == 0 ? PLAYER_1 : PLAYER_2;
         PlayerId secondPlayer = firstPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
 
         for (PlayerId player: PlayerId.ALL){
@@ -221,8 +220,9 @@ public final class GameState extends PublicGameState{
 
         newPlayerStateMap.put(currentPlayerId(), completePlayerState.get(currentPlayerId()).withClaimedRoute(route, cards));
 
-        return new GameState(tickets, cardstate.withoutTopDeckCard(), currentPlayerId(), newPlayerStateMap, lastPlayer());
+        return new GameState(tickets, cardstate.withMoreDiscardedCards(cards), currentPlayerId(), newPlayerStateMap, lastPlayer());
     }
+
 
     //====== 3. ======//
 
@@ -248,6 +248,5 @@ public final class GameState extends PublicGameState{
                 ? new GameState(tickets, cardstate, currentPlayerId().next(), completePlayerState, currentPlayerId())
                 : new GameState(tickets, cardstate, currentPlayerId().next(), completePlayerState, lastPlayer());
     }
-
 
 }

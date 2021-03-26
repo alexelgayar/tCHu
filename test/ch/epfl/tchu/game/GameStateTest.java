@@ -1,147 +1,117 @@
 package ch.epfl.tchu.game;
 
+import ch.epfl.tchu.SortedBag;
 import org.junit.jupiter.api.Test;
+import ch.epfl.test.TestRandomizer;
+
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GameStateTest {
 
-    @Test
-    void initialWorks(){ }
+    private static final Random rng = TestRandomizer.newRandom();
+    private static final SortedBag<Card> CARDS = Constants.ALL_CARDS;
+
+    private static final int DECK_SIZE = 4;
+    private static final Deck<Card> DECK = Deck.of(SortedBag.of(DECK_SIZE, Card.BLUE), rng);
 
     @Test
-    void initialWorksOnEmptyTickets(){}
-
-
-    @Test
-    void playerStateWorks(){ }
+    void initialWorks() {
+    }
 
     @Test
-    void playerStateWorksWithNullPlayerId() { }
-
-
-    @Test
-    void currentPlayerStateWorks(){ }
-
-    @Test
-    void currentPlayerStateWorksWithNullCurrentPlayerId(){ }
+    void initialWorksOnEmptyTickets() {
+    }
 
 
     @Test
-    void topTicketsWorks() {}
+    void playerStateWorks() {
+    }
 
     @Test
-    void topTicketsWorksWith0(){}
-
-    @Test
-    void topTicketsWorksWithMax(){}
-
-    @Test
-    void topTicketsFailsWithWrongCount() {}
+    void playerStateWorksWithNullPlayerId() {
+    }
 
 
     @Test
-    void withoutTopTicketsWorks(){ }
+    void currentPlayerStateWorks() {
+    }
 
     @Test
-    void withoutTopTicketsWorksWith0(){}
-
-    @Test
-    void withoutTopTicketsWorksWithMax() {}
-
-    @Test
-    void withoutTopTicketsFailsWithWrongCount(){ }
+    void currentPlayerStateWorksWithNullCurrentPlayerId() {
+    }
 
 
     @Test
-    void topCardWorks() {}
+    void topTicketsWorks() {
+    }
 
     @Test
-    void topCardFailsWithEmptyPile(){}
-
-
-    @Test
-    void withoutTopCardWorks(){}
+    void topTicketsWorksWith0() {
+    }
 
     @Test
-    void withoutTopCardFailsWithEmptyPile(){}
-
-
-    @Test
-    void withMoreDiscardedCardsWorks(){}
+    void topTicketsWorksWithMax() {
+    }
 
     @Test
-    void withMoreDiscardedCardsWorksWithEmptyInput(){}
+    void topTicketsFailsWithWrongCount() {
+    }
 
 
     @Test
-    void withCardsDeckRecreatedIfNeededWorksNewDeck(){}
+    void withoutTopTicketsWorks() {
+    }
 
     @Test
-    void withCardsDeckRecreatedIfNeededWorksSameDeck(){}
-
-
-    //====== 2. ======//
-    @Test
-    void withInitiallyChosenTicketsWorks(){}
+    void withoutTopTicketsWorksWith0() {
+    }
 
     @Test
-    void withInitiallyChosenTicketsWorksWithEmptyTickets(){}
+    void withoutTopTicketsWorksWithMax() {
+    }
 
     @Test
-    void withInitiallyChosenTicketsWorksWithNullPlayerId(){}
-
-    @Test
-    void withInitiallyChosenTicketsFails(){}
+    void withoutTopTicketsFailsWithWrongCount() {
+    }
 
 
     @Test
-    void withChosenAdditionalTicketsWorks(){}
+    void topCardWorks() {
+    }
 
     @Test
-    void withChosenAdditionalTicketsWorksWithEmptyDrawnAndChosenTickets(){}
-
-    @Test
-    void withChosenAdditionalTicketsWorksWithEmptyChosenTickets(){}
-
-    @Test
-    void withChosenAdditionalTicketsWorksWithNullPlayerId(){}
-
-    @Test
-    void withChosenAdditionalTicketsFails(){}
+    void topCardFailsWithEmptyPile() {
+    }
 
 
     @Test
-    void withDrawnFaceUpCardWorks(){}
+    void withoutTopCardWorks() {
+    }
 
     @Test
-    void withDrawnFaceUpCardWorksWithWrongSlotIndex(){}
-
-    @Test
-    void withDrawnFaceUpCardFails(){}
-
-
-    @Test
-    void withBlindlyDrawnCardsWorks(){}
+    void withoutTopCardFailsWithEmptyPile() {
+    }
 
 
     @Test
-    void withBlindlyDrawnCardFails(){}
+    void withMoreDiscardedCardsWorks() {
+    }
+
+    @Test
+    void withMoreDiscardedCardsWorksWithEmptyInput() {
+    }
 
 
     @Test
-    void withClaimedRouteWorks(){}
+    void withCardsDeckRecreatedIfNeededWorksNewDeck() {
+    }
 
     @Test
-    void withClaimedRouteWorksWithEmptyRoute(){}
-
-    @Test
-    void withClaimedRouteWorksWithEmptyCards(){}
-
-
-    @Test
-    void lastTurnBeginsWorks(){}
-
-
-    @Test
-    void forNextTurnWorks(){}
+    void withCardsDeckRecreatedIfNeededWorksSameDeck() {
+    }
 
 }

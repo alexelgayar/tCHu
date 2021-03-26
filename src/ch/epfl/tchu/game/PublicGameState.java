@@ -34,7 +34,7 @@ public class PublicGameState {
         boolean playerStateEqualsTwo = playerState.entrySet().size() == 2; //TODO: Is this correct set to verify for key/value pairs?
         Preconditions.checkArgument(ticketsCountPositive && playerStateEqualsTwo);
 
-        this.ticketsCount = ticketsCount; //primitive int type is never null
+        this.ticketsCount = ticketsCount;
         this.cardState = Objects.requireNonNull(cardState);
         this.currentPlayerId = Objects.requireNonNull(currentPlayerId);
         this.playerState = Objects.requireNonNull(playerState);
