@@ -244,9 +244,6 @@ public final class GameState extends PublicGameState{
      * @return returns an identical state to the receiver except that the current player is the one following the current currentPlayer. If (lastTurnBegins), current currentPlayer becomes the last player
      */
     public GameState forNextTurn(){
-        //Change current player => Current player = currentplayer.next
-        //lastplayer normally doesn't change
-        //If last turn is true=> give currenty player
         return (lastTurnBegins())
                 ? new GameState(tickets, cardstate, currentPlayerId().next(), completePlayerState, currentPlayerId())
                 : new GameState(tickets, cardstate, currentPlayerId().next(), completePlayerState, lastPlayer());
