@@ -118,13 +118,7 @@ public class GameStateTest {
         }
     }
 
-    @Test
-    void playerStateWorks() {
-    }
 
-    @Test
-    void currentPlayerStateWorks() {
-    }
 
     @Test
     void topTicketsWorks() {
@@ -173,66 +167,101 @@ public class GameStateTest {
     }
 
     @Test
-    void withoutTopTicketsWorks() {
+    void withInitiallyChosenTicketsWorks() {
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        GameState newGameState = gameState.withInitiallyChosenTickets(PlayerId.PLAYER_1, SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1)));
+        assertEquals(SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1)),newGameState.playerState(PlayerId.PLAYER_1).tickets());
+
     }
 
-    //TODO
+
     @Test
-    void withoutTopTicketsWorksWith0() {
+    void withInitiallyChosenTicketsWorksThrowsIllegalArgumentException() {
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        GameState newGameState = gameState.withInitiallyChosenTickets(PlayerId.PLAYER_1, SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1)));
+        assertThrows(IllegalArgumentException.class, () -> {
+            newGameState.withInitiallyChosenTickets(PlayerId.PLAYER_1, SortedBag.of(ChMap.tickets().get(13)));
+        });
+
     }
 
-    //TODO
+
     @Test
-    void withoutTopTicketsWorksWithMax() {
+    void withChosenAdditionalTicketsWorks() {
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        SortedBag<Ticket> drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
+        SortedBag<Ticket> chosenTickets = SortedBag.of(1,ChMap.tickets().get(0));
+        GameState newGameState = gameState.withChosenAdditionalTickets(drawnTickets,chosenTickets);
+        assertEquals (newGameState.playerState(newGameState.currentPlayerId()).tickets(),gameState.playerState(gameState.currentPlayerId()).withAddedTickets(chosenTickets).tickets());
     }
 
-    //TODO
     @Test
-    void withoutTopTicketsFailsWithWrongCount() {
+    void withChosenAdditionalTicketsWorksWithEmptyDrawnAndChosenTickets() {
+
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        SortedBag<Ticket> drawnTickets = SortedBag.of();
+        SortedBag<Ticket> chosenTickets = SortedBag.of();
+        GameState newGameState = gameState.withChosenAdditionalTickets(drawnTickets,chosenTickets);
+        assertEquals (newGameState.playerState(newGameState.currentPlayerId()).tickets(),gameState.playerState(gameState.currentPlayerId()).withAddedTickets(chosenTickets).tickets());
+
     }
 
-
-    //TODO
     @Test
-    void topCardWorks() {
+    void withChosenAdditionalTicketsWorksWithEmptyChosenTickets() {
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        SortedBag<Ticket> drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
+        SortedBag<Ticket> chosenTickets = SortedBag.of();
+        GameState newGameState = gameState.withChosenAdditionalTickets(drawnTickets,chosenTickets);
+        assertEquals (newGameState.playerState(newGameState.currentPlayerId()).tickets(),gameState.playerState(gameState.currentPlayerId()).withAddedTickets(chosenTickets).tickets());
     }
 
-    //TODO
+
     @Test
-    void topCardFailsWithEmptyPile() {
+    void withChosenAdditionalTicketsThrowsException() {
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        SortedBag<Ticket> drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
+        SortedBag<Ticket> chosenTickets = SortedBag.of(1,ChMap.tickets().get(3));
+        assertThrows(IllegalArgumentException.class, () -> {
+            gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets);
+        });
     }
 
 
-    //TODO
     @Test
-    void withoutTopCardWorks() {
+    void withBlindlyDrawnCardWorks() {
+        Random rng = new Random();
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,rng);
+        GameState newGameState = gameState.withBlindlyDrawnCard();
+        assertEquals(true,newGameState.playerState(newGameState.currentPlayerId()).cards().contains(gameState.topCard()));
     }
 
-    //TODO
+
+
     @Test
-    void withoutTopCardFailsWithEmptyPile() {
+    void withClaimedRouteWorks() {
+        Random rng = new Random();
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,rng);
+        GameState newGameState = gameState.withClaimedRoute(ChMap.routes().get(0), SortedBag.of(4,Card.ORANGE));
+        assertEquals(true,newGameState.playerState(newGameState.currentPlayerId()).routes().contains(ChMap.routes().get(0)));
     }
 
 
-    //TODO
     @Test
-    void withMoreDiscardedCardsWorks() {
+    void withClaimedRouteWorksWithEmptyCards() {
+        Random rng = new Random();
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,rng);
+        GameState newGameState = gameState.withClaimedRoute(ChMap.routes().get(0), SortedBag.of());
+        assertEquals(true,newGameState.playerState(newGameState.currentPlayerId()).routes().contains(ChMap.routes().get(0)));
     }
 
-    //TODO
-    @Test
-    void withMoreDiscardedCardsWorksWithEmptyInput() {
-    }
-
-
-    //TODO
-    @Test
-    void withCardsDeckRecreatedIfNeededWorksNewDeck() {
-    }
-
-    //TODO
-    @Test
-    void withCardsDeckRecreatedIfNeededWorksSameDeck() {
-    }
 
 }
