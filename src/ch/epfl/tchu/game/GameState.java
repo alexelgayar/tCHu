@@ -34,8 +34,6 @@ public final class GameState extends PublicGameState{
     /**
      * Method which returns the initial state of a game of tCHu, in which:
      * the pile of tickets contains the given tickets and
-     *
-     * ":
      * the pile of cards contains the cards of Constants.ALL_CARDS, without the top 8 (2 x 4) which are distributed to the players
      * These piles are mixed via a given random generator, which is also used to decide the identity of the first player
      * @param tickets the pile of tickets for the initial gameState of tCHu
