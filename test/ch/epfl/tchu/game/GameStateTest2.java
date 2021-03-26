@@ -20,33 +20,6 @@ public class GameStateTest2 {
         }
     };
 
-    private static final Random rng = TestRandomizer.newRandom();
-    private static final SortedBag<Card> CARDS = Constants.ALL_CARDS;
-
-    private static final int DECK_SIZE = 4;
-    private static final Deck<Card> DECK = Deck.of(SortedBag.of(DECK_SIZE, Card.BLUE), rng);
-
-    private static List<Card> shuffledCards(Random rng) {
-        SortedBag<Card> cards = sixOfEachCard();
-        var shuffledCards = new ArrayList<>(cards.toList());
-        Collections.shuffle(shuffledCards, rng);
-        return Collections.unmodifiableList(shuffledCards);
-    }
-
-    private static SortedBag<Card> sixOfEachCard() {
-        return new SortedBag.Builder<Card>()
-                .add(6, Card.BLACK)
-                .add(6, Card.VIOLET)
-                .add(6, Card.BLUE)
-                .add(6, Card.GREEN)
-                .add(6, Card.YELLOW)
-                .add(6, Card.ORANGE)
-                .add(6, Card.RED)
-                .add(6, Card.WHITE)
-                .add(6, Card.LOCOMOTIVE)
-                .build();
-    }
-
 
     //====== 2. ======//
     @Test
@@ -58,13 +31,6 @@ public class GameStateTest2 {
 
     }
 
-    @Test
-    void withInitiallyChosenTicketsWorksWithEmptyTickets() {
-    }
-
-    @Test
-    void withInitiallyChosenTicketsWorksWithNullPlayerId() {
-    }
 
     @Test
     void withInitiallyChosenTicketsWorksThrowsIllegalArgumentException() {
@@ -82,30 +48,41 @@ public class GameStateTest2 {
     void withChosenAdditionalTicketsWorks() {
         SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
         GameState gameState = GameState.initial(tickets,NON_RANDOM);
-        SortedBag<Ticket>drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
-        SortedBag<Ticket>chosenTickets = SortedBag.of(1,ChMap.tickets().get(0));
+        SortedBag<Ticket> drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
+        SortedBag<Ticket> chosenTickets = SortedBag.of(1,ChMap.tickets().get(0));
         GameState newGameState = gameState.withChosenAdditionalTickets(drawnTickets,chosenTickets);
         assertEquals (newGameState.playerState(newGameState.currentPlayerId()).tickets(),gameState.playerState(gameState.currentPlayerId()).withAddedTickets(chosenTickets).tickets());
     }
 
     @Test
     void withChosenAdditionalTicketsWorksWithEmptyDrawnAndChosenTickets() {
+
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        SortedBag<Ticket> drawnTickets = SortedBag.of();
+        SortedBag<Ticket> chosenTickets = SortedBag.of();
+        GameState newGameState = gameState.withChosenAdditionalTickets(drawnTickets,chosenTickets);
+        assertEquals (newGameState.playerState(newGameState.currentPlayerId()).tickets(),gameState.playerState(gameState.currentPlayerId()).withAddedTickets(chosenTickets).tickets());
+
     }
 
     @Test
     void withChosenAdditionalTicketsWorksWithEmptyChosenTickets() {
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+        SortedBag<Ticket> drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
+        SortedBag<Ticket> chosenTickets = SortedBag.of();
+        GameState newGameState = gameState.withChosenAdditionalTickets(drawnTickets,chosenTickets);
+        assertEquals (newGameState.playerState(newGameState.currentPlayerId()).tickets(),gameState.playerState(gameState.currentPlayerId()).withAddedTickets(chosenTickets).tickets());
     }
 
-    @Test
-    void withChosenAdditionalTicketsWorksWithNullPlayerId() {
-    }
 
     @Test
     void withChosenAdditionalTicketsThrowsException() {
         SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
         GameState gameState = GameState.initial(tickets,NON_RANDOM);
-        SortedBag<Ticket>drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
-        SortedBag<Ticket>chosenTickets = SortedBag.of(1,ChMap.tickets().get(3));
+        SortedBag<Ticket> drawnTickets = SortedBag.of(1,ChMap.tickets().get(0),1,ChMap.tickets().get(1));
+        SortedBag<Ticket> chosenTickets = SortedBag.of(1,ChMap.tickets().get(3));
         assertThrows(IllegalArgumentException.class, () -> {
             gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets);
         });
@@ -115,6 +92,11 @@ public class GameStateTest2 {
 
     @Test
     void withDrawnFaceUpCardWorks() {
+
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,NON_RANDOM);
+
+
     }
 
     @Test
@@ -136,10 +118,6 @@ public class GameStateTest2 {
     }
 
 
-    @Test
-    void withBlindlyDrawnCardFails() {
-    }
-
 
     @Test
     void withClaimedRouteWorks() {
@@ -150,12 +128,14 @@ public class GameStateTest2 {
         assertEquals(true,newGameState.playerState(newGameState.currentPlayerId()).routes().contains(ChMap.routes().get(0)));
     }
 
-    @Test
-    void withClaimedRouteWorksWithEmptyRoute() {
-    }
 
     @Test
     void withClaimedRouteWorksWithEmptyCards() {
+        Random rng = new Random();
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        GameState gameState = GameState.initial(tickets,rng);
+        GameState newGameState = gameState.withClaimedRoute(ChMap.routes().get(0), SortedBag.of());
+        assertEquals(true,newGameState.playerState(newGameState.currentPlayerId()).routes().contains(ChMap.routes().get(0)));
     }
 
 
