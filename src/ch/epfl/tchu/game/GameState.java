@@ -19,16 +19,16 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 public final class GameState extends PublicGameState{
 
     //TODO: Are these correct attributes + constructor
-    private final Deck<Ticket> tickets;
+    private final Deck<Ticket> tickets; //TODO: Check piazza Deck or SortedBag?
     private final CardState cardstate;
-    private final Map<PlayerId, PlayerState> completePlayerState; //Complete player state
+    private final Map<PlayerId, PlayerState> completePlayerState;
 
     private GameState(Deck<Ticket> tickets, CardState cardState, PlayerId currentPlayerId, Map<PlayerId, PlayerState> playerState, PlayerId lastPlayerId){
         super(tickets.size(), cardState, currentPlayerId, Map.copyOf(playerState), lastPlayerId);
 
         this.tickets = tickets;
         this.cardstate = cardState;
-        this.completePlayerState = playerState;
+        this.completePlayerState = Map.copyOf(playerState); //Map.CopyOf returns an immutable map
     }
 
     /**

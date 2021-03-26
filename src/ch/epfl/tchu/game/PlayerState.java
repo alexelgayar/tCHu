@@ -137,11 +137,16 @@ public final class PlayerState extends PublicPlayerState {
             allPlayerCardCombinations = cards.subsetsOfSize(route.length());
         }
 
+        //Try for loop with colours, print elements to see what happens
         for (SortedBag<Card> cardCombination : allPlayerCardCombinations) {
             if (allPossibleRouteCards.contains(cardCombination)) {
                 filteredCards.add(cardCombination);
             }
         }
+
+        /*
+        Try to vary the colours
+         */
 
         return new ArrayList<>(sortList(filteredCards));
     }
