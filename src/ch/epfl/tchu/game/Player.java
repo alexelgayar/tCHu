@@ -30,7 +30,7 @@ public interface Player {
     SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options);
 
 
-    public enum TurnKind {
+    enum TurnKind {
 
         DRAW_TICKETS,
         DRAW_CARDS,
@@ -43,11 +43,5 @@ public interface Player {
          * List containing all TurnKinds
          */
         public static final List<TurnKind> ALL = List.of(AllArray);
-
-        /**
-         * Size of ALL
-         */
-        public static final int COUNT = ALL.size();
-
     }
 }
