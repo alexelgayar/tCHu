@@ -18,8 +18,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
  */
 public final class GameState extends PublicGameState{
 
-    //TODO: Are these correct attributes + constructor
-    private final Deck<Ticket> tickets; //TODO: Check piazza Deck or SortedBag?
+    private final Deck<Ticket> tickets;
     private final CardState cardstate;
     private final Map<PlayerId, PlayerState> completePlayerState;
 
