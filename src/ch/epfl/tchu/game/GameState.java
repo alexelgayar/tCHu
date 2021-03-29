@@ -55,7 +55,7 @@ public final class GameState extends PublicGameState{
             playerStateMap.put(player, playerState);
         }
 
-        return new GameState(ticketDeck, CardState.of(cardDeck), firstPlayer, playerStateMap, secondPlayer);
+        return new GameState(ticketDeck, CardState.of(cardDeck), firstPlayer, playerStateMap, null);
     }
 
     /**
