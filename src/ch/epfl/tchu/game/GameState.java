@@ -46,7 +46,6 @@ public final class GameState extends PublicGameState{
         Map<PlayerId, PlayerState> playerStateMap = new EnumMap<>(PlayerId.class);
 
         PlayerId firstPlayer = rng.nextInt(PlayerId.COUNT) == 0 ? PLAYER_1 : PLAYER_2;
-        PlayerId secondPlayer = firstPlayer == PLAYER_1 ? PLAYER_2 : PLAYER_1;
 
         for (PlayerId player: PlayerId.ALL){
             PlayerState playerState = PlayerState.initial(cardDeck.topCards(INITIAL_CARDS_COUNT));
