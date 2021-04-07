@@ -30,12 +30,20 @@ public final class Game {
         //First call a method for each player
         //Then receive info to get the player choice for each executed method
 
+        Info player1Info = new Info(playerNames.get(0));
+        Info player2Info = new Info(playerNames.get(1));
+
         //1.1:Initial Players
         //TODO: Should I first initPlayers both players, or only initPlayer for firstPlayer then receiveInfo?
         players.forEach((id, player) -> player.initPlayers(id, playerNames));
 
+        //TODO: should I create a gamestate? (because it's constructor chooses the first player at random)
+        GameState gameState = GameState.initial(tickets, rng);
+
         //TODO: Is this how I set the first Player?
-        players.forEach((id, player) -> player.receiveInfo(new Info(playerNames.get(id)).willPlayFirst()));
+
+        players.forEach((id, player) -> player.receiveInfo(new Info(playerNames.get(gameState.currentPlayerId())).willPlayFirst()));
+
 
         //1.2:Set Initial Ticket Choice, Pick Initial Tickets
         players.forEach((id, player) -> player.setInitialTicketChoice(tickets));
