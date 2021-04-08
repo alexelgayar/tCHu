@@ -107,9 +107,12 @@ public final class Game {
                     if(claimedRoute.level() == Route.Level.OVERGROUND){
                         if(gameState.playerState(gameState.currentPlayerId()).canClaimRoute(claimedRoute)){
                             gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
-                            sendInformation(infos.get(gameState.currentPlayerId()).);
+                            sendInformation(infos.get(gameState.currentPlayerId()).claimedRoute(claimedRoute, initialClaimCards));
 
                         }
+
+                    }
+                    else{
 
 
 
