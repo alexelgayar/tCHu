@@ -33,20 +33,24 @@ public final class Game {
     public static void play(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames, SortedBag<Ticket> tickets, Random rng){
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
 
-        playersMap = players; //TODO: Should I make players a class attribute (for sendInformation method) or no?
-        players.forEach(((playerId, player) -> infos.put(playerId, new Info(playerNames.get(playerId))))); //TODO: Does infos store values or no?
+        playersMap = players;
+        players.forEach(((playerId, player) -> infos.put(playerId, new Info(playerNames.get(playerId)))));
 
         //1.1:Initial Players
         players.forEach((id, player) -> player.initPlayers(id, playerNames));
         gameState = GameState.initial(tickets, rng); //method picks first player randomly
-        infos.forEach(((playerId, info) -> sendInformation(info.willPlayFirst())));
+        sendInformation(infos.get(gameState.currentPlayerId()).willPlayFirst());
 
 
         //1.2:Set Initial Ticket Choice, Pick Initial Tickets
         for (PlayerId playerId: PlayerId.ALL){
+
             players.get(playerId).setInitialTicketChoice(gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
             gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
         }
+
+        updateStates();
+
         players.forEach(((playerId, player) -> gameState.withInitiallyChosenTickets(playerId, player.chooseInitialTickets())));
         infos.forEach(((playerId, info) -> sendInformation(info.keptTickets(gameState.playerState(playerId).ticketCount()))));
 
@@ -54,54 +58,89 @@ public final class Game {
         //Until the end of the game => Each player must play a role, for each current player
         boolean runGame = true;
 
-        //TODO: Is this how to store playerId?
         //1. While + break or while + update runGame when game is over
-        while (runGame){
-            //Change CardState when player draws cards
-            //GameState.cardstate
-            //gameState.cardState().;
-            for (PlayerId playerId: PlayerId.ALL){
-                Player currentPlayer = players.get(playerId);
-                Player.TurnKind turnKind = currentPlayer.nextTurn();
+        while (runGame) {
 
-                if (turnKind == Player.TurnKind.DRAW_TICKETS){
-                    currentPlayer.chooseTickets(tickets);
+            updateStates();
+            Player currentPlayer = players.get(gameState.currentPlayerId());
+            updateStates();
+            Player.TurnKind turnKind = currentPlayer.nextTurn();
+            sendInformation(infos.get(gameState.currentPlayerId()).canPlay());
+
+            switch (turnKind) {
+
+                case DRAW_TICKETS:
+                {
+
+                    SortedBag<Ticket> drawnTickets = gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
+                    SortedBag<Ticket> chosenTickets = currentPlayer.chooseTickets(gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT));
+                    sendInformation(infos.get(gameState.currentPlayerId()).drewTickets(Constants.IN_GAME_TICKETS_COUNT));
+                    gameState = gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets);
+                    sendInformation(infos.get(gameState.currentPlayerId()).keptTickets(chosenTickets.size()));
+
+                    break;
                 }
+                case DRAW_CARDS:
 
-                else if (turnKind == Player.TurnKind.DRAW_CARDS){
-                    currentPlayer.drawSlot(); //1. Draw first card
-                    currentPlayer.drawSlot(); //2. Draw second card
-                }
+                    for(int i = 0; i < 2; ++i) {
+                        if(i == 1){ updateStates(); }
 
-                else if (turnKind == Player.TurnKind.CLAIM_ROUTE){
+                        int cardSlot = currentPlayer.drawSlot();
+
+                        if(cardSlot == Constants.DECK_SLOT){
+                           gameState = gameState.withBlindlyDrawnCard();
+                           sendInformation(infos.get(gameState.currentPlayerId()).drewBlindCard());
+                        }
+                        else {
+                            sendInformation(infos.get(gameState.currentPlayerId()).drewVisibleCard(gameState.cardState().faceUpCard(cardSlot)));
+                            gameState = gameState.withDrawnFaceUpCard(cardSlot);
+                        }
+
+                    }
+                    break;
+
+                case CLAIM_ROUTE:
+
                     Route claimedRoute = currentPlayer.claimedRoute();
-                    currentPlayer.initialClaimCards();
+                    SortedBag<Card> initialClaimCards = currentPlayer.initialClaimCards();
 
-                    boolean routeIsUnderground = claimedRoute.level() == Route.Level.UNDERGROUND;
+                    if(claimedRoute.level() == Route.Level.OVERGROUND){
+                        if(gameState.playerState(gameState.currentPlayerId()).canClaimRoute(claimedRoute)){
+                            gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
+                            sendInformation(infos.get(gameState.currentPlayerId()).);
+
+                        }
+
+
+
+
+
+                    }
+
                     //boolean threeDeckCardsRequireAdditionalCards = claimedRoute.additionalClaimCardsCount().size() == 0;
                     //boolean playerHasAdditionalCards = currentPlayer.cards.contains(additionalClaimCards);
                     //if (routeIsUnderground && threeDeckCardsRequireAdditionalCards && playerHasAdditionalCards){
-                        //currentPlayer.chooseAdditionalCards(); //Ask player to pick the additional cards to play
+                    //currentPlayer.chooseAdditionalCards(); //Ask player to pick the additional cards to play
                     //}
-                }
 
+
+
+
+
+
+                    break;
             }
+
+            gameState = gameState.forNextTurn();
+
+
+
+
         }
+
 
 
         /*
-        for (PlayerId playerId: players.keySet()){
-            Player player = players.get(playerId);
-            player.initPlayers(playerId, playerNames);
-
-            Info info = new Info(playerNames.get(playerId));
-            player.receiveInfo(info.willPlayFirst());
-
-            player.setInitialTicketChoice(tickets);
-            player.chooseInitialTickets();
-            player.receiveInfo(info.keptTickets(player.chooseInitialTickets().size()));
-        }
-
         Read through everything first
         Don't use one single for loops, instead use multiple forEach loops of the lamdas
         => (less optimal, but more readable)
@@ -116,9 +155,8 @@ public final class Game {
     }
 
     //Method which informs all players of a change of state, calling the method updateState of each of them
-    private static void updateState(){
-        //Similar structure to sendInformation
-        //Takes player, and gamestate => tell player state has changed
+    private static void updateStates(){
+        playersMap.forEach((playerId, player) -> player.updateState(gameState, gameState.playerState(playerId)));
     }
 
 }
