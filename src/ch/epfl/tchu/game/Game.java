@@ -91,9 +91,11 @@ public final class Game {
                         int cardSlot = currentPlayer.drawSlot();
 
                         if (cardSlot == Constants.DECK_SLOT) {
+                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             gameState = gameState.withBlindlyDrawnCard();
                             sendInformation(infos.get(gameState.currentPlayerId()).drewBlindCard());
                         } else {
+                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             sendInformation(infos.get(gameState.currentPlayerId()).drewVisibleCard(gameState.cardState().faceUpCard(cardSlot)));
                             gameState = gameState.withDrawnFaceUpCard(cardSlot);
                         }
@@ -122,7 +124,7 @@ public final class Game {
                             SortedBag<Card> drawnCards = SortedBag.of();
 
                             for (int i = 0; i < 3; ++i) {
-                                //TODO: check if deck is empty and recreate deck if it is
+                                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                                 drawnCards.union(SortedBag.of(gameState.topCard()));
                                 gameState = gameState.withoutTopCard();
                             }
