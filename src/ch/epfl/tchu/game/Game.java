@@ -15,6 +15,7 @@ import java.util.Random;
  */
 public final class Game {
 
+    private static Map<PlayerId, Info> infos;
     /**
      * Method which plays a game of tCHu for the given players, who names appear in the table playerNames.
      * The tickets available for this game are those of tickets, and
@@ -27,8 +28,11 @@ public final class Game {
      */
     public static void play(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames, SortedBag<Ticket> tickets, Random rng){
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
+
         //First call a method for each player
         //Then receive info to get the player choice for each executed method
+        GameState gameState = GameState.initial(tickets, rng);
+
 
         Info player1Info = new Info(playerNames.get(0));
         Info player2Info = new Info(playerNames.get(1));
@@ -45,6 +49,10 @@ public final class Game {
         players.forEach((id, player) -> player.receiveInfo(new Info(playerNames.get(gameState.currentPlayerId())).willPlayFirst()));
 
 
+
+        for (PlayerId playerId: PlayerId.ALL){
+            gameState = gameState.withInitiallyChosenTickets(playerId, players.get(playerId).chooseInitialTickets());
+        }
         //1.2:Set Initial Ticket Choice, Pick Initial Tickets
         players.forEach((id, player) -> player.setInitialTicketChoice(tickets));
         players.forEach((id, player) -> player.chooseInitialTickets());
@@ -56,7 +64,12 @@ public final class Game {
         boolean runGame = true;
 
         //TODO: Is this how to store playerId?
+        //1. While + break or while + update runGame when game is over
+        //2.
         while (runGame){
+            //Change CardState when player draws cards
+            //GameState.cardstate
+            gameState.cardState().
             for (PlayerId playerId: PlayerId.ALL){
                 Player currentPlayer = players.get(playerId);
                 Player.TurnKind turnKind = currentPlayer.nextTurn();
@@ -104,14 +117,18 @@ public final class Game {
         => (less optimal, but more readable)
         Create the auxiliary methods in the prog tips
          */
+
     }
 
     //Method which sends information to all the players, by calling the method receiveInfo for each
-    private Info sendInformation(Player player){
-        return null;
+    private static void sendInformation(Map<PlayerId, Player> players, String info){
+        players.forEach((playerId, player) -> player.receiveInfo(info));
     }
 
-    private Info updateState(){
+    //Method which informs all players of a change of state, calling the method updateState of each of them
+    private void updateState(){
+        //Similar structure to sendInformation
+        //Takes player, and gamestate => tell player state has changed
         return null;
     }
 
