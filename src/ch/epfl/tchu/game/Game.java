@@ -74,7 +74,7 @@ public final class Game {
                 case DRAW_TICKETS: {
 
                     SortedBag<Ticket> drawnTickets = gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
-                    SortedBag<Ticket> chosenTickets = currentPlayer.chooseTickets(gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT));
+                    SortedBag<Ticket> chosenTickets = currentPlayer.chooseTickets(drawnTickets);
                     sendInformation(infos.get(gameState.currentPlayerId()).drewTickets(Constants.IN_GAME_TICKETS_COUNT));
                     gameState = gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets);
                     sendInformation(infos.get(gameState.currentPlayerId()).keptTickets(chosenTickets.size()));
