@@ -4,6 +4,7 @@ import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -15,7 +16,10 @@ import java.util.Random;
  */
 public final class Game {
 
-    private static Map<PlayerId, Info> infos;
+    private static Map<PlayerId, Player> playersMap;
+    private static Map<PlayerId, Info> infos = new HashMap<>();
+    private static GameState gameState;
+
     /**
      * Method which plays a game of tCHu for the given players, who names appear in the table playerNames.
      * The tickets available for this game are those of tickets, and
@@ -29,47 +33,33 @@ public final class Game {
     public static void play(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames, SortedBag<Ticket> tickets, Random rng){
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
 
-        //First call a method for each player
-        //Then receive info to get the player choice for each executed method
-        GameState gameState = GameState.initial(tickets, rng);
-
-
-        Info player1Info = new Info(playerNames.get(0));
-        Info player2Info = new Info(playerNames.get(1));
+        playersMap = players; //TODO: Should I make players a class attribute (for sendInformation method) or no?
+        players.forEach(((playerId, player) -> infos.put(playerId, new Info(playerNames.get(playerId))))); //TODO: Does infos store values or no?
 
         //1.1:Initial Players
-        //TODO: Should I first initPlayers both players, or only initPlayer for firstPlayer then receiveInfo?
         players.forEach((id, player) -> player.initPlayers(id, playerNames));
-
-        //TODO: should I create a gamestate? (because it's constructor chooses the first player at random)
-        GameState gameState = GameState.initial(tickets, rng);
-
-        //TODO: Is this how I set the first Player?
-
-        players.forEach((id, player) -> player.receiveInfo(new Info(playerNames.get(gameState.currentPlayerId())).willPlayFirst()));
+        gameState = GameState.initial(tickets, rng); //method picks first player randomly
+        infos.forEach(((playerId, info) -> sendInformation(info.willPlayFirst())));
 
 
-
-        for (PlayerId playerId: PlayerId.ALL){
-            gameState = gameState.withInitiallyChosenTickets(playerId, players.get(playerId).chooseInitialTickets());
-        }
         //1.2:Set Initial Ticket Choice, Pick Initial Tickets
-        players.forEach((id, player) -> player.setInitialTicketChoice(tickets));
-        players.forEach((id, player) -> player.chooseInitialTickets());
-        players.forEach((id, player) -> player.receiveInfo(new Info(playerNames.get(id)).keptTickets(player.chooseInitialTickets().size())));
+        for (PlayerId playerId: PlayerId.ALL){
+            players.get(playerId).setInitialTicketChoice(gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
+            gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+        }
+        players.forEach(((playerId, player) -> gameState.withInitiallyChosenTickets(playerId, player.chooseInitialTickets())));
+        infos.forEach(((playerId, info) -> sendInformation(info.keptTickets(gameState.playerState(playerId).ticketCount()))));
 
-
-        //=====Game Start=====//
+        //2.0: First Turn begins (Game starts)
         //Until the end of the game => Each player must play a role, for each current player
         boolean runGame = true;
 
         //TODO: Is this how to store playerId?
         //1. While + break or while + update runGame when game is over
-        //2.
         while (runGame){
             //Change CardState when player draws cards
             //GameState.cardstate
-            gameState.cardState().
+            //gameState.cardState().;
             for (PlayerId playerId: PlayerId.ALL){
                 Player currentPlayer = players.get(playerId);
                 Player.TurnKind turnKind = currentPlayer.nextTurn();
@@ -88,11 +78,11 @@ public final class Game {
                     currentPlayer.initialClaimCards();
 
                     boolean routeIsUnderground = claimedRoute.level() == Route.Level.UNDERGROUND;
-                    boolean threeDeckCardsRequireAdditionalCards = claimedRoute.additionalClaimCardsCount().size() == 0;
-                    boolean playerHasAdditionalCards = currentPlayer.cards.contains(additionalClaimCards);
-                    if (routeIsUnderground && threeDeckCardsRequireAdditionalCards && playerHasAdditionalCards){
-                        currentPlayer.chooseAdditionalCards(); //Ask player to pick the additional cards to play
-                    }
+                    //boolean threeDeckCardsRequireAdditionalCards = claimedRoute.additionalClaimCardsCount().size() == 0;
+                    //boolean playerHasAdditionalCards = currentPlayer.cards.contains(additionalClaimCards);
+                    //if (routeIsUnderground && threeDeckCardsRequireAdditionalCards && playerHasAdditionalCards){
+                        //currentPlayer.chooseAdditionalCards(); //Ask player to pick the additional cards to play
+                    //}
                 }
 
             }
@@ -121,15 +111,14 @@ public final class Game {
     }
 
     //Method which sends information to all the players, by calling the method receiveInfo for each
-    private static void sendInformation(Map<PlayerId, Player> players, String info){
-        players.forEach((playerId, player) -> player.receiveInfo(info));
+    private static void sendInformation(String info){
+        playersMap.forEach((playerId, player) -> player.receiveInfo(info));
     }
 
     //Method which informs all players of a change of state, calling the method updateState of each of them
-    private void updateState(){
+    private static void updateState(){
         //Similar structure to sendInformation
         //Takes player, and gamestate => tell player state has changed
-        return null;
     }
 
 }
