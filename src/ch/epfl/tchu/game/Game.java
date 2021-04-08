@@ -153,13 +153,6 @@ public final class Game {
 
                     }
 
-                    //boolean threeDeckCardsRequireAdditionalCards = claimedRoute.additionalClaimCardsCount().size() == 0;
-                    //boolean playerHasAdditionalCards = currentPlayer.cards.contains(additionalClaimCards);
-                    //if (routeIsUnderground && threeDeckCardsRequireAdditionalCards && playerHasAdditionalCards){
-                    //currentPlayer.chooseAdditionalCards(); //Ask player to pick the additional cards to play
-                    //}
-
-
                     break;
             }
 
