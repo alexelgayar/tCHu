@@ -125,7 +125,7 @@ public final class Game {
 
                             for (int i = 0; i < 3; ++i) {
                                 gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                                drawnCards.union(SortedBag.of(gameState.topCard()));
+                                drawnCards = drawnCards.union(SortedBag.of(gameState.topCard()));
                                 gameState = gameState.withoutTopCard();
                             }
 
