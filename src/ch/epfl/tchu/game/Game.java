@@ -137,7 +137,6 @@ public final class Game {
 
                             } else {
                                 List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards);
-                                System.out.println(possibleAdditionalCards);
 
                                 SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
 
@@ -158,11 +157,9 @@ public final class Game {
             }
 
             if ((gameState.lastTurnBegins() && lastTurnsRemaining <= 0) || (lastTurnStarted && lastTurnsRemaining <= 0)) {
-                System.out.println("Ending game");
                 runGame = false;
             } else if (gameState.lastTurnBegins() || lastTurnStarted){
                 lastTurnStarted = true;
-                System.out.println("Last turns remaining:" + " " + gameState.lastTurnBegins() + " " + lastTurnsRemaining);
                 --lastTurnsRemaining;
             }
 
