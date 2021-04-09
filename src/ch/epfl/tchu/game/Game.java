@@ -59,18 +59,15 @@ public final class Game {
         //1. While + break or while + update runGame when game is over
         while (runGame) {
 
+            if (lastTurnStarted && lastTurnsRemaining == PlayerId.COUNT - 1){
+                sendInformation(players, infos.get(gameState.lastPlayer()).lastTurnBegins(gameState.playerState(gameState.lastPlayer()).carCount()));
+            }
+
             updateStates(players);
             Player currentPlayer = players.get(gameState.currentPlayerId());
             updateStates(players);
             Player.TurnKind turnKind = currentPlayer.nextTurn();
             sendInformation(players, infos.get(gameState.currentPlayerId()).canPlay());
-
-            //runGame = !gameState.lastTurnBegins(); //Update boolean runGame, returns false if lastTurnBegins
-
-            System.out.println("last Turns Begins:" + gameState.lastTurnBegins() + " " + lastTurnsRemaining);
-            if (gameState.lastTurnBegins()) {
-                sendInformation(players, infos.get(gameState.lastPlayer()).lastTurnBegins(gameState.playerState(gameState.lastPlayer()).carCount()));
-            }
 
             switch (turnKind) {
 
@@ -134,12 +131,14 @@ public final class Game {
 
                             sendInformation(players, infos.get((gameState.currentPlayerId())).drewAdditionalCards(drawnCards, count));
 
-                            if (count == 0) {
+                            if (count <= 0 || gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards).isEmpty()) {
                                 gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                                 sendInformation(players, infos.get(gameState.currentPlayerId()).claimedRoute(claimedRoute, initialClaimCards));
 
                             } else {
                                 List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards);
+                                System.out.println(possibleAdditionalCards);
+
                                 SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
 
                                 if (additionalCards.size() == 0) {
@@ -161,13 +160,11 @@ public final class Game {
             if ((gameState.lastTurnBegins() && lastTurnsRemaining <= 0) || (lastTurnStarted && lastTurnsRemaining <= 0)) {
                 System.out.println("Ending game");
                 runGame = false;
-                //break;
             } else if (gameState.lastTurnBegins() || lastTurnStarted){
                 lastTurnStarted = true;
                 System.out.println("Last turns remaining:" + " " + gameState.lastTurnBegins() + " " + lastTurnsRemaining);
                 --lastTurnsRemaining;
             }
-
 
             gameState = gameState.forNextTurn();
         }
