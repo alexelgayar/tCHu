@@ -65,7 +65,7 @@ public final class Game {
 
             runGame = !gameState.lastTurnBegins(); //Update boolean runGame, returns false if lastTurnBegins
 
-            if (!runGame){
+            if (!runGame) {
                 sendInformation(players, infos.get(gameState.lastPlayer()).lastTurnBegins(gameState.playerState(gameState.lastPlayer()).carCount()));
             }
 
@@ -84,19 +84,16 @@ public final class Game {
                 case DRAW_CARDS:
 
                     for (int i = 0; i < 2; ++i) {
-                        if (i == 1) {
-                            updateStates(players);
-                        }
+                        gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+
+                        if (i == 1) updateStates(players);
 
                         int cardSlot = currentPlayer.drawSlot();
 
-
                         if (cardSlot == Constants.DECK_SLOT) {
-                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             gameState = gameState.withBlindlyDrawnCard();
                             sendInformation(players, infos.get(gameState.currentPlayerId()).drewBlindCard());
                         } else {
-                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             sendInformation(players, infos.get(gameState.currentPlayerId()).drewVisibleCard(gameState.cardState().faceUpCard(cardSlot)));
                             gameState = gameState.withDrawnFaceUpCard(cardSlot);
                         }
@@ -169,15 +166,13 @@ public final class Game {
         Map<PlayerId, Trail> playerLongestTrail = new TreeMap<>();
         players.forEach(((playerId, player) -> playerLongestTrail.put(playerId, Trail.longest(gameState.playerState(playerId).routes()))));
 
-        if (playerLongestTrail.get(PlayerId.PLAYER_1).length() > playerLongestTrail.get(PlayerId.PLAYER_2).length()){
+        if (playerLongestTrail.get(PlayerId.PLAYER_1).length() > playerLongestTrail.get(PlayerId.PLAYER_2).length()) {
             playerPoints.put(PlayerId.PLAYER_1, playerPoints.get(PlayerId.PLAYER_1) + 10);
             sendInformation(players, infos.get(PlayerId.PLAYER_1).getsLongestTrailBonus(playerLongestTrail.get(PlayerId.PLAYER_1)));
-        }
-        else if (playerLongestTrail.get(PlayerId.PLAYER_2).length() > playerLongestTrail.get(PlayerId.PLAYER_1).length()){
+        } else if (playerLongestTrail.get(PlayerId.PLAYER_2).length() > playerLongestTrail.get(PlayerId.PLAYER_1).length()) {
             playerPoints.put(PlayerId.PLAYER_2, playerPoints.get(PlayerId.PLAYER_2) + 10);
             sendInformation(players, infos.get(PlayerId.PLAYER_2).getsLongestTrailBonus(playerLongestTrail.get(PlayerId.PLAYER_2)));
-        }
-        else {
+        } else {
             playerPoints.forEach(((playerId, score) -> playerPoints.put(playerId, playerPoints.get(playerId) + 10)));
             infos.forEach(((playerId, info) -> sendInformation(players, info.getsLongestTrailBonus(playerLongestTrail.get(playerId)))));
         }

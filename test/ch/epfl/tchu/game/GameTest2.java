@@ -72,9 +72,9 @@ public class GameTest2 {
                 }
             }
             this.claimableRoutes = claimableRoutes;
-            if (claimableRoutes.isEmpty()) {
+            if (claimableRoutes.isEmpty() && (gameState.cardState().deckSize() + gameState.cardState().discardsSize() >= 6)) {
                 return TurnKind.DRAW_CARDS;
-            } else {
+            } else{
                 int routeIndex = rng.nextInt(claimableRoutes.size());
                 Route route = claimableRoutes.get(routeIndex);
                 List<SortedBag<Card>> cards = ownState.possibleClaimCards(route);
