@@ -55,7 +55,7 @@ public final class Game {
         //Until the end of the game => Each player must play a role, for each current player
         boolean runGame = true;
         boolean lastTurnStarted = false;
-        int lastTurnsRemaining = 2;
+        int lastTurnsRemaining = PlayerId.COUNT;
         //1. While + break or while + update runGame when game is over
         while (runGame) {
 
