@@ -181,7 +181,6 @@ public final class Game {
             infos.forEach(((playerId, info) -> sendInformation(players, info.getsLongestTrailBonus(playerLongestTrail.get(playerId)))));
         }
 
-
         //Announce the winner(s)
         updateStates(players);
 
@@ -189,8 +188,10 @@ public final class Game {
             sendInformation(players, infos.get(PlayerId.PLAYER_1).won(playerPoints.get(PlayerId.PLAYER_1), playerPoints.get(PlayerId.PLAYER_2))); //PLAYER 1 WINS
         else if (playerPoints.get(PlayerId.PLAYER_2) > playerPoints.get(PlayerId.PLAYER_1))
             sendInformation(players, infos.get(PlayerId.PLAYER_2).won(playerPoints.get(PlayerId.PLAYER_2), playerPoints.get(PlayerId.PLAYER_1))); //PLAYER 2 WINS
-        else
-            infos.forEach(((playerId, info) -> sendInformation(players, info.won(playerPoints.get(playerId), playerPoints.get(playerId))))); //DRAW
+        else {
+            List<String> playerStrings = new ArrayList<>(playerNames.values());
+            sendInformation(players, Info.draw(playerStrings, playerPoints.get(PlayerId.PLAYER_1))); //DRAW
+        }
     }
 
     //Method which sends information to all the players, by calling the method receiveInfo for each
