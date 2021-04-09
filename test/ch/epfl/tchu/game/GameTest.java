@@ -167,9 +167,11 @@ public class GameTest {
         }
 
         @Override
-        public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-            int randomFull = rng.nextInt(options.size());
-            return options.get(randomFull);
+        public SortedBag<Card> chooseAdditionalCards( List<SortedBag<Card>> options) {
+            if(options.isEmpty()) {
+                return SortedBag.of();
+            }
+            return options.get(rng.nextInt(options.size()));
         }
     }
 
