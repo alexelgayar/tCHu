@@ -690,7 +690,7 @@ public class GameTest4 {
     void moyennePoints() {
 //        Random rng = new Random(82881);
         Random rng = new Random();
-        int BEAUCOUP = 1000;
+        int BEAUCOUP = 10;
         double moyenne = 0;
         double moyenneroutes = 0;
         int maxtours = 0;
