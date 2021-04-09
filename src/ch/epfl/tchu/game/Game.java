@@ -54,7 +54,8 @@ public final class Game {
         //2.0: First Turn begins (Game starts)
         //Until the end of the game => Each player must play a role, for each current player
         boolean runGame = true;
-
+        boolean lastTurnStarted = false;
+        int lastTurnsRemaining = 2;
         //1. While + break or while + update runGame when game is over
         while (runGame) {
 
@@ -64,10 +65,10 @@ public final class Game {
             Player.TurnKind turnKind = currentPlayer.nextTurn();
             sendInformation(players, infos.get(gameState.currentPlayerId()).canPlay());
 
-            runGame = !gameState.lastTurnBegins(); //Update boolean runGame, returns false if lastTurnBegins
+            //runGame = !gameState.lastTurnBegins(); //Update boolean runGame, returns false if lastTurnBegins
 
-            System.out.println("runGame:" + runGame);
-            if (!runGame) {
+            System.out.println("last Turns Begins:" + gameState.lastTurnBegins() + " " + lastTurnsRemaining);
+            if (gameState.lastTurnBegins()) {
                 sendInformation(players, infos.get(gameState.lastPlayer()).lastTurnBegins(gameState.playerState(gameState.lastPlayer()).carCount()));
             }
 
@@ -156,7 +157,18 @@ public final class Game {
                     }
                     break;
             }
-            runGame = !gameState.lastTurnBegins();
+
+            if ((gameState.lastTurnBegins() && lastTurnsRemaining <= 0) || (lastTurnStarted && lastTurnsRemaining <= 0)) {
+                System.out.println("Ending game");
+                runGame = false;
+                //break;
+            } else if (gameState.lastTurnBegins() || lastTurnStarted){
+                lastTurnStarted = true;
+                System.out.println("Last turns remaining:" + " " + gameState.lastTurnBegins() + " " + lastTurnsRemaining);
+                --lastTurnsRemaining;
+            }
+
+
             gameState = gameState.forNextTurn();
         }
 
