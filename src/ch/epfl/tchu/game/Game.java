@@ -40,14 +40,15 @@ public final class Game {
 
         //1.2:Set Initial Ticket Choice, Pick Initial Tickets
         for (PlayerId playerId : PlayerId.ALL) {
-
             players.get(playerId).setInitialTicketChoice(gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
             gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
         }
 
         updateStates(players);
 
-        players.forEach(((playerId, player) -> gameState.withInitiallyChosenTickets(playerId, player.chooseInitialTickets())));
+        players.forEach(((playerId, player) -> gameState = gameState.withInitiallyChosenTickets(playerId, player.chooseInitialTickets())));
+
+
         infos.forEach(((playerId, info) -> sendInformation(players, info.keptTickets(gameState.playerState(playerId).ticketCount()))));
 
         //2.0: First Turn begins (Game starts)
@@ -65,6 +66,7 @@ public final class Game {
 
             runGame = !gameState.lastTurnBegins(); //Update boolean runGame, returns false if lastTurnBegins
 
+            System.out.println("runGame:" + runGame);
             if (!runGame) {
                 sendInformation(players, infos.get(gameState.lastPlayer()).lastTurnBegins(gameState.playerState(gameState.lastPlayer()).carCount()));
             }
@@ -154,6 +156,7 @@ public final class Game {
                     }
                     break;
             }
+            runGame = !gameState.lastTurnBegins();
             gameState = gameState.forNextTurn();
         }
 
