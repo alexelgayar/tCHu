@@ -90,6 +90,7 @@ public final class Game {
 
                         int cardSlot = currentPlayer.drawSlot();
 
+
                         if (cardSlot == Constants.DECK_SLOT) {
                             gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             gameState = gameState.withBlindlyDrawnCard();
