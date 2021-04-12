@@ -124,7 +124,6 @@ public final class PlayerState extends PublicPlayerState {
      * @throws IllegalArgumentException if the player does not have enough cards to take the route
      */
     public List<SortedBag<Card>> possibleClaimCards(Route route) {
-        //TODO: List is not sorted based on colour
         Preconditions.checkArgument(carCount() >= route.length());
 
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();

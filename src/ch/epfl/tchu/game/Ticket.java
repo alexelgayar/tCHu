@@ -20,7 +20,7 @@ public final class Ticket implements Comparable<Ticket> {
      * @param trips list containing all the trips
      * @throws IllegalArgumentException if trips is empty, or if all the start stations of trips don't have the same name
      */
-   public Ticket(List<Trip> trips) {
+    public Ticket(List<Trip> trips) {
         Preconditions.checkArgument(!trips.isEmpty());
 
         for (Trip w : trips) {
@@ -37,7 +37,7 @@ public final class Ticket implements Comparable<Ticket> {
      * @param to Arrival station
      * @param points points if both stations are connected
      */
-   public Ticket(Station from, Station to, int points) {
+    public Ticket(Station from, Station to, int points) {
         this(List.of(new Trip(from, to, points)));
     }
 

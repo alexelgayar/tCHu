@@ -45,42 +45,29 @@ public enum Card {
     /**
      * An immutable list of all Cards except LOCOMOTIVE
      */
-    //TODO: Is this the shortest way to obtain CARS?
-    public static final List<Card> CARS = List.of(BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE);
+    public static final List<Card> CARS = List.of(BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE); //TODO: Hardcoded list, better way?
 
     /**
      * Returns the type of wagon card corresponding to the given color
      * @param color color of the requested wagon card
      * @return the wagon card corresponding to the color, or LOCOMOTIVE if color is null
      */
-    public static Card of(Color color) { //TODO: Is this the clearest way to write switch
-        switch (color){
-            case BLACK:
-                return BLACK;
-            case VIOLET:
-                return VIOLET;
-            case BLUE:
-                return BLUE;
-            case GREEN:
-                return GREEN;
-            case YELLOW:
-                return YELLOW;
-            case ORANGE:
-                return ORANGE;
-            case RED:
-                return RED;
-            case WHITE:
-                return WHITE;
-            default:
-                return LOCOMOTIVE;
+    public static Card of(Color color) {
+        if (color == null){
+            return LOCOMOTIVE;
+        } else{
+            switch (color) {
+                case BLACK: return BLACK;
+                case VIOLET: return VIOLET;
+                case BLUE: return BLUE;
+                case GREEN: return GREEN;
+                case YELLOW: return YELLOW;
+                case ORANGE: return ORANGE;
+                case RED: return RED;
+                case WHITE: return WHITE;
+                default: throw new Error();
+            }
         }
-        /*
-        for (int i = 0; i < COUNT; ++i) {
-            if (color == CARS.get(i).color)
-                return CARS.get(i);
-        }
-        return null;
-         */
     }
 
     /**
@@ -88,7 +75,7 @@ public enum Card {
      * @return the color of the type of the card to which it is applied if it is a wagon type, or null if it's a locomotive type
      */
     public Color color() {
-        return this.color;
+        return color;
     }
 
 }

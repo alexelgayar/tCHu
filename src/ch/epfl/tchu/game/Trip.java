@@ -25,8 +25,8 @@ public final class Trip {
      * @throws NullPointerException if one of the two stations is null
      * @throws IllegalArgumentException if the number of points is not strictly positive (> 0)
      */
-   public Trip(Station from, Station to, int points) {
-       Preconditions.checkArgument(points > 0);
+    public Trip(Station from, Station to, int points) {
+        Preconditions.checkArgument(points > 0);
 
         this.from = Objects.requireNonNull(from);
         this.to = Objects.requireNonNull(to);

@@ -266,7 +266,7 @@ class RouteTest {
         var s1 = new Station(0, "Lausanne");
         var s2 = new Station(1, "EPFL");
         var id = "id";
-        for (var l = 1; l <= 6; l++) {
+        for (var l = 2; l <= 6; l++) {
             var r = new Route(id, s1, s2, l, Level.UNDERGROUND, null);
 
             var expected = new ArrayList<SortedBag<Card>>();
@@ -279,6 +279,7 @@ class RouteTest {
                         expected.add(SortedBag.of(cars, card, locomotives, Card.LOCOMOTIVE));
                 }
             }
+            System.out.println("Expected length:" + l);
             assertEquals(expected, r.possibleClaimCards());
         }
     }

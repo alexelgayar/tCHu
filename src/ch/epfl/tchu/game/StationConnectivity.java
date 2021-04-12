@@ -14,5 +14,5 @@ public interface StationConnectivity {
      * @param s2 Second station
      * @return true if both stations are connected
      */
-    public abstract boolean connected(Station s1, Station s2); //TODO: public abstract is redundant, can we remove?
+    public abstract boolean connected(Station s1, Station s2);
 }
