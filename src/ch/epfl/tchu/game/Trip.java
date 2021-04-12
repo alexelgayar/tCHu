@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public, final and immutable. Represents what we call a "journey"
  */
 public final class Trip {
 
@@ -17,27 +18,28 @@ public final class Trip {
     private final int points;
 
     /**
-     *
+     * Constructs a new route between the two given stations, worth the given number of points
      * @param from Departure station
      * @param to Arrival station
      * @param points points if both stations are connected
+     * @throws NullPointerException if one of the two stations is null
+     * @throws IllegalArgumentException if the number of points is not strictly positive (> 0)
      */
    public Trip(Station from, Station to, int points) {
+       Preconditions.checkArgument(points > 0);
 
         this.from = Objects.requireNonNull(from);
         this.to = Objects.requireNonNull(to);
         this.points = points;
-
-        Preconditions.checkArgument(points > 0);
-
     }
 
     /**
-     *
-     * @param from List containing the departure station
-     * @param to List of arrival stations
+     * Returns the list of all possible routes going from a "from" station to a "to" station, each worth the given number of points
+     * @param from List containing the departure stations
+     * @param to List containing the arrival stations
      * @param points points if both stations are connected
      * @return a list containing the different trips
+     * @throws IllegalArgumentException if one of the lists os empty, or if the number of points is not strictly positive
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
         Preconditions.checkArgument((points > 0) && (from != null) && (to != null));
@@ -53,39 +55,35 @@ public final class Trip {
     }
 
     /**
-     *
-     * @return Departure station
+     * Returns the departure station of the trip
+     * @return the departure station of the trip
      */
     public Station from() {
         return from;
     }
 
     /**
-     *
-     * @return Arrival station
+     * Returns the arrival station of the trip
+     * @return the arrival station of the trip
      */
     public Station to() {
         return to;
     }
 
     /**
-     *
-     * @return points corresponding to the trip
+     * Method which returns the number of points of the trip
+     * @return the number of points of the trip
      */
     public int points() {
         return points;
     }
 
     /**
-     *
-     * @param connectivity true if both stations are connected
-     * @return adds the number of points if the stations are
-     * connected or removes the points if they are not
+     * Method which returns the number of points obtained in the path for the given connectivity
+     * @param connectivity true iff both stations are connected
+     * @return the number of points added if the stations are connected, or removes the points if they are not
      */
     public int points(StationConnectivity connectivity) {
-        if (connectivity.connected(from, to))
-            return points;
-        else
-            return (-points);
+        return connectivity.connected(from, to) ? points : -points;
     }
 }

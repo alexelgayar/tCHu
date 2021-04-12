@@ -2,26 +2,25 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public, final and immutable. Represents a ticket.
  */
 public final class Ticket implements Comparable<Ticket> {
 
     private final String TEXT;
-
     private final List<Trip> trips;
 
     /**
-     * Constructs a ticket out a list of trips
+     * Constructor which constructs a ticket out of a list of trips
      * @param trips list containing all the trips
+     * @throws IllegalArgumentException if trips is empty, or if all the start stations of trips don't have the same name
      */
    public Ticket(List<Trip> trips) {
-        Preconditions.checkArgument(trips != null);
         Preconditions.checkArgument(!trips.isEmpty());
 
         for (Trip w : trips) {
@@ -29,11 +28,11 @@ public final class Ticket implements Comparable<Ticket> {
         }
 
         this.trips = trips;
-        TEXT = computeText();
+        this.TEXT = computeText(trips);
     }
 
     /**
-     * Creates a ticket from a single trip
+     * Constructs a ticket from a single trip
      * @param from Departure station
      * @param to Arrival station
      * @param points points if both stations are connected
@@ -42,7 +41,8 @@ public final class Ticket implements Comparable<Ticket> {
         this(List.of(new Trip(from, to, points)));
     }
 
-    private String computeText() {
+    //Private method used to compute the textual representation of the ticket
+    private static String computeText(List<Trip> trips) { //TODO: Use StringBuilder here, if it makes more efficient?
         TreeSet<String> to = new TreeSet<>();
 
         for (Trip w : trips) {
@@ -51,7 +51,7 @@ public final class Ticket implements Comparable<Ticket> {
 
         String destinations = String.join(", ", to);
 
-        String s = new String();
+        String s;
 
         if (trips.size() == 1) {
             s = String.format("%s - %s", trips.get(0).from().toString(), destinations);
@@ -62,21 +62,20 @@ public final class Ticket implements Comparable<Ticket> {
     }
 
     /**
-     *
-     * @return textual form of a ticket
+     * Returns the textual representation of the ticket
+     * @return the textual form of a ticket
      */
     public String text() {
         return TEXT;
     }
 
     /**
-     *
-     * @param connectivity If both stations are connected
+     * Returns the number of points the ticket is worth, provided the connectivity (belonging to the player who owns the ticket)
+     * @param connectivity true iff both stations are connected
      * @return number of points earned per ticket
      */
-    public int points(StationConnectivity connectivity) {
-
-        int i = 0;
+    public int points(StationConnectivity connectivity) { //TODO: More efficient way to compute?
+        int i;
         int temp = 0;
 
         for (Trip w : trips) {
@@ -100,11 +99,11 @@ public final class Ticket implements Comparable<Ticket> {
     }
 
     /**
-     * Compares to ticket alphabetically
+     * Compares two tickets (textual representation) alphabetically, returns negative int if this < that, positive int if this > that, 0 if this == that
      * @param that ticket to be compared to
-     * @return a negative integer if this is smaller than that alphabetically,
-     * a positive integer if this is greater than that alphabetically
-     * and 0 if both tickets are equal
+     * @return a negative integer if "this" is smaller than "that" alphabetically,
+     * return a positive integer if "this" is greater than "that" alphabetically
+     * return 0 if both tickets are equal
      */
     @Override
     public int compareTo(Ticket that) {
