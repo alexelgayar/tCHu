@@ -26,9 +26,10 @@ public enum PlayerId {
 
     /**
      * Returns the identity of the other player
+     *
      * @return the identity of the other player
      */
-    public PlayerId next(){
+    public PlayerId next() {
         return (this == PLAYER_1) ? PLAYER_2 : PLAYER_1;
     }
 
