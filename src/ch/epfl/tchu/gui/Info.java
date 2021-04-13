@@ -19,6 +19,7 @@ public final class Info {
 
     /**
      * Builds a generator of messages related to the player with the given name
+     *
      * @param playerName the name of the player
      */
     public Info(String playerName) {
@@ -27,6 +28,7 @@ public final class Info {
 
     /**
      * Returns the name (french) of the data card, the singular iff the absolute value of the second argument is 1
+     *
      * @param card  the data card
      * @param count the number of cards
      * @return the name (french) of the data card, the singular iff the absolute value of the second argument is 1
@@ -58,6 +60,7 @@ public final class Info {
 
     /**
      * Returns a message declaring that the players, whose names are those given, have finished the game tied by having each won the given points
+     *
      * @param playerNames the names of the two players that have drawn
      * @param points      the points that the players obtained (to draw)
      * @return a message declaring that the players, whose names are those given, have finished the game tied by having each won the given points
@@ -68,6 +71,7 @@ public final class Info {
 
     /**
      * Returns the name of the player that will play first
+     *
      * @return the name of the player that will play first
      */
     public String willPlayFirst() {
@@ -80,6 +84,7 @@ public final class Info {
 
     /**
      * Returns a message declaring that a player can play
+     *
      * @return a message declaring that a player can play
      */
     public String canPlay() {
@@ -88,6 +93,7 @@ public final class Info {
 
     /**
      * Returns a message declaring that a player drew tickets, and saying which tickets have been drawn
+     *
      * @param count number of tickets
      * @return a message declaring that a player drew tickets, and saying which tickets have been drawn
      */
@@ -97,6 +103,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a player drew a card from the deck
+     *
      * @return a message saying that a player drew a card from the deck
      */
     public String drewBlindCard() {
@@ -105,6 +112,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a player drew a visible card, and saying which card it is
+     *
      * @param card the crad that the player drew
      * @return a message saying that a player drew a visible card, and saying which card it is
      */
@@ -114,6 +122,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a players has claimed a route, then saying which route it is and with which cards it was claimed
+     *
      * @param route the route claimed by the player
      * @param cards the cards used to claim the route
      * @return a message saying that a players has claimed a route, then saying which route it is and with which cards it was claimed
@@ -124,7 +133,8 @@ public final class Info {
 
     /**
      * Returns a message saying that a player attempted to claim a tunnel, then saying with which cards this attempt was made
-     * @param route the tunnel that the player attempted to claim
+     *
+     * @param route        the tunnel that the player attempted to claim
      * @param initialCards the initial cards used to attempt to claim the tunnel
      * @return a message saying that a player attempted to claim a tunnel, then saying with which cards this attempt was made
      */
@@ -134,7 +144,8 @@ public final class Info {
 
     /**
      * Returns a message saying that the player drew the 3 additional cards, then saying if it requires an additional cost, and if it does, this cost is specified
-     * @param drawnCards the 3 cards that the player drew
+     *
+     * @param drawnCards     the 3 cards that the player drew
      * @param additionalCost the additional cost needed to claim the tunnel
      * @return a message saying that the player drew the 3 additional cards, then saying if it requires an additional cost, and if it does, this cost is specified
      */
@@ -150,6 +161,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a player couldn't (or didn't want to) claim a tunnel, then specifying which tunnel it is
+     *
      * @param route the route that the player didn't claim
      * @return a message saying that a player couldn't (or didn't want to) claim a tunnel, then specifying which tunnel it is
      */
@@ -159,6 +171,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a player has only a specified number of cars left (less or equal than 2), then saying that the last turn begins
+     *
      * @param carCount the number of cars left with the player
      * @return a message saying that a player has only a specified number of cars left (less or equal than 2), then saying that the last turn begins
      */
@@ -168,6 +181,7 @@ public final class Info {
 
     /**
      * Returns a message saying that a player gets a bonus for the longest trail, then specifying which trail it is
+     *
      * @param longestTrail the longest trail
      * @return a message saying that a player gets a bonus for the longest trail, then specifying which trail it is
      */
@@ -177,7 +191,8 @@ public final class Info {
 
     /**
      * Returns a message saying that a player has won the game, then specifying his points and then the number of points of the loser
-     * @param points the number of points that the winner has
+     *
+     * @param points      the number of points that the winner has
      * @param loserPoints the number of points that the loser has
      * @return a message saying that a player has won the game, then specifying his points and then the number of points of the loser
      */
