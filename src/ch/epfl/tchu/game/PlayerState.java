@@ -194,11 +194,10 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns an identical state to the receive, except that the player has also seized the given route by means of the given cards
-     *
-     * @param route
-     * @param claimCards
-     * @return
+     * Returns an identical state to the receive, except that the player has also seized the given route by means of the given cards
+     * @param route the route that the player has seized
+     * @param claimCards the cards that the player uses to seize the route
+     * @return an identical state to the receive, except that the player has also seized the given route by means of the given cards
      */
     public PlayerState withClaimedRoute(Route route, SortedBag<Card> claimCards) {
         SortedBag<Card> playerCards = cards.difference(claimCards);
@@ -209,12 +208,10 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns the number of points - possibly negative- obtained by the player thanks to his tickets
-     *
-     * @return returns the number of points - possibly negative- obtained by the player thanks to his tickets
+     * Returns the number of points, possibly negative, obtained by the player thanks to his tickets
+     * @return the number of points, possibly negative, obtained by the player thanks to his tickets
      */
     public int ticketPoints() {
-
         int temp = 0;
         int points = 0;
 
@@ -243,9 +240,8 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns all the points obtained by the player at the end of the game, namely the sum of the points returned by the methods claimPoints and ticketPoints.
-     *
-     * @return returns all the points obtained by the player at the end of the game, namely the sum of the points returned by the methods claimPoints and ticketPoints.
+     * Returns all the points obtained by the player at the end of the game, namely the sum of the points returned by the methods claimPoints and ticketPoints.
+     * @return all the points obtained by the player at the end of the game, namely the sum of the points returned by the methods claimPoints and ticketPoints.
      */
     public int finalPoints() {
         return claimPoints() + ticketPoints;
