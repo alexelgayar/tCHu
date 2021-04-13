@@ -5,18 +5,16 @@ import ch.epfl.tchu.Preconditions;
 import java.util.ArrayList;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
  * Public, final, immutable class
  */
 public final class StationPartition implements StationConnectivity{
 
-    private int[] stationRepresentant;
+    private final int[] stationRepresentant;
 
     private StationPartition(int[] stationRepresentant){
-
         this.stationRepresentant = stationRepresentant.clone();
-
     }
 
     /**
@@ -29,16 +27,16 @@ public final class StationPartition implements StationConnectivity{
     @Override
     public boolean connected(Station s1, Station s2) {
 
-       if(s1.id() >= stationRepresentant.length || s2.id() >= stationRepresentant.length){
+        if(s1.id() >= stationRepresentant.length || s2.id() >= stationRepresentant.length){
 
-           if(s1.id() == s2.id()){return true;}
-           else return false;
-       }
-       else {
+            if(s1.id() == s2.id()){return true;}
+            else return false;
+        }
+        else {
 
-           if (stationRepresentant[s1.id()] == stationRepresentant[s2.id()]) {return true;}
-           else return false;
-       }
+            if (stationRepresentant[s1.id()] == stationRepresentant[s2.id()]) {return true;}
+            else return false;
+        }
 
     }
 
@@ -46,10 +44,10 @@ public final class StationPartition implements StationConnectivity{
      * Nested Class Builder
      * public, static, final class
      */
-   public static final class Builder{
+    public static final class Builder{
 
-       private int[] stationRepresentant;
-       private int stationCount;
+        private int[] stationRepresentant;
+        private int stationCount;
 
         /**
          * Constructs a new builder and creates a list where every station is representative of itself
@@ -79,10 +77,10 @@ public final class StationPartition implements StationConnectivity{
         public Builder connect(Station s1, Station s2){
 
 
-                stationRepresentant[representative(s2.id())] = stationRepresentant[representative(s1.id())];
+            stationRepresentant[representative(s2.id())] = stationRepresentant[representative(s1.id())];
 
 
-           return this;
+            return this;
         }
 
         /**
@@ -111,5 +109,5 @@ public final class StationPartition implements StationConnectivity{
             return stationRepresentant[a];
         }
 
-   }
+    }
 }

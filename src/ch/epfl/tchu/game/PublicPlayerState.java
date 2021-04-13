@@ -2,23 +2,21 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
  * Public, immutable class
  * Represents the public part of a player's state, namely the number of tickets, cards and wagons they own, the roads they have seized and the number of construction points they have obtained
  */
 public class PublicPlayerState {
 
-    private final int ticketCount, cardCount;
+    private final int ticketCount, cardCount, carCount, earnedClaimPoints;
     private final List<Route> routes;
-    private final int carCount, earnedClaimPoints;
 
     /**
-     * Unique Contructor for the PublicPlayerState class
+     * Unique Constructor for the PublicPlayerState class
      * @param ticketCount number of tickets owned
      * @param cardCount number of cards owned by the player
      * @param routes routes seized by player
@@ -43,22 +41,42 @@ public class PublicPlayerState {
         this.earnedClaimPoints = totalClaimPoints;
     }
 
+    /**
+     * Returns the number of tickets the player has
+     * @return the number of tickets the player has
+     */
     public int ticketCount(){
         return ticketCount;
     }
 
+    /**
+     * Returns the number of cards the player has
+     * @return the number of cards the player has
+     */
     public int cardCount(){
         return cardCount;
     }
 
+    /**
+     * Returns the roads that the player has seized
+     * @return the roads that the player has seized
+     */
     public List<Route> routes(){
-        return routes;
+        return routes; //TODO: Is this immutable getter?
     }
 
+    /**
+     * Returns the number of cars the player has
+     * @return the number of cars the player has
+     */
     public int carCount(){
         return carCount;
     }
 
+    /**
+     * Returns the number of construction points obtained by the player
+     * @return the number of construction points obtained by the player
+     */
     public int claimPoints(){
         return earnedClaimPoints;
     }

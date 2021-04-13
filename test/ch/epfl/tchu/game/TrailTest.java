@@ -8,6 +8,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrailTest {
+
     @Test
     void trailLongestWorksOnGivenExample() {
         var s1 = new Station(1, "Yverdon");
@@ -52,8 +53,6 @@ class TrailTest {
                 chRoutes.GEN_YVE_1,
                 chRoutes.IT3_LUG_1);
         var longest = Trail.longest(routes);
-        System.out.println("Longest: " + longest.station1() + " s2: " + longest.station2() + " length:" + longest.length());
-        assertEquals(6, longest.length());
         if (longest.station1().equals(chRoutes.GEN))
             assertEquals(longest.station2(), chRoutes.YVE);
         else if (longest.station1().equals(chRoutes.YVE))
@@ -173,7 +172,6 @@ class TrailTest {
         var longestR = Trail.longest(routesR);
         var longestG = Trail.longest(routesG);
         var longestB = Trail.longest(routesB);
-
         assertEquals(28, longestR.length());
         assertEquals(21, longestG.length());
         assertEquals(17, longestB.length());
@@ -235,7 +233,6 @@ class TrailTest {
         var longestR = Trail.longest(routesR);
         var longestG = Trail.longest(routesG);
         var longestB = Trail.longest(routesB);
-
         assertEquals(35, longestR.length());
         assertEquals(19, longestG.length());
         assertEquals(18, longestB.length());
@@ -282,7 +279,6 @@ class TrailTest {
 
         var longestR = Trail.longest(routesR);
         var longestG = Trail.longest(routesG);
-
         assertEquals(31, longestR.length());
         assertEquals(31, longestG.length());
     }

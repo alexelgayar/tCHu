@@ -1,6 +1,7 @@
 package ch.epfl.tchu.game;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -87,22 +88,24 @@ public final class Trail {
         return possibleRouteExtensions;
     }
 
-    //Computes
+    //Computes the trail with the added route to the end
     private static Trail computeExtendedTrail(Trail trail, Route trailExtension){
-        List<Route> extendedRoute = new ArrayList<>();
-        extendedRoute.addAll(trail.routes);
+        List<Route> extendedRoute = new ArrayList<>(trail.routes);
         extendedRoute.add(trailExtension);
 
+        assert trail.station2() != null;
         return new Trail(trail.station1(), trailExtension.stationOpposite(trail.station2()), extendedRoute);
     }
 
     /**
-     * @return returns the length of the trail
+     * Returns the length of the trail
+     * @return the length of the trail
      */
     public int length() {
         return length;
     }
 
+    //Method to compute the length of the trail given the routes belonging to the trail
     private int computeTrailLength(List<Route> routes){
         int length = 0;
         //For-each loop not executed if routes.isEmpty => returns length 0
@@ -112,51 +115,49 @@ public final class Trail {
 
         return length;
     }
+
     /**
-     * @return Returns the first station of the path, else null (IFF) trail has length 0
+     * Returns the first station of the path, else null (IFF) trail has length 0
+     * @return the first station of the path, else null (IFF) trail has length 0
      */
     public Station station1() {
         return ((length() > 0) ? s1 : null);
     }
 
     /**
-     * @return Returns the last station of the path, else null (IFF) trail has length 0
+     * Returns the last station of the path, else null (IFF) trail has length 0
+     * @return the last station of the path, else null (IFF) trail has length 0
      */
     public Station station2() {
         return ((length() > 0) ? s2 : null);
     }
 
     /**
-     * @return Returns textual representation of the path, containing at least the name of first and last station (in order) as well as the length of the path in parenthesis
+     * Redefinition of toString, and returns a textual representation of the trail containing at least the name of the first and last station and the length of the trail in parenthesis
+     * @return a textual representation of the trail containing at least the name of the first and last station and the length of the trail in parenthesis
      */
     @Override
     public String toString() {
-
-        String text;
+        String text = "Null - Null (0)";
         List<String> stations = new ArrayList<>();
         Station temp = null;
 
         for(int i = 0; i < routes.size() - 1; ++i){
+            if(routes.get(i).station1().equals(routes.get(i+1).station1()) || routes.get(i).station1().equals(routes.get(i+1).station2())){
+                temp = routes.get(i).station1();
+            }
 
-            if(routes.get(i).station1().toString().equals(routes.get(i+1).station1().toString())){
-                temp = routes.get(i).station1();
-            }
-            if(routes.get(i).station1().toString().equals(routes.get(i+1).station2().toString())){
-                temp = routes.get(i).station1();
-            }
-            if(routes.get(i).station2().toString().equals(routes.get(i+1).station1().toString())){
-                temp = routes.get(i).station2();
-            }
-            if(routes.get(i).station2().toString().equals(routes.get(i+1).station2().toString())){
+            if(routes.get(i).station2().equals(routes.get(i+1).station1()) || routes.get(i).station2().equals(routes.get(i+1).station2())){
                 temp = routes.get(i).station2();
             }
 
+            assert temp != null;
             stations.add(temp.toString());
         }
 
-
-
-        text = s1.toString() + " - " + String.join(" - ", stations) + " - " + s2.toString() + " (" + length() + ")";
+        if (s1 != null || s2 != null) {
+            text = s1 + " - " + String.join(" - ", stations) + " - " + s2 + " (" + length() + ")";
+        }
 
         return text;
     }

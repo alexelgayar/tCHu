@@ -2,16 +2,15 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
- * Public, Immutable class
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public, Immutable class.
  * Represents (the public part of) the state of the wagon/locomotive cards that are not in the hands of the player:
- * - the 5 cards placed face up next to the board; the deck; the discard pile;
+ * => the 5 cards placed face up next to the board; the deck; the discard pile;
  */
 public class PublicCardState {
 
@@ -20,7 +19,7 @@ public class PublicCardState {
     private final int discardsSize;
 
     /**
-     * Constructor for the PublicCardSate class
+     * Constructor for the PublicCardState class
      * @param faceUpCards are the visible cards given
      * @param deckSize is the size of the deck pile
      * @param discardsSize is the size of the discard pile
@@ -35,9 +34,8 @@ public class PublicCardState {
     }
 
     /**
-     * Returns the total number of cards that are not in the players' hand
-     * Namely, the 5 whose face is up, those from the draw pile and from the discard pile
-     * @return the total number of cards that are not in the players' hand
+     * Returns the total number of cards that are not in the players' hand. Namely, the 5 whose face is up, those from the draw pile and from the discard pile
+     * @return the total number of cards that are not in the players' hand (the 5 face-up cards + drawPile + discardPile)
      */
     public int totalSize(){
         return faceUpCards.size() + deckSize + discardsSize;
@@ -45,10 +43,10 @@ public class PublicCardState {
 
     /**
      * Turns the 5 cards face-up, in the form of a list comprising exactly 5 elements
-     * @return returns the 5-element list of the 5 cards that are face-up
+     * @return the 5-element list of the 5 cards that are face-up
      */
     public List<Card> faceUpCards(){
-        return faceUpCards;
+        return faceUpCards; //TODO: Is this immutable? Yes, since List is an immutable copy (constructor) and Card is enum (immutable as well)?
     }
 
     /**
@@ -63,20 +61,24 @@ public class PublicCardState {
 
     /**
      * Returns the size of the deck
-     * @return returns the deck size
+     * @return the deck size
      */
     public int deckSize(){
         return deckSize;
     }
 
     /**
-     * Method which returns true if the decksize is empty
+     * Returns true if the deckSize is empty
      * @return true iff deckSize = 0
      */
     public boolean isDeckEmpty(){
         return (deckSize == 0);
     }
 
+    /**
+     * Returns the size of the discardsPile
+     * @return the size of the discardsPile
+     */
     public int discardsSize(){
         return discardsSize;
     }

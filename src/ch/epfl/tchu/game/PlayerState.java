@@ -6,8 +6,8 @@ import ch.epfl.tchu.SortedBag;
 import java.util.*;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
  * Public, final, immutable class
  * Represents the completeness of a player. It inherits from PublicPlayerState.
  */
@@ -15,29 +15,25 @@ public final class PlayerState extends PublicPlayerState {
 
     private final SortedBag<Ticket> tickets;
     private final SortedBag<Card> cards;
-
     private final int ticketPoints;
 
     /**
-     * Builds the state of a player with the given tickets, maps and routes
-     *
-     * @param tickets
-     * @param cards
-     * @param routes
+     * Builds the state of a player owning the given tickets, cards and routes
+     * @param tickets the tickets the player owns
+     * @param cards the cards the player owns
+     * @param routes the routes the player owns
      */
     public PlayerState(SortedBag<Ticket> tickets, SortedBag<Card> cards, List<Route> routes) {
         super(tickets.size(), cards.size(), routes);
-        this.tickets = tickets;
+        this.tickets = tickets; //TODO: Is this immutable, or should I make a List.of? No, since SortedBag is an immutable class?
         this.cards = cards;
         this.ticketPoints = ticketPoints();
     }
 
     /**
-     * Method which returns the initial state of a player to whom the given initial cards were dealt.
-     * In this initial state, the player does not yet have any tickets and has not taken any roads
-     *
-     * @param initialCards
-     * @return Returns the initial state of a player to whom the given initial cards were dealt.
+     * Returns the initial state of a player to whom the given initial cards were dealt. In the initial state, player has no tickets, nor any roads.
+     * @param initialCards the initial cards dealt to the player
+     * @return the initial state of a player to whom the given initial cards were dealt. In the initial state, player has no tickets, nor any roads.
      * @throws IllegalArgumentException if the number of initial cards is not equal to 4
      */
     public static PlayerState initial(SortedBag<Card> initialCards) {
@@ -50,19 +46,17 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns the player's tickets
-     *
-     * @return returns the player's tickets
+     * Returns the player's tickets
+     * @return the player's tickets
      */
     public SortedBag<Ticket> tickets() {
         return tickets;
     }
 
     /**
-     * Method which returns an identical state to the receiver, except that the player also has the given card
-     *
-     * @param newTickets
-     * @return
+     * Returns an identical state to the receiver, except that the player also has the given tickets
+     * @param newTickets the tickets to add to the player
+     * @return an identical state to the receiver, except that the player also has the given tickets
      */
     public PlayerState withAddedTickets(SortedBag<Ticket> newTickets) {
         SortedBag<Ticket> additionalTickets = tickets.union(newTickets);
@@ -70,9 +64,8 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which turns over the player's wagon/locomotive cards
-     *
-     * @return returns the player's wagon/locomotive cards
+     * Turns over the player's wagon/locomotive cards
+     * @return the player's wagon/locomotive cards
      */
     public SortedBag<Card> cards() {
         return cards;
@@ -80,9 +73,8 @@ public final class PlayerState extends PublicPlayerState {
 
     /**
      * Method which returns an identical state to the receiver, except that the player also has the given card
-     *
      * @param card a card to add to the list of cards of the player
-     * @return returns an identical state to the receiver, except that the player also has the given card
+     * @return an identical state to the receiver, except that the player also has the given card
      */
     public PlayerState withAddedCard(Card card) {
         SortedBag<Card> newCards = cards.union(SortedBag.of(card));
@@ -90,10 +82,9 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns an identical state to the receiver, except that the player also has the given cards
-     *
+     * Returns an identical state to the receiver, except that the player also has the given cards
      * @param additionalCards the cards to add to the list of cards of the player
-     * @return returns an identical state to the receiver, except that the player also has the given cards
+     * @return an identical state to the receiver, except that the player also has the given cards
      */
     public PlayerState withAddedCards(SortedBag<Card> additionalCards) {
         SortedBag<Card> newCards = cards.union(additionalCards);
@@ -102,12 +93,10 @@ public final class PlayerState extends PublicPlayerState {
 
     /**
      * Method which returns true IFF the player can seize the given route, i.e. if they have enough cars left and they have the necessary cards
-     *
      * @param route the route that is tested to see if it can be seized by the player
      * @return returns true IFF the player can seize the given route, i.e. if they have enough cars left and they have the necessary cards
      */
     public boolean canClaimRoute(Route route) {
-        //No need to throw exception here if player does not have enough cards, since possibleClaimCards throws an exception already
         boolean playerHasEnoughCars = (carCount() >= route.length());
         boolean playerHasNecessaryCards = false;
         if (playerHasEnoughCars){
@@ -117,13 +106,12 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns the list of all the sets of cards the player could use to take possession of the given route
-     *
+     * Returns the list of all the sets of cards the player could use to take possession of the given route
      * @param route the route that the player wishes to claim
-     * @return returns the list of all the sets of cards the player could use from their hand to take possession of the given route
+     * @return the list of all the sets of cards the player could use from their hand to take possession of the given route
      * @throws IllegalArgumentException if the player does not have enough cards to take the route
      */
-    public List<SortedBag<Card>> possibleClaimCards(Route route) {
+    public List<SortedBag<Card>> possibleClaimCards(Route route) { //TODO: See if possible to optimize & modularize
         Preconditions.checkArgument(carCount() >= route.length());
 
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
@@ -156,18 +144,18 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Method which returns the list of all the sets of cards that the player could use to seize a tunnel, sorted in ascending order of the number of locomotive cards
+     * Returns the list of all the sets of cards that the player could use to seize a tunnel, sorted in ascending order of the number of locomotive cards
      * Knowing that they initially laid the cards initialCards, that the 3 draw cards from the top of the draw pile are drawnCards
      * And that these latter force the player to lay down more additionalCardsCount cards
      *
-     * @param additionalCardsCount
-     * @param initialCards
-     * @param drawnCards
-     * @return
+     * @param additionalCardsCount the number of additional cards that must be drawn
+     * @param initialCards the cards initially used to claim the route
+     * @param drawnCards the cards drawn from the deck
+     * @return the list of all the sets of cards that the player could use to seize a tunnel, sorted in ascending order of the number of locomotive cards
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
-        //===== Preconditions Check =====//
+        //===== Preconditions Check =====// //TODO: See if possible to optimize and modularize
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
         boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCards.toSet().size() <= 2);

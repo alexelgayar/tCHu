@@ -3,8 +3,8 @@ package ch.epfl.tchu.game;
 import java.util.List;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
  */
 public enum PlayerId {
 
@@ -26,10 +26,10 @@ public enum PlayerId {
 
     /**
      * Returns the identity of the other player
-     * @return
+     * @return the identity of the other player
      */
-   public PlayerId next(){
-       return (this == PLAYER_1) ? PLAYER_2 : PLAYER_1;
+    public PlayerId next(){
+        return (this == PLAYER_1) ? PLAYER_2 : PLAYER_1;
     }
 
 }
