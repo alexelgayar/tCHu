@@ -13,7 +13,7 @@ import java.util.*;
  */
 public final class Game {
 
-    private static Map<PlayerId, Info> infos = new HashMap<>();
+    private static final Map<PlayerId, Info> infos = new HashMap<>();
     private static GameState gameState;
 
     /**
