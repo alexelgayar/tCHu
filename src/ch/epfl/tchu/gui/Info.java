@@ -200,9 +200,9 @@ public final class Info {
         StringBuilder cardsName = new StringBuilder();
         List<String> cardList = new ArrayList<>();
 
-        for (Card w : cards.toSet()) {
-            int n = cards.countOf(w);
-            cardList.add(n + " " + cardName(w, n));
+        for (Card card : cards.toSet()) {
+            int n = cards.countOf(card);
+            cardList.add(n + " " + cardName(card, n));
         }
 
         if (cardList.size() == 1) {
@@ -217,6 +217,4 @@ public final class Info {
             return cardsName.toString();
         }
     }
-
-
 }
