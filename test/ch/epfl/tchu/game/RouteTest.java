@@ -279,7 +279,6 @@ class RouteTest {
                         expected.add(SortedBag.of(cars, card, locomotives, Card.LOCOMOTIVE));
                 }
             }
-            System.out.println("Expected length:" + l);
             assertEquals(expected, r.possibleClaimCards());
         }
     }
