@@ -69,7 +69,7 @@ public final class Ticket implements Comparable<Ticket> {
      * @param connectivity true iff both stations are connected
      * @return number of points earned per ticket
      */
-    public int points(StationConnectivity connectivity) { //TODO: More efficient way to compute?
+    public int points(StationConnectivity connectivity) {
 
         boolean connected = false;
         int maxPoints = 0;
