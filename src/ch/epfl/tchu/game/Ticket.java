@@ -70,25 +70,18 @@ public final class Ticket implements Comparable<Ticket> {
      * @return number of points earned per ticket
      */
     public int points(StationConnectivity connectivity) { //TODO: More efficient way to compute?
-        int i;
-        int temp = 0;
 
-        //Trip.points(stationConnectivity)
-        for (Trip trip : trips) {
-            temp = (connectivity.connected(trip.from(), trip.to()) && trip.points() > temp)
-                    ? trip.points()
-                    : temp;
-        }
-        i = temp;
+        boolean connected = false;
+        int maxPoints = 0;
+        int minPoints = trips.get(0).points();
 
-        if (temp == 0) {
-            temp = trips.get(0).points();
-            for (Trip w : trips) {
-                temp = Math.min(w.points(), temp);
-            }
-            i = -temp;
+        for (Trip trip: trips){
+            maxPoints = Math.max(maxPoints, trip.points(connectivity));
+            minPoints = Math.min(minPoints, trip.points());
+            if (!connected) connected = connectivity.connected(trip.from(), trip.to());
         }
-        return i;
+
+        return connected ? maxPoints : -(minPoints);
     }
 
     /**
