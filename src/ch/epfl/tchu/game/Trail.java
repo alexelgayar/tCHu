@@ -1,7 +1,6 @@
 package ch.epfl.tchu.game;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -96,6 +95,7 @@ public final class Trail {
         assert trail.station2() != null;
         return new Trail(trail.station1(), trailExtension.stationOpposite(trail.station2()), extendedRoute);
     }
+
 
     /**
      * Returns the length of the trail
