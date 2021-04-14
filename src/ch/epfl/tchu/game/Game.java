@@ -17,6 +17,11 @@ public final class Game {
     private static GameState gameState;
 
     /**
+     * Private constructor class for the Game class, we will leave it empty (as we want this class to be non-instantiable)
+     */
+    private Game(){ }
+
+    /**
      * Method which plays a game of tCHu for the given players, who names appear in the table playerNames.
      * The tickets available for this game are those of tickets, and
      * the random generator tng is used to create the initial state of the game and to shuffle the cards from the discard pile to make a new draw when necessary
