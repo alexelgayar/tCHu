@@ -7,10 +7,9 @@ import ch.epfl.tchu.gui.Info;
 import java.util.*;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
- * Class which represents a game of tCHu. It offers only one single public, static method
- * Public, Final and Non-Instantiable
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public, Final and Non-Instantiable. Represents a game of tCHu. It offers only one single public, static method
  */
 public final class Game {
 

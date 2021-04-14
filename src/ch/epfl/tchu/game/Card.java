@@ -45,7 +45,7 @@ public enum Card {
     /**
      * An immutable list of all Cards except LOCOMOTIVE
      */
-    public static final List<Card> CARS = List.of(BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE); //TODO: Hardcoded list, better way?
+    public static final List<Card> CARS = List.of(BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE);
 
     /**
      * Returns the type of wagon card corresponding to the given color

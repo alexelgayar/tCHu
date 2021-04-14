@@ -8,10 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @Author Alexandre Iskandar (324406)
- * @Author Anirudhh Ramesh (329806)
- * Represents a public part of the game state of tChu
- * Public, immutable
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public, immutable class. Represents a public part of the game state of tChu
  */
 public class PublicGameState {
 
@@ -19,8 +18,10 @@ public class PublicGameState {
     private final PublicCardState cardState;
     private final PlayerId currentPlayerId, lastPlayer;
     private final Map<PlayerId, PublicPlayerState> playerState;
+
     /**
      * Public Constructor, it builds the public part of a game of tChu.
+     *
      * @param ticketsCount the bank of tickets has a size of ticketsCount
      * @param cardState the public state of the wagon/locomotive cards
      * @param currentPlayerId the current player
@@ -31,79 +32,80 @@ public class PublicGameState {
      */
     public PublicGameState(int ticketsCount, PublicCardState cardState, PlayerId currentPlayerId, Map<PlayerId, PublicPlayerState> playerState, PlayerId lastPlayer){
         boolean ticketsCountPositive = ticketsCount >= 0;
-        boolean playerStateEqualsTwo = playerState.entrySet().size() == 2; //TODO: Is this correct set to verify for key/value pairs?
+        boolean playerStateEqualsTwo = playerState.keySet().size() == 2;
         Preconditions.checkArgument(ticketsCountPositive && playerStateEqualsTwo);
 
         this.ticketsCount = ticketsCount;
         this.cardState = Objects.requireNonNull(cardState);
         this.currentPlayerId = Objects.requireNonNull(currentPlayerId);
-        this.playerState = Objects.requireNonNull(playerState);
+        this.playerState = Map.copyOf(Objects.requireNonNull(playerState));
         this.lastPlayer = lastPlayer;
     }
 
     /**
-     * Method which returns the size of the bank of tickets
-     * @return returns the size of the bank of tickets
+     * Returns the size of the bank of tickets
+     * @return the size of the bank of tickets
      */
     public int ticketsCount(){
         return ticketsCount;
     }
 
     /**
-     * Method which returns true IFF it is possible to draw a ticket (=> If the ticket bank is not empty)
-     * @return returns true IFF it is possible to draw a ticket (=> if the ticket bank is not empty)
+     * Returns true IFF it is possible to draw a ticket (=> If the ticket bank is not empty)
+     * @return true IFF it is possible to draw a ticket (=> if the ticket bank is not empty)
      */
     public boolean canDrawTickets(){
         return (ticketsCount > 0);
     }
 
     /**
-     * Method which returns the public part of the state of the wagon/locomotive cards
-     * @return returns the public part of the state of wagon/locomotive cards
+     * Returns the public part of the state of the wagon/locomotive cards
+     * @return the public part of the state of wagon/locomotive cards
      */
     public PublicCardState cardState(){
         return cardState;
     }
 
     /**
-     * Method which returns true IFF it is possible to draw cards (-> if the (drawPile + discardsPile) >= 5)
-     * @return returns true IFF it is possible to draw cards (=> if the (drawPile + discardsPile) >= 5)
+     * Returns true IFF it is possible to draw cards (-> if the (drawPile + discardsPile) >= 5)
+     * @return true IFF it is possible to draw cards (=> if the (drawPile + discardsPile) >= 5)
      */
     public boolean canDrawCards(){
         return (cardState.deckSize() + cardState.discardsSize()) >= 5;
     }
 
     /**
-     * Method which returns the identity of the current player
-     * @return returns the identity of the current player
+     * Returns the identity of the current player
+     * @return the identity of the current player
      */
     public PlayerId currentPlayerId(){
         return currentPlayerId;
     }
 
     /**
-     * Method which returns the PublicPlayerState of the player identity given
+     * Returns the PublicPlayerState of the player identity given
+     *
      * @param playerId id of the player to return the public player state of
-     * @return returns the PublicPlayerState of the player identity given
+     * @return the PublicPlayerState of the player identity given
      */
     public PublicPlayerState playerState(PlayerId playerId){
         return playerState.get(playerId);
     }
 
     /**
-     * Method which returns the PublicPlayerState of the current player
-     * @return returns the PublicPlayerState of the current player
+     * Returns the PublicPlayerState of the current player
+     * @return the PublicPlayerState of the current player
      */
     public PublicPlayerState currentPlayerState(){
         return playerState.get(currentPlayerId);
     }
 
     /**
-     * Method which returns all the routes that one or the other player has claimed
-     * @return returns all the routes that one or the other player has claimed
+     * Returns all the routes that one or the other player has claimed
+     * @return all the routes that one or the other player has claimed
      */
     public List<Route> claimedRoutes(){
-        List<Route> allRoutes = new ArrayList<Route>();
+        List<Route> allRoutes = new ArrayList<>();
         allRoutes.addAll(playerState.get(currentPlayerId).routes());
         allRoutes.addAll(playerState.get(currentPlayerId.next()).routes());
 
@@ -111,8 +113,8 @@ public class PublicGameState {
     }
 
     /**
-     * Method which returns the identity of the last player, or null if they are not yet known (such as if the last round has not started)
-     * @return returns the identity of the last player, or null if they are not yet known (such as if the last round has not started)
+     * Returns the identity of the last player, or null if they are not yet known (such as if the last round has not started)
+     * @return the identity of the last player, or null if they are not yet known (such as if the last round has not started)
      */
     public PlayerId lastPlayer(){
         return lastPlayer;

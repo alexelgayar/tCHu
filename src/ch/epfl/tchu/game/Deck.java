@@ -3,7 +3,6 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -69,7 +68,7 @@ public final class Deck<C extends Comparable<C>> {
      */
     public Deck<C> withoutTopCard() {
         Preconditions.checkArgument(!isEmpty());
-        List<C> copy = new ArrayList<>(cards.subList(0, cards.size() - 1)); //TODO: Is this correct, or use List.copyOf?
+        List<C> copy = cards.subList(0, cards.size() - 1);
 
         return new Deck<>(copy);
     }
@@ -82,7 +81,7 @@ public final class Deck<C extends Comparable<C>> {
      */
     public SortedBag<C> topCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
-        List<C> copy = new ArrayList<>(cards.subList(size() - count, size()));
+        List<C> copy = cards.subList(size() - count, size());
 
         return SortedBag.of(copy);
     }
@@ -95,7 +94,7 @@ public final class Deck<C extends Comparable<C>> {
      */
     public Deck<C> withoutTopCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
-        List<C> copy = new ArrayList<>(cards.subList(0, this.size() - count));
+        List<C> copy = cards.subList(0, this.size() - count);
 
         return new Deck<>(copy);
     }

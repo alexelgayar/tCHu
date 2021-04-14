@@ -5,6 +5,12 @@ import ch.epfl.tchu.SortedBag;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public interface. Represents a player of tCHu
+ */
 public interface Player {
 
     void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames);

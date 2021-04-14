@@ -25,7 +25,7 @@ public final class PlayerState extends PublicPlayerState {
      */
     public PlayerState(SortedBag<Ticket> tickets, SortedBag<Card> cards, List<Route> routes) {
         super(tickets.size(), cards.size(), routes);
-        this.tickets = tickets; //TODO: Is this immutable, or should I make a List.of? No, since SortedBag is an immutable class?
+        this.tickets = tickets;
         this.cards = cards;
         this.ticketPoints = ticketPoints();
     }
@@ -99,9 +99,11 @@ public final class PlayerState extends PublicPlayerState {
     public boolean canClaimRoute(Route route) {
         boolean playerHasEnoughCars = (carCount() >= route.length());
         boolean playerHasNecessaryCards = false;
+
         if (playerHasEnoughCars){
             playerHasNecessaryCards = (!possibleClaimCards(route).isEmpty());
         }
+
         return (playerHasEnoughCars && playerHasNecessaryCards);
     }
 

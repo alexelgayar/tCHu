@@ -2,8 +2,6 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.ArrayList;
-
 /**
  * @author Alexandre Iskandar (324406)
  * @author Anirudhh Ramesh (329806)
@@ -11,10 +9,10 @@ import java.util.ArrayList;
  */
 public final class StationPartition implements StationConnectivity {
 
-    private final int[] stationRepresentant;
+    private final int[] stationRepresentative;
 
-    private StationPartition(int[] stationRepresentant) {
-        this.stationRepresentant = stationRepresentant.clone();
+    private StationPartition(int[] stationRepresentative) {
+        this.stationRepresentative = stationRepresentative.clone();
     }
 
     /**
@@ -25,9 +23,9 @@ public final class StationPartition implements StationConnectivity {
      */
     @Override
     public boolean connected(Station s1, Station s2) {
-        return (s1.id() >= stationRepresentant.length || s2.id() >= stationRepresentant.length)
+        return (s1.id() >= stationRepresentative.length || s2.id() >= stationRepresentative.length)
                 ? s1.id() == s2.id()
-                : stationRepresentant[s1.id()] == stationRepresentant[s2.id()];
+                : stationRepresentative[s1.id()] == stationRepresentative[s2.id()];
     }
 
     /**
@@ -36,7 +34,7 @@ public final class StationPartition implements StationConnectivity {
      */
     public static final class Builder {
 
-        private int[] stationRepresentant; //TODO: Is this immutable?
+        private final int[] stationRepresentative;
 
         /**
          * Constructs a new builder and creates a list where every station is representative of itself
@@ -46,12 +44,11 @@ public final class StationPartition implements StationConnectivity {
         public Builder(int stationCount) {
             Preconditions.checkArgument(stationCount >= 0);
 
-            stationRepresentant = new int[stationCount];
+            stationRepresentative = new int[stationCount];
 
             for (int i = 0; i < stationCount; ++i) {
-                stationRepresentant[i] = i;
+                stationRepresentative[i] = i;
             }
-
         }
 
         /**
@@ -61,9 +58,7 @@ public final class StationPartition implements StationConnectivity {
          * @return a state identical to the receptor but with both stations connected
          */
         public Builder connect(Station s1, Station s2) {
-
-            stationRepresentant[representative(s2.id())] = stationRepresentant[representative(s1.id())];
-
+            stationRepresentative[representative(s2.id())] = stationRepresentative[representative(s1.id())];
             return this;
         }
 
@@ -72,19 +67,19 @@ public final class StationPartition implements StationConnectivity {
          * @return a StationPartition with a flattened list of representatives
          */
         public StationPartition build() {
-            for (int i = 0; i < stationRepresentant.length; ++i) {
-                stationRepresentant[i] = representative(stationRepresentant[i]);
+            for (int i = 0; i < stationRepresentative.length; ++i) {
+                stationRepresentative[i] = representative(stationRepresentative[i]);
             }
-            return new StationPartition(stationRepresentant);
+            return new StationPartition(stationRepresentative);
         }
 
 
         private int representative(int id) {
             int a = id;
-            while (stationRepresentant[a] != stationRepresentant[stationRepresentant[a]]) {
-                a = stationRepresentant[a];
+            while (stationRepresentative[a] != stationRepresentative[stationRepresentative[a]]) {
+                a = stationRepresentative[a];
             }
-            return stationRepresentant[a];
+            return stationRepresentative[a];
         }
 
     }

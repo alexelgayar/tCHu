@@ -62,7 +62,7 @@ public class PublicPlayerState {
      * @return the roads that the player has seized
      */
     public List<Route> routes(){
-        return routes; //TODO: Is this immutable getter?
+        return routes;
     }
 
     /**

@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public final class Ticket implements Comparable<Ticket> {
 
     private final String TEXT;
-    private final List<Trip> trips; //TODO: Should points be an attribute of the class?
+    private final List<Trip> trips;
 
     /**
      * Constructor which constructs a ticket out of a list of trips
@@ -73,6 +73,7 @@ public final class Ticket implements Comparable<Ticket> {
         int i;
         int temp = 0;
 
+        //Trip.points(stationConnectivity)
         for (Trip trip : trips) {
             temp = (connectivity.connected(trip.from(), trip.to()) && trip.points() > temp)
                     ? trip.points()

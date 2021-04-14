@@ -22,8 +22,8 @@ public final class CardState extends PublicCardState{
 
     private CardState(List<Card> faceUpCards, Deck<Card> drawPile, SortedBag<Card> discardsPile){
         super(faceUpCards, drawPile.size(), discardsPile.size());
-        this.drawPile = drawPile; //TODO: Is this immutable? Yes, since Deck<> is an immutable class?
-        this.discardsPile = discardsPile; //TODO: Is this immutable? Yes, since SortedBag<> is an immutable class?
+        this.drawPile = drawPile;
+        this.discardsPile = discardsPile;
     }
 
     /**
@@ -52,7 +52,7 @@ public final class CardState extends PublicCardState{
     public CardState withDrawnFaceUpCard(int slot){
         Preconditions.checkArgument(!drawPile.isEmpty());
 
-        List<Card> faceUpCardsCopy = new ArrayList<>(faceUpCards()); //TODO: Unnecessary deep copy? Should I change return of PublicCardState.faceUpCards()?
+        List<Card> faceUpCardsCopy = new ArrayList<>(faceUpCards());
         faceUpCardsCopy.set(Objects.checkIndex(slot, 5), drawPile.topCard());
 
         return new CardState(faceUpCardsCopy, drawPile.withoutTopCard(), discardsPile);

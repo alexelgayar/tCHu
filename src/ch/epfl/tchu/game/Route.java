@@ -15,7 +15,6 @@ import static ch.epfl.tchu.game.Constants.MIN_ROUTE_LENGTH;
  * */
 public final class Route {
 
-    //TODO: Should I move Level down to the bottom
     /**
      * Represents the two levels that a route can connect two neighbouring cities
      * These values, in order, are: OVERGROUND (surface route) and UNDERGROUND (tunnel route)

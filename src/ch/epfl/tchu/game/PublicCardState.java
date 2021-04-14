@@ -46,7 +46,7 @@ public class PublicCardState {
      * @return the 5-element list of the 5 cards that are face-up
      */
     public List<Card> faceUpCards(){
-        return faceUpCards; //TODO: Is this immutable? Yes, since List is an immutable copy (constructor) and Card is enum (immutable as well)?
+        return faceUpCards;
     }
 
     /**
