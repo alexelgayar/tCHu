@@ -213,7 +213,7 @@ public final class Info {
             for (int i = 0; i < cardList.size() - 2; ++i) {
                 cardsName.append(cardList.get(i)).append(", ");
             }
-            cardsName.append(cardList.get(cardList.size() - 2)).append(StringsFr.AND_SEPARATOR).append(cardList.get(cardList.size() - 1));
+           cardsName.append(cardList.get(cardList.size() - 2)).append(StringsFr.AND_SEPARATOR).append(cardList.get(cardList.size() - 1));
             return cardsName.toString();
         }
     }
