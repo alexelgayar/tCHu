@@ -35,26 +35,16 @@ public final class Info {
      */
     public static String cardName(Card card, int count) {
         switch (card) {
-            case BLACK:
-                return StringsFr.BLACK_CARD + StringsFr.plural(count);
-            case BLUE:
-                return StringsFr.BLUE_CARD + StringsFr.plural(count);
-            case RED:
-                return StringsFr.RED_CARD + StringsFr.plural(count);
-            case VIOLET:
-                return StringsFr.VIOLET_CARD + StringsFr.plural(count);
-            case GREEN:
-                return StringsFr.GREEN_CARD + StringsFr.plural(count);
-            case WHITE:
-                return StringsFr.WHITE_CARD + StringsFr.plural(count);
-            case YELLOW:
-                return StringsFr.YELLOW_CARD + StringsFr.plural(count);
-            case ORANGE:
-                return StringsFr.ORANGE_CARD + StringsFr.plural(count);
-            case LOCOMOTIVE:
-                return StringsFr.LOCOMOTIVE_CARD + StringsFr.plural(count);
-            default:
-                throw new Error();
+            case BLACK: return StringsFr.BLACK_CARD + StringsFr.plural(count);
+            case BLUE: return StringsFr.BLUE_CARD + StringsFr.plural(count);
+            case RED: return StringsFr.RED_CARD + StringsFr.plural(count);
+            case VIOLET: return StringsFr.VIOLET_CARD + StringsFr.plural(count);
+            case GREEN: return StringsFr.GREEN_CARD + StringsFr.plural(count);
+            case WHITE: return StringsFr.WHITE_CARD + StringsFr.plural(count);
+            case YELLOW: return StringsFr.YELLOW_CARD + StringsFr.plural(count);
+            case ORANGE: return StringsFr.ORANGE_CARD + StringsFr.plural(count);
+            case LOCOMOTIVE: return StringsFr.LOCOMOTIVE_CARD + StringsFr.plural(count);
+            default: throw new Error();
         }
     }
 
