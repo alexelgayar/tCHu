@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public final class Ticket implements Comparable<Ticket> {
 
     private final String TEXT;
-    private final List<Trip> trips;
+    private final List<Trip> trips; //TODO: Should points be an attribute of the class?
 
     /**
      * Constructor which constructs a ticket out of a list of trips
@@ -42,7 +42,7 @@ public final class Ticket implements Comparable<Ticket> {
     }
 
     //Private method used to compute the textual representation of the ticket
-    private static String computeText(List<Trip> trips) { //TODO: Use StringBuilder here, if it makes more efficient?
+    private static String computeText(List<Trip> trips) {
         TreeSet<String> to = new TreeSet<>();
 
         for (Trip w : trips) {
@@ -51,14 +51,9 @@ public final class Ticket implements Comparable<Ticket> {
 
         String destinations = String.join(", ", to);
 
-        String s;
-
-        if (trips.size() == 1) {
-            s = String.format("%s - %s", trips.get(0).from().toString(), destinations);
-        } else
-            s = String.format("%s - {%s}", trips.get(0).from().toString(), destinations);
-
-        return s;
+        return (trips.size() == 1)
+                ? String.format("%s - %s", trips.get(0).from().toString(), destinations)
+                : String.format("%s - {%s}", trips.get(0).from().toString(), destinations);
     }
 
     /**
@@ -78,20 +73,17 @@ public final class Ticket implements Comparable<Ticket> {
         int i;
         int temp = 0;
 
-        for (Trip w : trips) {
-            if (connectivity.connected(w.from(), w.to())) {
-                if (w.points() > temp)
-                    temp = w.points();
-            }
+        for (Trip trip : trips) {
+            temp = (connectivity.connected(trip.from(), trip.to()) && trip.points() > temp)
+                    ? trip.points()
+                    : temp;
         }
         i = temp;
 
         if (temp == 0) {
             temp = trips.get(0).points();
             for (Trip w : trips) {
-                if (w.points() < temp) {
-                    temp = w.points();
-                }
+                temp = Math.min(w.points(), temp);
             }
             i = -temp;
         }

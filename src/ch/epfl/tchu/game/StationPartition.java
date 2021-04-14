@@ -36,7 +36,7 @@ public final class StationPartition implements StationConnectivity {
      */
     public static final class Builder {
 
-        private int[] stationRepresentant;
+        private int[] stationRepresentant; //TODO: Is this immutable?
 
         /**
          * Constructs a new builder and creates a list where every station is representative of itself

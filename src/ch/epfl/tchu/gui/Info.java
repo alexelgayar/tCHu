@@ -154,7 +154,7 @@ public final class Info {
 
         text += (additionalCost > 0)
                 ? String.format(StringsFr.SOME_ADDITIONAL_COST, additionalCost, StringsFr.plural(additionalCost))
-                : String.format(StringsFr.NO_ADDITIONAL_COST);
+                : StringsFr.NO_ADDITIONAL_COST;
 
         return text;
     }
@@ -205,9 +205,9 @@ public final class Info {
         return route.station1().name() + StringsFr.EN_DASH_SEPARATOR + route.station2().name();
     }
 
-    private static String cardsName(SortedBag<Card> cards) {
+    private static String cardsName(SortedBag<Card> cards) { //TODO: See if this can be optimised (too many if-else + for-loops)
 
-        String cardsName = "";
+        StringBuilder cardsName = new StringBuilder();
         List<String> cardList = new ArrayList<>();
 
         for (Card w : cards.toSet()) {
@@ -221,10 +221,10 @@ public final class Info {
             return cardList.get(0) + StringsFr.AND_SEPARATOR + cardList.get(1);
         } else {
             for (int i = 0; i < cardList.size() - 2; ++i) {
-                cardsName += cardList.get(i) + ", ";
+                cardsName.append(cardList.get(i)).append(", ");
             }
-            cardsName += cardList.get(cardList.size() - 2) + StringsFr.AND_SEPARATOR + cardList.get(cardList.size() - 1);
-            return cardsName;
+            cardsName.append(cardList.get(cardList.size() - 2)).append(StringsFr.AND_SEPARATOR).append(cardList.get(cardList.size() - 1));
+            return cardsName.toString();
         }
     }
 

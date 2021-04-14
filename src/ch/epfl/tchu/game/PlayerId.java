@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * @author Alexandre Iskandar (324406)
  * @author Anirudhh Ramesh (329806)
+ * Public, enum. Represents the identity of a player
  */
 public enum PlayerId {
 
