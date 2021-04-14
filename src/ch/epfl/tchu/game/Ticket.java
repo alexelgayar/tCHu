@@ -70,7 +70,6 @@ public final class Ticket implements Comparable<Ticket> {
      * @return number of points earned per ticket
      */
     public int points(StationConnectivity connectivity) {
-
         boolean connected = false;
         int maxPoints = 0;
         int minPoints = trips.get(0).points();
@@ -78,6 +77,7 @@ public final class Ticket implements Comparable<Ticket> {
         for (Trip trip: trips){
             maxPoints = Math.max(maxPoints, trip.points(connectivity));
             minPoints = Math.min(minPoints, trip.points());
+
             if (!connected) connected = connectivity.connected(trip.from(), trip.to());
         }
 
