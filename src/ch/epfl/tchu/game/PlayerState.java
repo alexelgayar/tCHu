@@ -113,36 +113,33 @@ public final class PlayerState extends PublicPlayerState {
      * @return the list of all the sets of cards the player could use from their hand to take possession of the given route
      * @throws IllegalArgumentException if the player does not have enough cards to take the route
      */
-    public List<SortedBag<Card>> possibleClaimCards(Route route) { //TODO: See if possible to optimize & modularize
+    public List<SortedBag<Card>> possibleClaimCards(Route route) {
         Preconditions.checkArgument(carCount() >= route.length());
 
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
-        System.out.println(route.possibleClaimCards());
 
+        Set<SortedBag<Card>> allCardCombinations = (cards.size() >= route.length())
+                ? cards.subsetsOfSize(route.length())
+                : new HashSet<>();
+
+        List<SortedBag<Card>> filteredCards = filterCards(allPossibleRouteCards, allCardCombinations);
+
+        return sortList(filteredCards);
+    }
+
+    //Filters the the possible route claim card combinations such that only those that the player can obtain are returned
+    private List<SortedBag<Card>> filterCards(List<SortedBag<Card>> allPossibleRouteCards, Set<SortedBag<Card>> allCardCombinations){
         List<SortedBag<Card>> filteredCards = new ArrayList<>();
 
-        Set<SortedBag<Card>> allPlayerCardCombinations = new HashSet<>();
-        if(cards.size() >= route.length()) {
-            allPlayerCardCombinations = cards.subsetsOfSize(route.length());
-        }
-
         for (Card card: Card.ALL) {
-            for (SortedBag<Card> cardCombination : allPlayerCardCombinations) {
+            for (SortedBag<Card> cardCombination : allCardCombinations) {
                 if (allPossibleRouteCards.contains(cardCombination) && cardCombination.get(0).equals(card)) {
                     filteredCards.add(cardCombination);
                 }
             }
         }
 
-        return new ArrayList<>(sortList(filteredCards));
-    }
-
-    //Sort cards in ascending locomotive order
-    private List<SortedBag<Card>> sortList(List<SortedBag<Card>> unsortedList){
-        List<SortedBag<Card>> list = new ArrayList<>(unsortedList);
-        list.sort(
-                Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
-        return new ArrayList<>(list);
+        return filteredCards;
     }
 
     /**
@@ -157,7 +154,7 @@ public final class PlayerState extends PublicPlayerState {
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
-        //===== Preconditions Check =====// //TODO: See if possible to optimize and modularize
+        //===== Preconditions Check =====//
         boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
         boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCards.toSet().size() <= 2);
@@ -166,10 +163,25 @@ public final class PlayerState extends PublicPlayerState {
 
         //===== Computing Possible Cards =====//
         SortedBag<Card> remainingCards = cards.difference(initialCards);
-        Set<SortedBag<Card>> allSubsets = new HashSet<>();
-        if (remainingCards.size() >= additionalCardsCount) {
-            allSubsets = remainingCards.subsetsOfSize(additionalCardsCount);
-        }
+
+        List<Card> additionalClaimCards = computeAdditionalClaimCards(initialCards, remainingCards);
+        Set<SortedBag<Card>> possibleAdditionalPlayerCards = computePossibleAdditionalPlayerCards(additionalClaimCards, remainingCards, additionalCardsCount);
+
+        List<SortedBag<Card>> options = new ArrayList<>(possibleAdditionalPlayerCards);
+
+        return sortList(options);
+    }
+
+    //Sort cards in ascending locomotive order
+    private List<SortedBag<Card>> sortList(List<SortedBag<Card>> unsortedList){
+        List<SortedBag<Card>> list = new ArrayList<>(unsortedList);
+        list.sort(
+                Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
+        return list;
+    }
+
+    //Computes what additional cards the player must player, to seize the tunnel
+    private List<Card> computeAdditionalClaimCards(SortedBag<Card> initialCards, SortedBag<Card> remainingCards) {
         List<Card> possibleClaimCards = new ArrayList<>();
 
         for (Card card: remainingCards){
@@ -178,22 +190,29 @@ public final class PlayerState extends PublicPlayerState {
             }
         }
 
-        Set<SortedBag<Card>> possibleSubsets = new HashSet<>();
-        if (SortedBag.of(possibleClaimCards).size() >= additionalCardsCount) {
-            possibleSubsets = SortedBag.of(possibleClaimCards).subsetsOfSize(additionalCardsCount);
-        }
+        return possibleClaimCards;
+    }
+
+    //Computes all the possible combinations of cards, belonging to the player, that the player can play
+    private Set<SortedBag<Card>> computePossibleAdditionalPlayerCards(List<Card> possibleClaimCards, SortedBag<Card> remainingCards, int additionalCardsCount){
+        Set<SortedBag<Card>> possibleSubsets = (SortedBag.of(possibleClaimCards).size() >= additionalCardsCount)
+                ? SortedBag.of(possibleClaimCards).subsetsOfSize(additionalCardsCount)
+                : new HashSet<>();
+
         Set<SortedBag<Card>> possibleAdditionalCards = new HashSet<>();
+
+        Set<SortedBag<Card>> allSubsets = (remainingCards.size() >= additionalCardsCount)
+                ? remainingCards.subsetsOfSize(additionalCardsCount)
+                : new HashSet<>();
 
         for(SortedBag<Card> s : allSubsets){
             if(possibleSubsets.contains(s)){
                 possibleAdditionalCards.add(s);
             }
         }
-
-        List<SortedBag<Card>> options = new ArrayList<>(possibleAdditionalCards);
-
-        return sortList(options);
+        return possibleAdditionalCards;
     }
+
 
     /**
      * Returns an identical state to the receive, except that the player has also seized the given route by means of the given cards
