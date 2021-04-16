@@ -80,9 +80,8 @@ public final class Game {
             }
 
             //Check if game should end
-            if ((gameState.lastTurnBegins() && lastTurnsRemaining <= 0) || (lastTurnStarted && lastTurnsRemaining <= 0)) {
-                runGame = false;
-            } else if (gameState.lastTurnBegins() || lastTurnStarted){
+            runGame = shouldRunGame(lastTurnsRemaining, lastTurnStarted, runGame);
+            if (gameState.lastTurnBegins() || lastTurnStarted){
                 lastTurnStarted = true;
                 --lastTurnsRemaining;
             }
@@ -106,17 +105,20 @@ public final class Game {
 
     private static Player.TurnKind playTurn(Player currentPlayer, Map<PlayerId, Player> players){
         updateStates(players);
-        updateStates(players);
         Player.TurnKind turnKind = currentPlayer.nextTurn();
         sendInformation(players, infos.get(gameState.currentPlayerId()).canPlay());
+
         return turnKind;
     }
 
     private static void drawTickets(Player currentPlayer, Map<PlayerId, Player> players){
         SortedBag<Ticket> drawnTickets = gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
         SortedBag<Ticket> chosenTickets = currentPlayer.chooseTickets(drawnTickets);
+
         sendInformation(players, infos.get(gameState.currentPlayerId()).drewTickets(Constants.IN_GAME_TICKETS_COUNT));
+
         gameState = gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets);
+
         sendInformation(players, infos.get(gameState.currentPlayerId()).keptTickets(chosenTickets.size()));
     }
 
@@ -138,7 +140,6 @@ public final class Game {
     }
 
     private static void claimRoute(Player currentPlayer, Map<PlayerId, Player> players, Random rng){
-
         Route claimedRoute = currentPlayer.claimedRoute();
         SortedBag<Card> initialClaimCards = currentPlayer.initialClaimCards();
 
@@ -146,15 +147,13 @@ public final class Game {
             if (gameState.currentPlayerState().canClaimRoute(claimedRoute)) {
                 gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                 sendInformation(players, infos.get(gameState.currentPlayerId()).claimedRoute(claimedRoute, initialClaimCards));
-
             }
+        }
 
-        } else if (claimedRoute.level() == Route.Level.UNDERGROUND) {
-
+        else if (claimedRoute.level() == Route.Level.UNDERGROUND) {
             sendInformation(players, infos.get((gameState.currentPlayerId())).attemptsTunnelClaim(claimedRoute, initialClaimCards));
 
             if (gameState.currentPlayerState().canClaimRoute(claimedRoute)) {
-
                 SortedBag<Card> drawnCards = SortedBag.of();
 
                 for (int i = 0; i < 3; ++i) {
@@ -166,11 +165,9 @@ public final class Game {
                 int count = claimedRoute.additionalClaimCardsCount(initialClaimCards, drawnCards);
 
                 sendInformation(players, infos.get((gameState.currentPlayerId())).drewAdditionalCards(drawnCards, count));
-
                 if (count <= 0 || gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards).isEmpty()) {
                     gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                     sendInformation(players, infos.get(gameState.currentPlayerId()).claimedRoute(claimedRoute, initialClaimCards));
-
                 } else {
                     List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards);
 
@@ -178,19 +175,22 @@ public final class Game {
 
                     if (additionalCards.size() == 0) {
                         sendInformation(players, infos.get((gameState.currentPlayerId())).didNotClaimRoute(claimedRoute));
-
                     } else {
                         gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards.union(additionalCards));
                         sendInformation(players, infos.get((gameState.currentPlayerId())).claimedRoute(claimedRoute, initialClaimCards.union(additionalCards)));
-
                     }
                 }
                 gameState = gameState.withMoreDiscardedCards(drawnCards);
             }
-
         }
     }
 
+    private static boolean shouldRunGame(int lastTurnsRemaining, boolean lastTurnStarted, boolean runGame){
+        if ((gameState.lastTurnBegins() && lastTurnsRemaining <= 0) || (lastTurnStarted && lastTurnsRemaining <= 0)) {
+            runGame = false;
+        }
+        return runGame;
+    }
 
     private static void determineWinner(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames){
         //Compute construction points + ticket points
