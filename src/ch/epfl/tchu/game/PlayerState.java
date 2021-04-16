@@ -155,11 +155,11 @@ public final class PlayerState extends PublicPlayerState {
      */
     public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
         //===== Preconditions Check =====//
-        boolean additionalCardsCountIsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
-        boolean initialCardsIsNotEmpty = (!initialCards.isEmpty());
-        boolean initialCardsContainsNoMoreThanTwoCardTypes = (initialCards.toSet().size() <= 2);
-        boolean drawnCardsExactlyThree = (drawnCards.size() == 3);
-        Preconditions.checkArgument(additionalCardsCountIsCorrect && initialCardsIsNotEmpty && initialCardsContainsNoMoreThanTwoCardTypes && drawnCardsExactlyThree);
+        boolean additionalCardsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
+        boolean initialCardsNotEmpty = (!initialCards.isEmpty());
+        boolean initialCardsTwoTypes = (initialCards.toSet().size() <= 2);
+        boolean drawnCardsThree = (drawnCards.size() == 3);
+        Preconditions.checkArgument(additionalCardsCorrect && initialCardsNotEmpty && initialCardsTwoTypes && drawnCardsThree);
 
         //===== Computing Possible Cards =====//
         SortedBag<Card> remainingCards = cards.difference(initialCards);

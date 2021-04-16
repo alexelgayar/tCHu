@@ -103,7 +103,7 @@ public final class Info {
     /**
      * Returns a message saying that a player drew a visible card, and saying which card it is
      *
-     * @param card the crad that the player drew
+     * @param card the card that the player drew
      * @return a message saying that a player drew a visible card, and saying which card it is
      */
     public String drewVisibleCard(Card card) {
@@ -195,7 +195,7 @@ public final class Info {
         return route.station1().name() + StringsFr.EN_DASH_SEPARATOR + route.station2().name();
     }
 
-    private static String cardsName(SortedBag<Card> cards) { //TODO: See if this can be optimised (too many if-else + for-loops)
+    private static String cardsName(SortedBag<Card> cards) {
 
         StringBuilder cardsName = new StringBuilder();
         List<String> cardList = new ArrayList<>();
