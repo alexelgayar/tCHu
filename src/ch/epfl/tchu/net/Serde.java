@@ -10,6 +10,12 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Public class
+ * Represents an object that can serialize or deserialize other objects
+ */
 public interface Serde<E> {
 
     public String serialize(E yes);
