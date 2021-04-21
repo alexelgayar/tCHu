@@ -4,10 +4,9 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static ch.epfl.tchu.game.Card.*;
@@ -19,7 +18,11 @@ public class Serdes {
             i -> Integer.toString(i),
             Integer::parseInt);
 
-    // public static final Serde<String> stringSerde;
+
+
+    public static final Serde<String> stringSerde = Serde.of(
+            (String s) -> Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8)),
+            (String s) -> new String(Base64.getDecoder().decode(s),StandardCharsets.UTF_8));
 
 
     public static final Serde<PlayerId> playerIdSerde = new Serde<PlayerId>() {
@@ -42,7 +45,7 @@ public class Serdes {
 
     public static final Serde<Ticket> ticketSerde = Serde.oneOf(ChMap.tickets());
 
-    // public static final Serde<List<String>> stringListSerde = Serde.listOf(stringSerde, ",");
+    public static final Serde<List<String>> stringListSerde = Serde.listOf(stringSerde, ",");
 
     public static final Serde<List<Card>> cardListSerde = Serde.listOf(cardSerde, ",");
 
@@ -168,6 +171,10 @@ public class Serdes {
 
 
         System.out.println(publicGameStateSerde.serialize(gs).equals("40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;:"));
+
+       String s = stringSerde.serialize("Charles");
+
+        System.out.println(stringSerde.deserialize(s));
 
 
 
