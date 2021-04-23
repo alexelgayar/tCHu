@@ -3,38 +3,34 @@ package ch.epfl.tchu.net;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author Alexandre Iskandar (324406)
  * @author Anirudhh Ramesh (329806)
- * Public class
+ * Public interface
  * Represents an object that can serialize or deserialize other objects
  */
 public interface Serde<E> {
 
-    public String serialize(E yes);
+    public String serialize(E plainObject);
 
-    public E deserialize(String alsoYes);
+    public E deserialize(String serializedObject);
 
     public static <T> Serde of(Function<T, String> serFun, Function<String, T> deserFun) {
 
         return new Serde<T>() {
-
             @Override
-            public String serialize(T t) {
-                return serFun.apply(t);
+            public String serialize(T plainObject) {
+                return serFun.apply(plainObject);
             }
 
             @Override
-            public T deserialize(String t) {
+            public T deserialize(String serializedObject) {
 
-                return deserFun.apply(t);
+                return deserFun.apply(serializedObject);
             }
         };
     }
@@ -53,11 +49,11 @@ public interface Serde<E> {
         return new Serde<List<T>>() {
 
             @Override
-            public String serialize(List<T> list) {
+            public String serialize(List<T> plainObject) {
 
                 List<String> strings = new ArrayList<>();
 
-                for (T t : list) {
+                for (T t : plainObject) {
                     strings.add(yes.serialize(t));
                 }
 
@@ -67,9 +63,9 @@ public interface Serde<E> {
             }
 
             @Override
-            public List<T> deserialize(String alsoYes) {
+            public List<T> deserialize(String serializedObject) {
 
-                String[] s = alsoYes.split(Pattern.quote(yesChar), -1);
+                String[] s = serializedObject.split(Pattern.quote(yesChar), -1);
                 List<T> tList = new ArrayList<>();
 
                 for (int i = 0; i < s.length; ++i) {
@@ -86,15 +82,15 @@ public interface Serde<E> {
         return new Serde<SortedBag<T>>() {
 
             @Override
-            public String serialize(SortedBag<T> bag) {
-                List list = bag.toList();
+            public String serialize(SortedBag<T> plainObject) {
+                List list = plainObject.toList();
                 String y = listOf(yes, yesChar).serialize(list);
                 return y;
             }
 
             @Override
-            public SortedBag<T> deserialize(String alsoYes) {
-                List list = Serde.listOf(yes, yesChar).deserialize(alsoYes);
+            public SortedBag<T> deserialize(String serializedObject) {
+                List list = Serde.listOf(yes, yesChar).deserialize(serializedObject);
                 return SortedBag.of(list);
             }
         };
