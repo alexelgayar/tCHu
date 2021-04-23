@@ -19,9 +19,9 @@ public interface Serde<E> {
 
     public E deserialize(String serializedObject);
 
-    public static <T> Serde of(Function<T, String> serFun, Function<String, T> deserFun) {
+    public static <T> Serde<T> of(Function<T, String> serFun, Function<String, T> deserFun) {
 
-        return new Serde<T>() {
+        return new Serde<>() {
             @Override
             public String serialize(T plainObject) {
                 return serFun.apply(plainObject);
@@ -35,7 +35,7 @@ public interface Serde<E> {
         };
     }
 
-    public static <T> Serde oneOf(List<T> list) {
+    public static <T> Serde<T> oneOf(List<T> list) {
 
         Function<T, String> serFun = t -> Integer.toString(list.indexOf(t));
         Function<String, T> deserFun = s -> list.get(Integer.parseInt(s));
@@ -44,9 +44,9 @@ public interface Serde<E> {
 
     }
 
-    public static <T> Serde<List<T>> listOf(Serde yes, String yesChar) {
+    public static <T> Serde<List<T>> listOf(Serde<T> yes, String yesChar) {
 
-        return new Serde<List<T>>() {
+        return new Serde<>() {
 
             @Override
             public String serialize(List<T> plainObject) {
@@ -57,9 +57,7 @@ public interface Serde<E> {
                     strings.add(yes.serialize(t));
                 }
 
-                String s = String.join(yesChar, strings);
-
-                return s;
+                return String.join(yesChar, strings);
             }
 
             @Override
@@ -68,8 +66,8 @@ public interface Serde<E> {
                 String[] s = serializedObject.split(Pattern.quote(yesChar), -1);
                 List<T> tList = new ArrayList<>();
 
-                for (int i = 0; i < s.length; ++i) {
-                    tList.add((T) yes.deserialize(s[i]));
+                for (String value : s) {
+                    tList.add(yes.deserialize(value));
                 }
 
                 return tList;
@@ -77,20 +75,19 @@ public interface Serde<E> {
         };
     }
 
-    public static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde yes, String yesChar) {
+    public static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> yes, String yesChar) {
 
-        return new Serde<SortedBag<T>>() {
+        return new Serde<>() {
 
             @Override
             public String serialize(SortedBag<T> plainObject) {
-                List list = plainObject.toList();
-                String y = listOf(yes, yesChar).serialize(list);
-                return y;
+                List<T> list = plainObject.toList();
+                return listOf(yes, yesChar).serialize(list);
             }
 
             @Override
             public SortedBag<T> deserialize(String serializedObject) {
-                List list = Serde.listOf(yes, yesChar).deserialize(serializedObject);
+                List<T> list = Serde.listOf(yes, yesChar).deserialize(serializedObject);
                 return SortedBag.of(list);
             }
         };
