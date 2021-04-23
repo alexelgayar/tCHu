@@ -3,37 +3,35 @@ package ch.epfl.tchu.net;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
-import java.awt.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import static ch.epfl.tchu.game.Card.*;
-import static ch.epfl.tchu.game.PlayerId.*;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 
 public class Serdes {
 
     public static final Serde<Integer> intSerde = Serde.of(
             i -> Integer.toString(i),
-            Integer::parseInt);
-
-
+            Integer::parseInt
+    );
 
     public static final Serde<String> stringSerde = Serde.of(
             (String s) -> Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8)),
-            (String s) -> new String(Base64.getDecoder().decode(s),StandardCharsets.UTF_8));
+            (String s) -> new String(Base64.getDecoder().decode(s),StandardCharsets.UTF_8)
+    );
 
-
-    public static final Serde<PlayerId> playerIdSerde = new Serde<PlayerId>() {
+    public static final Serde<PlayerId> playerIdSerde = new Serde<>() {
         @Override
-        public String serialize(PlayerId yes) {
-          return (yes == null) ? "" : Serde.oneOf(PlayerId.ALL).serialize(yes);
+        public String serialize(PlayerId playerId) {
+          return (playerId == null) ? "" : Serde.oneOf(PlayerId.ALL).serialize(playerId);
         }
 
         @Override
-        public PlayerId deserialize(String alsoYes) {
-            return (alsoYes == "") ? null : (PlayerId) Serde.oneOf(PlayerId.ALL).deserialize(alsoYes);
+        public PlayerId deserialize(String serializedObject) {
+            return (serializedObject.equals("")) ? null : Serde.oneOf(PlayerId.ALL).deserialize(serializedObject);
         }
     };
 
@@ -57,21 +55,20 @@ public class Serdes {
 
     public static final Serde<List<SortedBag<Card>>> cardBagListSerde = Serde.listOf(cardBagSerde, ";");
 
-    public static final Serde<PublicCardState> publicCardStateSerde = new Serde<PublicCardState>() {
+    public static final Serde<PublicCardState> publicCardStateSerde = new Serde<>() {
 
         @Override
-        public String serialize(PublicCardState yes) {
+        public String serialize(PublicCardState plainObject) {
 
             return String.join(";",
-                    cardListSerde.serialize(yes.faceUpCards()),
-                    intSerde.serialize(yes.deckSize()),
-                    intSerde.serialize(yes.discardsSize()));
+                    cardListSerde.serialize(plainObject.faceUpCards()),
+                    intSerde.serialize(plainObject.deckSize()),
+                    intSerde.serialize(plainObject.discardsSize()));
         }
 
         @Override
-        public PublicCardState deserialize(String alsoYes) {
-
-            String[] s = alsoYes.split(Pattern.quote(";"), -1);
+        public PublicCardState deserialize(String serializedObject) {
+            String[] s = serializedObject.split(Pattern.quote(";"), -1);
 
             return new PublicCardState(
                     cardListSerde.deserialize(s[0]),
@@ -80,21 +77,21 @@ public class Serdes {
         }
     };
 
-    public static final Serde<PublicPlayerState> publicPlayerStateSerde = new Serde<PublicPlayerState>() {
+    public static final Serde<PublicPlayerState> publicPlayerStateSerde = new Serde<>() {
 
         @Override
-        public String serialize(PublicPlayerState yes) {
+        public String serialize(PublicPlayerState plainObject) {
 
             return String.join(";",
-                    intSerde.serialize(yes.ticketCount()),
-                    intSerde.serialize(yes.cardCount()),
-                    routeListSerde.serialize(yes.routes()));
+                    intSerde.serialize(plainObject.ticketCount()),
+                    intSerde.serialize(plainObject.cardCount()),
+                    routeListSerde.serialize(plainObject.routes()));
         }
 
         @Override
-        public PublicPlayerState deserialize(String alsoYes) {
+        public PublicPlayerState deserialize(String serializedObject) {
 
-            String[] s = alsoYes.split(Pattern.quote(";"), -1);
+            String[] s = serializedObject.split(Pattern.quote(";"), -1);
 
             return new PublicPlayerState(
                     intSerde.deserialize(s[0]),
@@ -103,21 +100,21 @@ public class Serdes {
         }
     };
 
-    public static final Serde<PlayerState> playerStateSerde = new Serde<PlayerState>() {
+    public static final Serde<PlayerState> playerStateSerde = new Serde<>() {
 
         @Override
-        public String serialize(PlayerState yes) {
+        public String serialize(PlayerState plainObject) {
 
             return String.join(";",
-                    ticketBagSerde.serialize(yes.tickets()),
-                    cardBagSerde.serialize(yes.cards()),
-                    routeListSerde.serialize(yes.routes()));
+                    ticketBagSerde.serialize(plainObject.tickets()),
+                    cardBagSerde.serialize(plainObject.cards()),
+                    routeListSerde.serialize(plainObject.routes()));
         }
 
         @Override
-        public PlayerState deserialize(String alsoYes) {
+        public PlayerState deserialize(String serializedObject) {
 
-            String[] s = alsoYes.split(Pattern.quote(";"), -1);
+            String[] s = serializedObject.split(Pattern.quote(";"), -1);
 
             return new PlayerState(
                     ticketBagSerde.deserialize(s[0]),
@@ -126,23 +123,23 @@ public class Serdes {
         }
     };
 
-    public static final Serde<PublicGameState> publicGameStateSerde = new Serde<PublicGameState>() {
+    public static final Serde<PublicGameState> publicGameStateSerde = new Serde<>() {
         @Override
-        public String serialize(PublicGameState yes) {
+        public String serialize(PublicGameState plainObject) {
 
             return String.join(":",
-                    intSerde.serialize(yes.ticketsCount()),
-                    publicCardStateSerde.serialize(yes.cardState()),
-                    playerIdSerde.serialize(yes.currentPlayerId()),
-                    publicPlayerStateSerde.serialize(yes.playerState(PLAYER_1)),
-                    publicPlayerStateSerde.serialize(yes.playerState(PlayerId.PLAYER_2)),
-                    playerIdSerde.serialize(yes.lastPlayer()));
+                    intSerde.serialize(plainObject.ticketsCount()),
+                    publicCardStateSerde.serialize(plainObject.cardState()),
+                    playerIdSerde.serialize(plainObject.currentPlayerId()),
+                    publicPlayerStateSerde.serialize(plainObject.playerState(PLAYER_1)),
+                    publicPlayerStateSerde.serialize(plainObject.playerState(PlayerId.PLAYER_2)),
+                    playerIdSerde.serialize(plainObject.lastPlayer()));
         }
 
         @Override
-        public PublicGameState deserialize(String alsoYes) {
+        public PublicGameState deserialize(String serializedObject) {
 
-            String[] s = alsoYes.split(Pattern.quote(":"), -1);
+            String[] s = serializedObject.split(Pattern.quote(":"), -1);
 
             Map<PlayerId, PublicPlayerState> playerState = Map.of(PLAYER_1, publicPlayerStateSerde.deserialize(s[3]),
                     PlayerId.PLAYER_2, publicPlayerStateSerde.deserialize(s[4]));
