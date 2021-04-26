@@ -53,7 +53,7 @@ public class Serdes {
     public static final Serde<SortedBag<Card>> cardBagSerde = Serde.bagOf(cardSerde, ",");
 
     public static final Serde<SortedBag<Ticket>> ticketBagSerde = Serde.bagOf(ticketSerde, ",");
-
+    
     public static final Serde<List<SortedBag<Card>>> cardBagListSerde = Serde.listOf(cardBagSerde, ";");
 
     public static final Serde<PublicCardState> publicCardStateSerde = new Serde<>() {

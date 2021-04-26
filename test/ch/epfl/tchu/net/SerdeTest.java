@@ -42,16 +42,16 @@ public class SerdeTest {
     private static final Serde<Route> routeSerde = Serde.oneOf(ChMap.routes());
     private static final Serde<Ticket> ticketSerde = Serde.oneOf(ChMap.tickets());
 
-    private static final Serde<List<String>> stringListSerde = Serde.listOf(stringSerde, ',');
-    private static final Serde<List<Card>> cardListSerde = Serde.listOf(cardSerde, ',');
-    private static final Serde<List<Route>> routeListSerde = Serde.listOf(routeSerde, ',');
+    private static final Serde<List<String>> stringListSerde = Serde.listOf(stringSerde, ",");
+    private static final Serde<List<Card>> cardListSerde = Serde.listOf(cardSerde, ",");
+    private static final Serde<List<Route>> routeListSerde = Serde.listOf(routeSerde, ",");
 
-    private static final Serde<List<Ticket>> ticketListSerde = Serde.listOf(ticketSerde, ','); //Not in Serdes
+    private static final Serde<List<Ticket>> ticketListSerde = Serde.listOf(ticketSerde, ","); //Not in Serdes
 
-    private static final Serde<SortedBag<String>> stringBagSerde = Serde.bagOf(stringSerde, ','); //Not in Serdes
+    private static final Serde<SortedBag<String>> stringBagSerde = Serde.bagOf(stringSerde, ","); //Not in Serdes
 
-    private static final Serde<SortedBag<Card>> cardBagSerde = Serde.bagOf(cardSerde, ',');
-    private static final Serde<SortedBag<Ticket>> ticketBagSerde = Serde.bagOf(ticketSerde, ',');
+    private static final Serde<SortedBag<Card>> cardBagSerde = Serde.bagOf(cardSerde, ",");
+    private static final Serde<SortedBag<Ticket>> ticketBagSerde = Serde.bagOf(ticketSerde, ",");
 
     @Test
     void ofWorks() {
