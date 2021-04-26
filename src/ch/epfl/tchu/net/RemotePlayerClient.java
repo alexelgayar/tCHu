@@ -20,5 +20,4 @@ public final class RemotePlayerClient { //TODO: What is meant by an instantiable
     public void run(){
 
     }
-
 }

@@ -84,4 +84,5 @@ public final class RemotePlayerProxy implements Player {
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
         return null;
     }
+
 }
