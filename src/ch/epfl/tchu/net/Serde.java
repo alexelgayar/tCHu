@@ -41,7 +41,7 @@ public interface Serde<E> {
         return Serde.of(serFun, deserFun);
     }
 
-    public static <T> Serde<List<T>> listOf(Serde serde, String serializedObject) {
+    public static <T> Serde<List<T>> listOf(Serde serde, String separator) {
 
         return new Serde<List<T>>() {
 
@@ -54,15 +54,15 @@ public interface Serde<E> {
                     strings.add(serde.serialize(t));
                 }
 
-                String s = String.join(serializedObject, strings);
+                String s = String.join(separator, strings);
 
                 return s;
             }
 
             @Override
-            public List<T> deserialize(String alsoYes) {
+            public List<T> deserialize(String serializedObject) {
 
-                String[] s = alsoYes.split(Pattern.quote(serializedObject), -1);
+                String[] s = serializedObject.split(Pattern.quote(serializedObject), -1);
                 List<T> tList = new ArrayList<>();
 
                 for (int i = 0; i < s.length; ++i) {
@@ -75,20 +75,20 @@ public interface Serde<E> {
     }
 
 
-    public static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde serde, String serializedObject) {
+    public static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde serde, String separator) {
 
         return new Serde<SortedBag<T>>() {
 
             @Override
             public String serialize(SortedBag<T> bag) {
                 List list = bag.toList();
-                String y = listOf(serde, serializedObject).serialize(list);
+                String y = listOf(serde, separator).serialize(list);
                 return y;
             }
 
             @Override
-            public SortedBag<T> deserialize(String alsoYes) {
-                List list = Serde.listOf(serde, serializedObject).deserialize(alsoYes);
+            public SortedBag<T> deserialize(String serializedObject) {
+                List list = Serde.listOf(serde, separator).deserialize(serializedObject);
                 return SortedBag.of(list);
             }
         };
