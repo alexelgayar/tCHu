@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.Card.*;
+import static ch.epfl.tchu.game.PlayerId.*;
 
 public class Serdes {
 
