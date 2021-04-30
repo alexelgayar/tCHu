@@ -48,15 +48,23 @@ public interface Serde<E> {
             @Override
             public String serialize(List<T> list) {
 
-                List<String> strings = new ArrayList<>();
-
-                for (T t : list) {
-                    strings.add(serde.serialize(t));
+                if(list.isEmpty()){
+                    return "";
                 }
+                else {
 
-                String s = String.join(separator, strings);
+                    List<String> strings = new ArrayList<>();
 
-                return s;
+                    list.forEach((T s) -> strings.add(serde.serialize(s)));
+
+                    for (T t : list) {
+                        strings.add(serde.serialize(t));
+                    }
+
+                    String s = String.join(separator, strings);
+
+                    return s;
+                }
             }
 
             @Override
@@ -81,6 +89,7 @@ public interface Serde<E> {
 
             @Override
             public String serialize(SortedBag<T> bag) {
+
                 List list = bag.toList();
                 String y = listOf(serde, separator).serialize(list);
                 return y;
