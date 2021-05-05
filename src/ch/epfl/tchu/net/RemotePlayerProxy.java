@@ -6,10 +6,13 @@ import ch.epfl.tchu.game.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Instantiable class, represents a proxy of a distant player.
@@ -67,7 +70,7 @@ public final class RemotePlayerProxy implements Player {
 
         sendMessage(MessageId.INIT_PLAYERS.name() + " " +
                 Serdes.playerIdSerde.serialize(ownId) + " " +
-                Serdes.stringListSerde.serialize(names) + " \n");
+                Serdes.stringListSerde.serialize(names) + '\n');
 
     }
 
@@ -75,7 +78,7 @@ public final class RemotePlayerProxy implements Player {
     public void receiveInfo(String info) {
 
         sendMessage(MessageId.RECEIVE_INFO.name() + " " +
-                Serdes.stringSerde.serialize(info) + " \n");
+                Serdes.stringSerde.serialize(info) + '\n');
 
     }
 
@@ -84,7 +87,7 @@ public final class RemotePlayerProxy implements Player {
 
         sendMessage(MessageId.UPDATE_STATE.name() + " " +
                 Serdes.publicGameStateSerde.serialize(newState) +
-                " " + Serdes.playerStateSerde.serialize(ownState) + " \n");
+                " " + Serdes.playerStateSerde.serialize(ownState) + '\n');
 
     }
 
@@ -92,39 +95,44 @@ public final class RemotePlayerProxy implements Player {
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
 
         sendMessage(MessageId.SET_INITIAL_TICKETS.name() + " " +
-                Serdes.ticketBagSerde.serialize(tickets) + " \n");
+                Serdes.ticketBagSerde.serialize(tickets) + '\n');
 
     }
 
     @Override
     public SortedBag<Ticket> chooseInitialTickets() {
+        sendMessage(MessageId.CHOOSE_INITIAL_TICKETS.name() + '\n');
         return Serdes.ticketBagSerde.deserialize(receiveMessage());
     }
 
     @Override
     public TurnKind nextTurn() {
+        sendMessage(MessageId.NEXT_TURN.name() + '\n');
         return Serdes.turnKindSerde.deserialize(receiveMessage());
     }
 
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
         sendMessage(MessageId.CHOOSE_TICKETS.name() + " " +
-                Serdes.ticketBagSerde.serialize(options) + " \n");
+                Serdes.ticketBagSerde.serialize(options) + '\n');
         return Serdes.ticketBagSerde.deserialize(receiveMessage());
     }
 
     @Override
     public int drawSlot() {
+        sendMessage(MessageId.DRAW_SLOT.name() + '\n');
         return Serdes.intSerde.deserialize(receiveMessage());
     }
 
     @Override
     public Route claimedRoute() {
+        sendMessage(MessageId.ROUTE.name() + '\n');
         return Serdes.routeSerde.deserialize(receiveMessage());
     }
 
     @Override
     public SortedBag<Card> initialClaimCards() {
+        sendMessage(MessageId.CARDS.name() + '\n');
         return Serdes.cardBagSerde.deserialize(receiveMessage());
     }
 
