@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * Instantiable class, represents a proxy of a distant player.
