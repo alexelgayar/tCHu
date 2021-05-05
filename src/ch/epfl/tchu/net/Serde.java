@@ -55,8 +55,6 @@ public interface Serde<E> {
 
                     List<String> strings = new ArrayList<>();
 
-                    list.forEach((T s) -> strings.add(serde.serialize(s)));
-
                     for (T t : list) {
                         strings.add(serde.serialize(t));
                     }
@@ -70,14 +68,20 @@ public interface Serde<E> {
             @Override
             public List<T> deserialize(String serializedObject) {
 
-                String[] s = serializedObject.split(Pattern.quote(serializedObject), -1);
-                List<T> tList = new ArrayList<>();
-
-                for (int i = 0; i < s.length; ++i) {
-                    tList.add((T) serde.deserialize(s[i]));
+                if(serializedObject.equals("")){
+                    return new ArrayList<T>();
                 }
+                else {
 
-                return tList;
+                    String[] s = serializedObject.split(Pattern.quote(separator), -1);
+                    List<T> tList = new ArrayList<>();
+
+                    for (int i = 0; i < s.length; ++i) {
+                        tList.add((T) serde.deserialize(s[i]));
+                    }
+
+                    return tList;
+                }
             }
         };
     }
