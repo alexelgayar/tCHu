@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
-import static ch.epfl.tchu.game.Constants.TOTAL_CARDS_COUNT;
+import static ch.epfl.tchu.game.Constants.*;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
@@ -29,25 +28,27 @@ public class ObservableGameState {
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
     //PublicGameState properties
-    private IntegerProperty ticketsPercentage = computeTicketsPercentage();
-    private IntegerProperty cardsPercentage = computeCardsPercentage();
+    private IntegerProperty ticketsPercentage;
+    private IntegerProperty cardsPercentage;
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private static final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
 
     //PublicPlayerState properties
-    private IntegerProperty playerTicketsCount = computePlayerTicketsCount();
-    private IntegerProperty playerCardsCount = computePlayerCardsCount();
-    private IntegerProperty playerCarsCount = computePlayerCarsCount();
-    private IntegerProperty playerClaimPoints = computePlayerClaimPoints();
+    private IntegerProperty playerTicketsCount;
+    private IntegerProperty playerCardsCount;
+    private IntegerProperty playerCarsCount;
+    private IntegerProperty playerClaimPoints;
 
     //PlayerState properties
-    private final ObservableList<Ticket> playerTickets = createPlayerTickets();
+    private final ObservableList<Ticket> playerTickets = null;
     private final Map<Card, IntegerProperty> playerCardTypeCount = createPlayerCardTypeCount();
     private final Map<Route, BooleanProperty> playerCanClaimRoute = createPlayerCanClaimRoute();
 
     public ObservableGameState(PlayerId playerId){
         //All the state properties are set to null, 0 or false
         ObservableGameState.playerId = playerId; //TODO: playerId can't be static?!
+
+        //Create all the properties without initializing them
     }
 
     public void setState(PublicGameState newGameState, PlayerState newPlayerState){
@@ -74,7 +75,7 @@ public class ObservableGameState {
         playerClaimPoints = computePlayerClaimPoints();
 
         //3. Player State
-        playerTickets.setAll(playerState.tickets().toList());
+        //playerTickets.setAll(playerState.tickets().toList()); //TODO: Properly initialize PlayerTickets
 
         Map<Card, IntegerProperty> cardMap = new HashMap<>(); //TODO: How to optimize the double for loops?
         for (Card card: playerCardTypeCount.keySet()){
@@ -89,6 +90,8 @@ public class ObservableGameState {
             }
         }
 
+        //TODO: Complete this condition: Player = currentPlayer? double route not claimed?
+        //Double route: A route where the start + end stations are the same
         for (Route route: ChMap.routes()){
             playerCanClaimRoute.put(route, new SimpleBooleanProperty(
                     publicGameState.currentPlayerId() == playerId
@@ -113,10 +116,10 @@ public class ObservableGameState {
     }
 
     private static List<ObjectProperty<Card>> createFaceUpCards(){
-        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>();
+        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
 
-        for (Card card: publicGameState.cardState().faceUpCards()){
-            faceUpCards.add(new SimpleObjectProperty<>(card));
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i){
+            faceUpCards.add(new SimpleObjectProperty<>(null));
         }
 
         return faceUpCards;
@@ -127,16 +130,9 @@ public class ObservableGameState {
 
     private static Map<Route, ObjectProperty<PlayerId>> createRoutes(){
         Map<Route, ObjectProperty<PlayerId>> routes = new HashMap<>();
+        for (Route route: ChMap.routes())
+            routes.put(route, null);
 
-        //TODO: Is there a more optimal way for this
-        for (Route route: ChMap.routes()){
-            if (publicGameState.playerState(PLAYER_1).routes().contains(route))
-                routes.put(route, new SimpleObjectProperty<>(PLAYER_1));
-            else if (publicGameState.playerState(PLAYER_2).routes().contains(route))
-                routes.put(route, new SimpleObjectProperty<>(PLAYER_2));
-            else
-                routes.put(route, null);
-        }
         return routes;
     }
     public Map<Route, ObjectProperty<PlayerId>> route(){ //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
@@ -175,9 +171,6 @@ public class ObservableGameState {
 
 
     //3. PrivatePlayerState Properties
-    private static ObservableList<Ticket> createPlayerTickets(){
-        return FXCollections.observableList(playerState.tickets().toList());
-    }
     public ObservableList<Ticket> playerTickets(){
         return FXCollections.unmodifiableObservableList(playerTickets);
     }
@@ -185,13 +178,8 @@ public class ObservableGameState {
     private static Map<Card, IntegerProperty> createPlayerCardTypeCount(){
         Map<Card, IntegerProperty> cardMap = new HashMap<>();
 
-        for (Card card: Card.values()){
-            for (Card playerCard: playerState.cards()){
-                if (card == playerCard){
-                    cardMap.put(card, new SimpleIntegerProperty((cardMap.getOrDefault(card, new SimpleIntegerProperty(0))).get() + 1));
-                }
-            }
-        }
+        for (Card card: Card.values())
+            cardMap.put(card, new SimpleIntegerProperty(0));
 
         return cardMap;
     }
@@ -202,14 +190,8 @@ public class ObservableGameState {
     private static Map<Route, BooleanProperty> createPlayerCanClaimRoute(){
         Map<Route, BooleanProperty> claimRouteMap = new HashMap<>();
 
-        for (Route route: ChMap.routes()){
-            //TODO: Complete this condition: Player = currentPlayer? double route not claimed?
-            //Double route: A route where the start + end stations are the same
-            claimRouteMap.put(route, new SimpleBooleanProperty(
-                    publicGameState.currentPlayerId() == playerId
-                    && routes.get(route) == null //TODO: Treat double routes here
-                    && playerState.canClaimRoute(route)));
-        }
+        for (Route route: ChMap.routes())
+            claimRouteMap.put(route, new SimpleBooleanProperty(false));
 
         return claimRouteMap;
     }
@@ -229,6 +211,4 @@ public class ObservableGameState {
     public List<SortedBag<Card>> possibleClaimCards(Route route){
         return playerState.possibleClaimCards(route);
     }
-
-
 }
