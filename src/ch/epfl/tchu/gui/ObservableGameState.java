@@ -40,7 +40,7 @@ public class ObservableGameState {
     private IntegerProperty playerClaimPoints;
 
     //PlayerState properties
-    private final ObservableList<Ticket> playerTickets = null;
+    private final ObservableList<Ticket> playerTickets = FXCollections.observableArrayList();
     private final Map<Card, IntegerProperty> playerCardTypeCount = createPlayerCardTypeCount();
     private final Map<Route, BooleanProperty> playerCanClaimRoute = createPlayerCanClaimRoute();
 
@@ -75,7 +75,12 @@ public class ObservableGameState {
         playerClaimPoints = computePlayerClaimPoints();
 
         //3. Player State
-        //playerTickets.setAll(playerState.tickets().toList()); //TODO: Properly initialize PlayerTickets
+        if (playerTickets.size() == 0){
+            playerTickets.addAll(playerState.tickets().toList());
+        }
+        else{
+            playerTickets.setAll(playerState.tickets().toList());
+        }
 
         Map<Card, IntegerProperty> cardMap = new HashMap<>(); //TODO: How to optimize the double for loops?
         for (Card card: playerCardTypeCount.keySet()){
