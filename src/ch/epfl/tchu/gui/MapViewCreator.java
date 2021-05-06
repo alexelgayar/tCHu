@@ -1,10 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
-import ch.epfl.tchu.game.Card;
-import ch.epfl.tchu.game.ChMap;
-import ch.epfl.tchu.game.Color;
-import ch.epfl.tchu.game.Route;
+import ch.epfl.tchu.game.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -28,14 +25,15 @@ import static ch.epfl.tchu.gui.ActionHandlers.*;
  * @author Anirudhh Ramesh (329806)
  * Non-instantiable (=final) and package private (=no modifier). Contains a unique public method named "createMapView"
  */
-final class MapViewCreator {
+final class MapViewCreator implements ActionHandlers{
 
     private static final int RECT_WIDTH = 36;
     private static final int RECT_HEIGHT = 12;
     private static final int CIRCLE_RADIUS = 3;
-    private static final int CIRCLE_SPACE = 6;
 
-    public static Node createMapView(ObservableGameState observableGameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser){
+    private MapViewCreator(){}
+
+    public static Node createMapView(ObservableGameState gameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser){
         //TODO: Ignore the parameters for this first phase, instead focus on creating the scene graph
         Pane mapPane = new Pane();
         mapPane.getStylesheets().addAll("map.css", "colors.css");
@@ -44,6 +42,7 @@ final class MapViewCreator {
         mapPane.getChildren().add(bgNode);
 
         List<Node> routeGroups = new ArrayList<>();
+
         for (Route route: ChMap.routes()){
             for (int i = 1; i <= route.length(); ++i){
                 //Route:
@@ -52,9 +51,9 @@ final class MapViewCreator {
                 System.out.println(route.id());
 
                 routeGroup.getStyleClass().add("route");
-
+                //TODO: Optimize the route creation
                 if (route.level() == OVERGROUND){
-                    routeGroup.getStyleClass().add("OVERGROUND");
+                    routeGroup.getStyleClass().addAll("OVERGROUND");
                 } else {
                     routeGroup.getStyleClass().add("UNDERGROUND");
                 }
@@ -67,6 +66,12 @@ final class MapViewCreator {
                         routeGroup.getStyleClass().add("NEUTRAL");
                     }
                 }
+
+                gameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name()));
+
+                routeGroup.disableProperty().bind(claimRouteHandler.isNull().or(gameState.claimable(route).not()));
+
+                routeGroup.setOnMouseClicked(e -> pickClaimCards(gameState, route, claimRouteHandler, cardChooser));
 
                 //Case
                 Group caseGroup = new Group();
@@ -81,7 +86,8 @@ final class MapViewCreator {
                 wagon.getStyleClass().add("car");
 
                 Rectangle r = new Rectangle(RECT_WIDTH, RECT_HEIGHT);
-                Circle c1 = new Circle(12, 6, CIRCLE_RADIUS); //TODO: Are circles centered properly?
+                r.getStyleClass().add("filled");
+                Circle c1 = new Circle(12, 6, CIRCLE_RADIUS);
                 Circle c2 = new Circle(24, 6, CIRCLE_RADIUS);
 
                 wagon.getChildren().addAll(r, c1, c2);
@@ -103,10 +109,18 @@ final class MapViewCreator {
         ImageView bg = new ImageView();
 
         bg.setImage(map);
-        bg.setSmooth(true);
-        bg.setCache(true);
-
         return bg;
+    }
+
+    private static void pickClaimCards(ObservableGameState gameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser){
+        List<SortedBag<Card>> possibleClaimCards = gameState.possibleClaimCards(route);
+
+        if (possibleClaimCards.size() == 1){
+            claimRouteH.get().onClaimRoute(route, possibleClaimCards.get(0));
+        } else {
+            ChooseCardsHandler chooseCardsH = chosenCards -> claimRouteH.get().onClaimRoute(route, chosenCards);
+            cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
+        }
     }
 
     @FunctionalInterface
