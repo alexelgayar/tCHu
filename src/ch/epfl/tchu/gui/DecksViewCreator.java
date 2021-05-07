@@ -126,15 +126,18 @@ final class DecksViewCreator implements ActionHandlers{
         StackPane stackPane = new StackPane();
         stackPane.getStyleClass().add("card");
 
-        if (card == null){
-            System.out.println("Card is null");
-        }
-        else if (card == Card.LOCOMOTIVE){
-            stackPane.getStyleClass().addAll("NEUTRAL");
-        } else{
-            System.out.println(card);
-            stackPane.getStyleClass().addAll(card.color().name());
-        }
+
+        if(card != null) stackPane.getStyleClass().addAll((card == Card.LOCOMOTIVE) ? "NEUTRAL" : card.color().name()); //TODO: Is this better than the code below?
+
+//        if (card == null){
+//            System.out.println("Card is null");
+//        }
+//        else if (card == Card.LOCOMOTIVE){
+//            stackPane.getStyleClass().addAll("NEUTRAL");
+//        } else{
+//            System.out.println(card);
+//            stackPane.getStyleClass().addAll(card.color().name());
+//        }
 
         Rectangle outside = new Rectangle(OUTSIDE_RECT_W, OUTSIDE_RECT_H);
         outside.getStyleClass().add("outside");
