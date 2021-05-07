@@ -56,9 +56,11 @@ final class DecksViewCreator implements ActionHandlers{
 
         List<HBox> handPanes = new ArrayList<>();
 
+        HBox handPane = new HBox();
+        handPane.setId("hand-pane");
+
         for (Card card: Card.values()) {
-            HBox handPane = new HBox();
-            handPane.setId("hand-pane");
+
 
             ReadOnlyIntegerProperty count = gameState.playerCardTypeCount(card);
 
@@ -73,11 +75,11 @@ final class DecksViewCreator implements ActionHandlers{
             cardStackPane.getChildren().add(counterText);
 
             handPane.getChildren().add(cardStackPane);
-            handPanes.add(handPane);
+            //handPanes.add(handPane);
         }
 
         main.getChildren().addAll(playerTickets);
-        main.getChildren().addAll(handPanes);
+        main.getChildren().addAll(handPane);
 
         return main;
     }
