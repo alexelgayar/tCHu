@@ -41,8 +41,6 @@ final class MapViewCreator implements ActionHandlers {
         ImageView bgNode = createBGNode();
         mapPane.getChildren().add(bgNode);
 
-        List<Node> routeGroups = new ArrayList<>();
-
         for (Route route : ChMap.routes()) {
             Group routeGroup = new Group();
             routeGroup.setId(route.id());
@@ -86,10 +84,8 @@ final class MapViewCreator implements ActionHandlers {
 
                 routeGroup.getChildren().addAll(caseGroup);
             }
-            routeGroups.add(routeGroup);
+            mapPane.getChildren().addAll(routeGroup);
         }
-
-        mapPane.getChildren().addAll(routeGroups);
 
         return mapPane;
     }
