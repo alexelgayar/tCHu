@@ -54,8 +54,6 @@ final class DecksViewCreator implements ActionHandlers{
         ListView<Ticket> playerTickets = new ListView<>(gameState.playerTickets());
         playerTickets.setId("tickets");
 
-        List<HBox> handPanes = new ArrayList<>();
-
         HBox handPane = new HBox();
         handPane.setId("hand-pane");
 
