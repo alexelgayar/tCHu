@@ -60,9 +60,12 @@ public class ObservableGameState {
             Card newCard = newGameState.cardState().faceUpCard(slot);
             faceUpCards.get(slot).set(newCard);
         }
-        for (Route route : routes.keySet()) {
-            if (playerState.routes().contains(route))
-                routes.get(route).set(publicGameState.currentPlayerId());
+
+        for(PlayerId id :PlayerId.ALL) {
+            for (Route route : routes.keySet()) {
+                if (newGameState.playerState(id).routes().contains(route))
+                    routes.get(route).set(id);
+            }
         }
 
         //2. Public Player State
