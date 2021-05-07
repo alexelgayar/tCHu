@@ -47,18 +47,18 @@ final class DecksViewCreator implements ActionHandlers{
 
 
     //Constructs the view of the Player cards
-    public static Node createHandView(ObservableGameState gameState){
+    public static Node createHandView(ObservableGameState gameState){ //TODO: Verify all the styles are added, widths are correct
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
 
-        ListView<Ticket> playerTickets = new ListView<>(gameState.playerTickets()); //TODO: Convert tickets to string, weird bug when trying to loop through playerTickets
+        ListView<Ticket> playerTickets = new ListView<>(gameState.playerTickets());
         playerTickets.setId("tickets");
 
         List<HBox> handPanes = new ArrayList<>();
 
         for (Card card: Card.values()) {
             HBox handPane = new HBox();
-            handPane.setId("hand-pane"); //TODO: Updating the tickets + cards in the deck
+            handPane.setId("hand-pane");
 
             ReadOnlyIntegerProperty count = gameState.playerCardTypeCount(card);
 
@@ -87,9 +87,9 @@ final class DecksViewCreator implements ActionHandlers{
         VBox cardPane = new VBox();
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");
-        Button ticketsButton = createButtonView(gameState.ticketsPercentage());
+        Button ticketsButton = createButtonView(gameState.ticketsPercentage(), StringsFr.TICKETS);
         //ticketsButton.disableProperty().bind(drawTicketsHandler.isNull().or(gameState.canDrawTickets().not())); //TODO: Is handler correct?
-        //gameState.ticketsPercentage().addListener((p, o, n) -> ticketsButton = createButtonView(gameState.ticketsPercentage())); //TODO: Fix listener
+
 
         ticketsButton.setOnMouseClicked(e -> drawTicketsHandler.get().onDrawTickets());
 
@@ -107,7 +107,7 @@ final class DecksViewCreator implements ActionHandlers{
             stackPanes.get(i).setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(finalI));
         }
 
-        Button cardsButton = createButtonView(gameState.cardsPercentage());
+        Button cardsButton = createButtonView(gameState.cardsPercentage(), StringsFr.CARDS);
         //cardsButton.disableProperty().bind(drawCardHandler.isNull().or(gameState.canDrawCards().not())); //TODO: Is handler correct?
         //gameState.cardsPercentage().addListener((p, o, n) -> ticketsButton = createButtonView(gameState.ticketsPercentage())); //TODO: Fix listener
         cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(-1));
@@ -148,8 +148,8 @@ final class DecksViewCreator implements ActionHandlers{
         return stackPane;
     }
 
-    private static Button createButtonView(ReadOnlyIntegerProperty gaugePercentage){
-        Button button = new Button();
+    private static Button createButtonView(ReadOnlyIntegerProperty gaugePercentage, String buttonText){
+        Button button = new Button(buttonText);
         button.getStyleClass().add("gauged");
 
         Group group = new Group();

@@ -21,23 +21,23 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
  * Instanciable class, represents the observable state of a game in tCHu
  */
 public class ObservableGameState {
-    private static PublicGameState publicGameState;
-    private static PlayerState playerState; //TODO: Should playerstate be static? What do I do for the methods
-    private PlayerId playerId;
+    private PublicGameState publicGameState;
+    private PlayerState playerState;
+    private final PlayerId playerId;
 
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
     //PublicGameState properties
-    private IntegerProperty ticketsPercentage = new SimpleIntegerProperty(0);
-    private IntegerProperty cardsPercentage = new SimpleIntegerProperty(0);
+    private final IntegerProperty ticketsPercentage = new SimpleIntegerProperty(0);
+    private final IntegerProperty cardsPercentage = new SimpleIntegerProperty(0);
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
-    private static final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
+    private final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
 
     //PublicPlayerState properties
-    private IntegerProperty playerTicketsCount = new SimpleIntegerProperty(0);
-    private IntegerProperty playerCardsCount = new SimpleIntegerProperty(0);
-    private IntegerProperty playerCarsCount = new SimpleIntegerProperty(0);
-    private IntegerProperty playerClaimPoints = new SimpleIntegerProperty(0);
+    private final IntegerProperty playerTicketsCount = new SimpleIntegerProperty(0);
+    private final IntegerProperty playerCardsCount = new SimpleIntegerProperty(0);
+    private final IntegerProperty playerCarsCount = new SimpleIntegerProperty(0);
+    private final IntegerProperty playerClaimPoints = new SimpleIntegerProperty(0);
 
     //PlayerState properties
     private final ObservableList<Ticket> playerTickets = FXCollections.observableArrayList();
@@ -45,34 +45,30 @@ public class ObservableGameState {
     private final Map<Route, BooleanProperty> playerCanClaimRoute = createPlayerCanClaimRoute();
 
     public ObservableGameState(PlayerId playerId){
-        //All the state properties are set to null, 0 or false
         this.playerId = playerId;
-
-        //Create all the properties without initializing them
     }
 
     public void setState(PublicGameState newGameState, PlayerState newPlayerState){
         publicGameState = newGameState;
         playerState = newPlayerState;
 
-        //TODO: (Remove later) NOTE: We must not change the reference of collections!! Therefore we can't re-call eg faceUpCards = createFaceUpCards inside the setState!!
         //1. Public Game State
-        ticketsPercentage = computeTicketsPercentage();
-        cardsPercentage = computeCardsPercentage();
+        ticketsPercentage.set((publicGameState.ticketsCount() / TOTAL_TICKETS_COUNT) * 100);
+        cardsPercentage.set((publicGameState.cardState().deckSize() / TOTAL_CARDS_COUNT) * 100);
         for (int slot : FACE_UP_CARD_SLOTS) {
             Card newCard = newGameState.cardState().faceUpCard(slot);
             faceUpCards.get(slot).set(newCard);
         }
         for (Route route: routes.keySet()){
             if (playerState.routes().contains(route))
-                routes.put(route, new SimpleObjectProperty<>(newGameState.currentPlayerId()));
+                routes.get(route).set(publicGameState.currentPlayerId());
         }
 
         //2. Public Player State
-        playerTicketsCount = computePlayerTicketsCount();
-        playerCardsCount = computePlayerCardsCount();
-        playerCarsCount = computePlayerCarsCount();
-        playerClaimPoints = computePlayerClaimPoints();
+        playerTicketsCount.set(playerState.ticketCount());
+        playerCardsCount.set(playerState.cardCount());
+        playerCarsCount.set(playerState.carCount());
+        playerClaimPoints.set(playerState.claimPoints());
 
         //3. Player State
         if (playerTickets.size() == 0){
@@ -82,40 +78,49 @@ public class ObservableGameState {
             playerTickets.setAll(playerState.tickets().toList());
         }
 
-        Map<Card, IntegerProperty> cardMap = new HashMap<>(); //TODO: How to optimize the double for loops?
-        for (Card card: playerCardTypeCount.keySet()){
-            cardMap.put(card, new SimpleIntegerProperty(0));
-        }
-
         for (Card card: Card.values()){
-            for (Card playerCard: playerState.cards()){
-                if (card == playerCard){
-                    playerCardTypeCount.put(card, new SimpleIntegerProperty((cardMap.getOrDefault(card, new SimpleIntegerProperty(0))).get() + 1));
-                }
+            if (playerState.cards().contains(card)) {
+                playerCardTypeCount.get(card).set(playerState.cards().countOf(card));
             }
         }
 
-        //TODO: Complete this condition: Player = currentPlayer? double route not claimed?
-        //Double route: A route where the start + end stations are the same
-        for (Route route: ChMap.routes()){
-            playerCanClaimRoute.put(route, new SimpleBooleanProperty(
-                    publicGameState.currentPlayerId() == playerId
-                            && routes.get(route) == null //TODO: Treat double routes here
-                            && playerState.canClaimRoute(route)));
+//        autant de propriétés qu'il y a de routes dans le réseau de tCHu et contenant, pour chacune d'entre elles, une valeur booléenne qui n'est vraie que si le joueur
+//        peut actuellement s'emparer de la route, c-à-d si :
+//        1.le joueur est le joueur courant,
+//        2.la route n'appartient à personne et, dans le cas d'une route double, sa voisine non plus,
+//        3.le joueur a les wagons et les cartes nécessaires pour s'emparer de la route — ou en tout cas tenter de le faire s'il s'agit d'un tunnel.
+
+
+        for (Route route: newGameState.claimedRoutes()){ //Use primitive types over wrapped types
+            boolean correctPlayer = publicGameState.currentPlayerId() == playerId;
+
+            boolean routeNotOwned = routes.get(route) == null;
+            boolean routeDoubleNotOwned = true;
+
+            //TODO: Complete this condition: Player = currentPlayer? double route not claimed?
+            //How to get the second route in the double route?
+//            if (ChMap.routes().contains(routeOpposite)) { //Iterate
+//                routeDoubleNotOwned = routes.get(routeOpposite) != null;
+//            }
+            //Create a set of lists, pair of the first station and second station
+            //If player has route from station1 -> station2
+            //Add list(station1, station2) and list(station2,station1)
+            //=> Check if the set creates contains the list of stations
+
+
+            boolean playerHasCards = playerState.canClaimRoute(route);
+
+            playerCanClaimRoute.get(route).set(correctPlayer
+                    && routeNotOwned
+                    && routeDoubleNotOwned
+                    && playerHasCards);
         }
     }
 
-    //1. PublicGameState Properties
-    private static IntegerProperty computeTicketsPercentage(){
-        return new SimpleIntegerProperty((publicGameState.ticketsCount() / TOTAL_TICKETS_COUNT) * 100);
-    }
     public ReadOnlyIntegerProperty ticketsPercentage(){
         return ticketsPercentage;
     }
 
-    private static IntegerProperty computeCardsPercentage(){
-        return new SimpleIntegerProperty((publicGameState.cardState().deckSize() / TOTAL_CARDS_COUNT) * 100); //TODO: Do i remove face up cards?
-    }
     public ReadOnlyIntegerProperty cardsPercentage(){
         return cardsPercentage;
     }
@@ -140,36 +145,25 @@ public class ObservableGameState {
 
         return routes;
     }
-    public ObjectProperty<PlayerId> routeOwner(Route route){ //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
+    //TODO:!!!! Return ReadOnly Object Properties
+    public ReadOnlyObjectProperty<PlayerId> routeOwner(Route route){ //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
         return routes.get(route);
     }
 
 
     //2. PublicPlayerState Properties
-    private static IntegerProperty computePlayerTicketsCount(){
-        return new SimpleIntegerProperty(playerState.ticketCount());
-    }
     public ReadOnlyIntegerProperty playersTickets(){
         return playerTicketsCount;
     }
 
-    private static IntegerProperty computePlayerCardsCount(){
-        return new SimpleIntegerProperty(playerState.cardCount());
-    }
     public ReadOnlyIntegerProperty playersCards(){
         return playerCardsCount;
     }
 
-    private static IntegerProperty computePlayerCarsCount(){
-        return new SimpleIntegerProperty(playerState.carCount());
-    }
     public ReadOnlyIntegerProperty playerCars(){
         return playerCarsCount;
     }
 
-    private static IntegerProperty computePlayerClaimPoints(){
-        return new SimpleIntegerProperty(playerState.claimPoints());
-    }
     public ReadOnlyIntegerProperty playerClaimPoints(){
         return playerClaimPoints;
     }
@@ -188,7 +182,7 @@ public class ObservableGameState {
 
         return cardMap;
     }
-    public IntegerProperty playerCardTypeCount(Card card){
+    public ReadOnlyIntegerProperty playerCardTypeCount(Card card){
         return playerCardTypeCount.get(card);
     }
 
@@ -200,20 +194,20 @@ public class ObservableGameState {
 
         return claimRouteMap;
     }
-    public BooleanProperty claimable(Route route){
+    public ReadOnlyBooleanProperty claimable(Route route){
         return playerCanClaimRoute.get(route);
     }
 
     //Additional methods
-    public BooleanProperty canDrawTickets(){
+    public ReadOnlyBooleanProperty canDrawTickets(){
         return new SimpleBooleanProperty(publicGameState.canDrawTickets());
     }
 
-    public BooleanProperty canDrawCards(){
+    public ReadOnlyBooleanProperty canDrawCards(){
         return new SimpleBooleanProperty(publicGameState.canDrawCards());
     }
 
-    public List<SortedBag<Card>> possibleClaimCards(Route route){
-        return playerState.possibleClaimCards(route);
+    public ObservableList<SortedBag<Card>> possibleClaimCards(Route route){
+        return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route))); //TODO is this correct
     }
 }

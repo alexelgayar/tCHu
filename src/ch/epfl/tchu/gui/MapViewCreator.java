@@ -25,16 +25,16 @@ import static ch.epfl.tchu.gui.ActionHandlers.*;
  * @author Anirudhh Ramesh (329806)
  * Non-instantiable (=final) and package private (=no modifier). Contains a unique public method named "createMapView"
  */
-final class MapViewCreator implements ActionHandlers{
+final class MapViewCreator implements ActionHandlers {
 
     private static final int RECT_WIDTH = 36;
     private static final int RECT_HEIGHT = 12;
     private static final int CIRCLE_RADIUS = 3;
 
-    private MapViewCreator(){}
+    private MapViewCreator() {
+    }
 
-    public static Node createMapView(ObservableGameState gameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser){
-        //TODO: Ignore the parameters for this first phase, instead focus on creating the scene graph
+    public static Node createMapView(ObservableGameState gameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser) {
         Pane mapPane = new Pane();
         mapPane.getStylesheets().addAll("map.css", "colors.css");
 
@@ -43,36 +43,26 @@ final class MapViewCreator implements ActionHandlers{
 
         List<Node> routeGroups = new ArrayList<>();
 
-        for (Route route: ChMap.routes()){
-            for (int i = 1; i <= route.length(); ++i){
-                //Route:
-                Group routeGroup = new Group();
-                routeGroup.setId(route.id());
-                System.out.println(route.id());
+        for (Route route : ChMap.routes()) {
+            Group routeGroup = new Group();
+            routeGroup.setId(route.id());
+            routeGroup.getStyleClass().add("route");
+            routeGroup.getStyleClass().add(
+                    route.level() == OVERGROUND
+                            ? "OVERGROUND"
+                            : "UNDERGROUND");
 
-                routeGroup.getStyleClass().add("route");
-                //TODO: Optimize the route creation
-                if (route.level() == OVERGROUND){
-                    routeGroup.getStyleClass().addAll("OVERGROUND");
-                } else {
-                    routeGroup.getStyleClass().add("UNDERGROUND");
-                }
+            routeGroup.getStyleClass().add(
+                    route.color() == null
+                            ? "NEUTRAL"
+                            : route.color().name());
 
-                for (Color color: Color.values()) {
-                    if (route.color() == color) {
-                        routeGroup.getStyleClass().add(color.toString());
-                    }
-                    else if (route.color() == null){
-                        routeGroup.getStyleClass().add("NEUTRAL");
-                    }
-                }
+            gameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name())); //TODO: Problem with routeOwner, ObservableGameState
+            routeGroup.disableProperty().bind(claimRouteHandler.isNull().or(gameState.claimable(route).not()));
+            routeGroup.setOnMouseClicked(e -> pickClaimCards(gameState, route, claimRouteHandler, cardChooser));
 
-                gameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name()));
-
-                routeGroup.disableProperty().bind(claimRouteHandler.isNull().or(gameState.claimable(route).not()));
-
-                routeGroup.setOnMouseClicked(e -> pickClaimCards(gameState, route, claimRouteHandler, cardChooser));
-
+            //TODO: Modularise this
+            for (int i = 1; i <= route.length(); ++i) {
                 //Case
                 Group caseGroup = new Group();
                 caseGroup.setId(route.id() + "_" + i);
@@ -95,8 +85,8 @@ final class MapViewCreator implements ActionHandlers{
                 caseGroup.getChildren().addAll(track, wagon);
 
                 routeGroup.getChildren().addAll(caseGroup);
-                routeGroups.add(routeGroup);
             }
+            routeGroups.add(routeGroup);
         }
 
         mapPane.getChildren().addAll(routeGroups);
@@ -104,18 +94,16 @@ final class MapViewCreator implements ActionHandlers{
         return mapPane;
     }
 
-    private static ImageView createBGNode(){
+    private static ImageView createBGNode() {
         Image map = new Image("map.png");
         ImageView bg = new ImageView();
-
         bg.setImage(map);
         return bg;
     }
 
-    private static void pickClaimCards(ObservableGameState gameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser){
+    private static void pickClaimCards(ObservableGameState gameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser) {
         List<SortedBag<Card>> possibleClaimCards = gameState.possibleClaimCards(route);
-
-        if (possibleClaimCards.size() == 1){
+        if (possibleClaimCards.size() == 1) {
             claimRouteH.get().onClaimRoute(route, possibleClaimCards.get(0));
         } else {
             ChooseCardsHandler chooseCardsH = chosenCards -> claimRouteH.get().onClaimRoute(route, chosenCards);
