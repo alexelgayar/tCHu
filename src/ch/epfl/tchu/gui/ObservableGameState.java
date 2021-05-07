@@ -34,21 +34,22 @@ public class ObservableGameState {
     private final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
 
     //PublicPlayerState properties
-    private final IntegerProperty playerTicketsCount = new SimpleIntegerProperty(0);
-    private final IntegerProperty playerCardsCount = new SimpleIntegerProperty(0);
-    private final IntegerProperty playerCarsCount = new SimpleIntegerProperty(0);
-    private final IntegerProperty playerClaimPoints = new SimpleIntegerProperty(0);
+    private final Map<PlayerId, IntegerProperty> playersTicketsCount = initProperties();
+    private final Map<PlayerId, IntegerProperty> playersCardsCount = initProperties();
+    private final Map<PlayerId, IntegerProperty> playersCarsCount = initProperties();
+    private final Map<PlayerId, IntegerProperty> playersClaimPoints = initProperties();
+
 
     //PlayerState properties
     private final ObservableList<Ticket> playerTickets = FXCollections.observableArrayList();
     private final Map<Card, IntegerProperty> playerCardTypeCount = createPlayerCardTypeCount();
     private final Map<Route, BooleanProperty> playerCanClaimRoute = createPlayerCanClaimRoute();
 
-    public ObservableGameState(PlayerId playerId){
+    public ObservableGameState(PlayerId playerId) {
         this.playerId = playerId;
     }
 
-    public void setState(PublicGameState newGameState, PlayerState newPlayerState){
+    public void setState(PublicGameState newGameState, PlayerState newPlayerState) {
         publicGameState = newGameState;
         playerState = newPlayerState;
 
@@ -59,26 +60,27 @@ public class ObservableGameState {
             Card newCard = newGameState.cardState().faceUpCard(slot);
             faceUpCards.get(slot).set(newCard);
         }
-        for (Route route: routes.keySet()){
+        for (Route route : routes.keySet()) {
             if (playerState.routes().contains(route))
                 routes.get(route).set(publicGameState.currentPlayerId());
         }
 
         //2. Public Player State
-        playerTicketsCount.set(playerState.ticketCount());
-        playerCardsCount.set(playerState.cardCount());
-        playerCarsCount.set(playerState.carCount());
-        playerClaimPoints.set(playerState.claimPoints());
+        for(PlayerId id: PlayerId.ALL) {
+            playersTicketsCount.get(id).set(newGameState.playerState(id).ticketCount());
+            playersCardsCount.get(id).set(newGameState.playerState(id).cardCount());
+            playersCarsCount.get(id).set(newGameState.playerState(id).carCount());
+            playersClaimPoints.get(id).set(newGameState.playerState(id).claimPoints());
+        }
 
         //3. Player State
-        if (playerTickets.size() == 0){
+        if (playerTickets.size() == 0) {
             playerTickets.addAll(playerState.tickets().toList());
-        }
-        else{
+        } else {
             playerTickets.setAll(playerState.tickets().toList());
         }
 
-        for (Card card: Card.values()){
+        for (Card card : Card.values()) {
             if (playerState.cards().contains(card)) {
                 playerCardTypeCount.get(card).set(playerState.cards().countOf(card));
             }
@@ -91,7 +93,7 @@ public class ObservableGameState {
 //        3.le joueur a les wagons et les cartes nécessaires pour s'emparer de la route — ou en tout cas tenter de le faire s'il s'agit d'un tunnel.
 
 
-        for (Route route: newGameState.claimedRoutes()){ //Use primitive types over wrapped types
+        for (Route route : newGameState.claimedRoutes()) { //Use primitive types over wrapped types
             boolean correctPlayer = publicGameState.currentPlayerId() == playerId;
 
             boolean routeNotOwned = routes.get(route) == null;
@@ -117,97 +119,112 @@ public class ObservableGameState {
         }
     }
 
-    public ReadOnlyIntegerProperty ticketsPercentage(){
+    public ReadOnlyIntegerProperty ticketsPercentage() {
         return ticketsPercentage;
     }
 
-    public ReadOnlyIntegerProperty cardsPercentage(){
+    public ReadOnlyIntegerProperty cardsPercentage() {
         return cardsPercentage;
     }
 
-    private static List<ObjectProperty<Card>> createFaceUpCards(){
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
         List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
 
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i){
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
             faceUpCards.add(new SimpleObjectProperty<>());
         }
 
         return faceUpCards;
     }
+
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
         return faceUpCards.get(slot);
     }
 
-    private static Map<Route, ObjectProperty<PlayerId>> createRoutes(){
+    private static Map<Route, ObjectProperty<PlayerId>> createRoutes() {
         Map<Route, ObjectProperty<PlayerId>> routes = new HashMap<>();
-        for (Route route: ChMap.routes())
+        for (Route route : ChMap.routes())
             routes.put(route, new SimpleObjectProperty<>());
 
         return routes;
     }
+
     //TODO:!!!! Return ReadOnly Object Properties
-    public ReadOnlyObjectProperty<PlayerId> routeOwner(Route route){ //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
+    public ReadOnlyObjectProperty<PlayerId> routeOwner(Route route) { //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
         return routes.get(route);
     }
 
 
     //2. PublicPlayerState Properties
-    public ReadOnlyIntegerProperty playersTickets(){
-        return playerTicketsCount;
+    public ReadOnlyIntegerProperty playerTickets(PlayerId id) {
+        return playersTicketsCount.get(id);
     }
 
-    public ReadOnlyIntegerProperty playersCards(){
-        return playerCardsCount;
+    public ReadOnlyIntegerProperty playerCards(PlayerId id) {
+        return playersCardsCount.get(id);
     }
 
-    public ReadOnlyIntegerProperty playerCars(){
-        return playerCarsCount;
+    public ReadOnlyIntegerProperty playeCars(PlayerId id) {
+        return playersCarsCount.get(id);
     }
 
-    public ReadOnlyIntegerProperty playerClaimPoints(){
-        return playerClaimPoints;
+    public ReadOnlyIntegerProperty playerClaimPoints(PlayerId id) {
+        return playersClaimPoints.get(id);
     }
+
 
 
     //3. PrivatePlayerState Properties
-    public ObservableList<Ticket> playerTickets(){
+    public ObservableList<Ticket> playerTickets() {
         return FXCollections.unmodifiableObservableList(playerTickets);
     }
 
-    private static Map<Card, IntegerProperty> createPlayerCardTypeCount(){
+    private static Map<Card, IntegerProperty> createPlayerCardTypeCount() {
         Map<Card, IntegerProperty> cardMap = new HashMap<>();
 
-        for (Card card: Card.values())
+        for (Card card : Card.values())
             cardMap.put(card, new SimpleIntegerProperty(0));
 
         return cardMap;
     }
-    public ReadOnlyIntegerProperty playerCardTypeCount(Card card){
+
+    private static Map<PlayerId, IntegerProperty> initProperties(){
+        Map<PlayerId, IntegerProperty> intMap = new HashMap<>();
+
+        for(PlayerId id :PlayerId.ALL){
+            intMap.put(id, new SimpleIntegerProperty(0));
+        }
+        return intMap;
+
+    }
+
+    public ReadOnlyIntegerProperty playerCardTypeCount(Card card) {
         return playerCardTypeCount.get(card);
     }
 
-    private static Map<Route, BooleanProperty> createPlayerCanClaimRoute(){
+    private static Map<Route, BooleanProperty> createPlayerCanClaimRoute() {
         Map<Route, BooleanProperty> claimRouteMap = new HashMap<>();
 
-        for (Route route: ChMap.routes())
+        for (Route route : ChMap.routes())
             claimRouteMap.put(route, new SimpleBooleanProperty(false));
 
         return claimRouteMap;
     }
-    public ReadOnlyBooleanProperty claimable(Route route){
+
+    public ReadOnlyBooleanProperty claimable(Route route) {
         return playerCanClaimRoute.get(route);
     }
 
     //Additional methods
-    public ReadOnlyBooleanProperty canDrawTickets(){
+    public ReadOnlyBooleanProperty canDrawTickets() {
         return new SimpleBooleanProperty(publicGameState.canDrawTickets());
     }
 
-    public ReadOnlyBooleanProperty canDrawCards(){
+    public ReadOnlyBooleanProperty canDrawCards() {
         return new SimpleBooleanProperty(publicGameState.canDrawCards());
     }
 
-    public ObservableList<SortedBag<Card>> possibleClaimCards(Route route){
+    public ObservableList<SortedBag<Card>> possibleClaimCards(Route route) {
         return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route))); //TODO is this correct
     }
 }
