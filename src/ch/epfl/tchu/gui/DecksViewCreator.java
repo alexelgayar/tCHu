@@ -32,7 +32,7 @@ import static ch.epfl.tchu.gui.ActionHandlers.*;
  * @author Anirudhh Ramesh (329806)
  * Non-instantiable (=final) and package private (=no modifier). Constructs scene graph to represent the cards.
  */
-final class DecksViewCreator implements ActionHandlers{
+final class DecksViewCreator implements ActionHandlers {
 
     private static final int OUTSIDE_RECT_W = 60;
     private static final int OUTSIDE_RECT_H = 90;
@@ -43,11 +43,12 @@ final class DecksViewCreator implements ActionHandlers{
     private static final int GAUGE_W = 50;
     private static final int GAUGE_H = 5;
 
-    private DecksViewCreator(){}
+    private DecksViewCreator() {
+    }
 
 
     //Constructs the view of the Player cards
-    public static Node createHandView(ObservableGameState gameState){ //TODO: Verify all the styles are added, widths are correct
+    public static Node createHandView(ObservableGameState gameState) { //TODO: Verify all the styles are added, widths are correct
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
 
@@ -57,7 +58,7 @@ final class DecksViewCreator implements ActionHandlers{
         HBox handPane = new HBox();
         handPane.setId("hand-pane");
 
-        for (Card card: Card.values()) {
+        for (Card card : Card.values()) {
 
 
             ReadOnlyIntegerProperty count = gameState.playerCardTypeCount(card);
@@ -83,7 +84,7 @@ final class DecksViewCreator implements ActionHandlers{
     }
 
     //Constructs the view of the Cards + Deck
-    public static Node createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler){
+    public static Node createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
         VBox cardPane = new VBox();
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");
@@ -120,22 +121,14 @@ final class DecksViewCreator implements ActionHandlers{
 
     }
 
-    private static StackPane createCardStackPane(Card card){
+    private static StackPane createCardStackPane(Card card) {
         StackPane stackPane = new StackPane();
         stackPane.getStyleClass().add("card");
 
 
-        if(card != null) stackPane.getStyleClass().addAll((card == Card.LOCOMOTIVE) ? "NEUTRAL" : card.color().name()); //TODO: Is this better than the code below?
-
-//        if (card == null){
-//            System.out.println("Card is null");
-//        }
-//        else if (card == Card.LOCOMOTIVE){
-//            stackPane.getStyleClass().addAll("NEUTRAL");
-//        } else{
-//            System.out.println(card);
-//            stackPane.getStyleClass().addAll(card.color().name());
-//        }
+        if (card != null) stackPane.getStyleClass().addAll((card == Card.LOCOMOTIVE)
+                ? "NEUTRAL"
+                : card.color().name());
 
         Rectangle outside = new Rectangle(OUTSIDE_RECT_W, OUTSIDE_RECT_H);
         outside.getStyleClass().add("outside");
@@ -151,7 +144,7 @@ final class DecksViewCreator implements ActionHandlers{
         return stackPane;
     }
 
-    private static Button createButtonView(ReadOnlyIntegerProperty gaugePercentage, String buttonText){
+    private static Button createButtonView(ReadOnlyIntegerProperty gaugePercentage, String buttonText) {
         Button button = new Button(buttonText);
         button.getStyleClass().add("gauged");
 
@@ -174,11 +167,11 @@ final class DecksViewCreator implements ActionHandlers{
     }
 
 
-    private static void drawTickets(ObjectProperty<DrawTicketsHandler> drawTicketsH){
+    private static void drawTickets(ObjectProperty<DrawTicketsHandler> drawTicketsH) {
         drawTicketsH.get().onDrawTickets();
     }
 
-    private static void drawCards(ObjectProperty<DrawCardHandler> drawCardH, int slot){
+    private static void drawCards(ObjectProperty<DrawCardHandler> drawCardH, int slot) {
         drawCardH.get().onDrawCard(slot);
     }
 }

@@ -89,36 +89,21 @@ public class ObservableGameState {
             }
         }
 
-//        autant de propriétés qu'il y a de routes dans le réseau de tCHu et contenant, pour chacune d'entre elles, une valeur booléenne qui n'est vraie que si le joueur
-//        peut actuellement s'emparer de la route, c-à-d si :
-//        1.le joueur est le joueur courant,
-//        2.la route n'appartient à personne et, dans le cas d'une route double, sa voisine non plus,
-//        3.le joueur a les wagons et les cartes nécessaires pour s'emparer de la route — ou en tout cas tenter de le faire s'il s'agit d'un tunnel.
 
-
-        for (Route route : newGameState.claimedRoutes()) { //Use primitive types over wrapped types
+        for (Route route : routes.keySet()) {
             boolean correctPlayer = publicGameState.currentPlayerId() == playerId;
 
-            boolean routeNotOwned = routes.get(route) == null;
+            boolean routeNotOwned = routes.get(route) == null; //TODO: doesn't work
             boolean routeDoubleNotOwned = true;
 
-            //TODO: Complete this condition: Player = currentPlayer? double route not claimed?
-            //How to get the second route in the double route?
-//            if (ChMap.routes().contains(routeOpposite)) { //Iterate
-//                routeDoubleNotOwned = routes.get(routeOpposite) != null;
-//            }
-            //Create a set of lists, pair of the first station and second station
-            //If player has route from station1 -> station2
-            //Add list(station1, station2) and list(station2,station1)
-            //=> Check if the set creates contains the list of stations
 
 
             boolean playerHasCards = playerState.canClaimRoute(route);
 
-            playerCanClaimRoute.get(route).set(correctPlayer
-                    && routeNotOwned
-                    && routeDoubleNotOwned
-                    && playerHasCards);
+          //  playerCanClaimRoute.get(route).set(correctPlayer && routeNotOwned && routeDoubleNotOwned && playerHasCards);
+            playerCanClaimRoute.get(route).set(playerHasCards && correctPlayer && routeDoubleNotOwned);
+
+
         }
     }
 
