@@ -100,6 +100,14 @@ public class ObservableGameState {
             boolean routeNotOwned = routes.get(route).get() == null;
             boolean routeDoubleNotOwned = true;
 
+            for(Route w: routes.keySet()){
+                if(w.id() == route.id()) continue;
+                if(w.stations().containsAll(route.stations())){
+                    routeDoubleNotOwned = routes.get(w).get() == null;
+
+                }
+            }
+
 
 
             boolean playerHasCards = playerState.canClaimRoute(route);

@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,10 +46,13 @@ public final class Stage9Test extends Application {
     }
 
     private void setState(ObservableGameState gameState) {
+
+        List<Route> p1Routes = new ArrayList<>();
+        p1Routes.addAll(ChMap.routes().subList(0, 3));
+        p1Routes.add(ChMap.routes().get(45));
         PlayerState p1State =
                 new PlayerState(SortedBag.of(ChMap.tickets().subList(0, 3)),
-                        SortedBag.of(1, Card.WHITE, 3, Card.RED),
-                        ChMap.routes().subList(0, 3));
+                        SortedBag.of(1, Card.WHITE, 3, Card.RED), p1Routes);
 
         PublicPlayerState p2State =
                 new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
