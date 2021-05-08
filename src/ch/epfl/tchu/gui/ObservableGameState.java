@@ -68,6 +68,7 @@ public class ObservableGameState {
             }
         }
 
+
         //2. Public Player State
         for(PlayerId id: PlayerId.ALL) {
             playersTicketsCount.get(id).set(newGameState.playerState(id).ticketCount());
@@ -91,17 +92,19 @@ public class ObservableGameState {
 
 
         for (Route route : routes.keySet()) {
+
+
+
             boolean correctPlayer = publicGameState.currentPlayerId() == playerId;
 
-            boolean routeNotOwned = routes.get(route) == null; //TODO: doesn't work
+            boolean routeNotOwned = routes.get(route).get() == null;
             boolean routeDoubleNotOwned = true;
 
 
 
             boolean playerHasCards = playerState.canClaimRoute(route);
 
-          //  playerCanClaimRoute.get(route).set(correctPlayer && routeNotOwned && routeDoubleNotOwned && playerHasCards);
-            playerCanClaimRoute.get(route).set(playerHasCards && correctPlayer && routeDoubleNotOwned);
+            playerCanClaimRoute.get(route).set(playerHasCards && correctPlayer && routeDoubleNotOwned && routeNotOwned);
 
 
         }
@@ -132,7 +135,7 @@ public class ObservableGameState {
     private static Map<Route, ObjectProperty<PlayerId>> createRoutes() {
         Map<Route, ObjectProperty<PlayerId>> routes = new HashMap<>();
         for (Route route : ChMap.routes())
-            routes.put(route, new SimpleObjectProperty<>());
+            routes.put(route, new SimpleObjectProperty<>(null));
 
         return routes;
     }
