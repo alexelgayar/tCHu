@@ -60,7 +60,6 @@ final class DecksViewCreator implements ActionHandlers {
 
         for (Card card : Card.values()) {
 
-
             ReadOnlyIntegerProperty count = gameState.playerCardTypeCount(card);
 
             StackPane cardStackPane = createCardStackPane(card);
@@ -74,7 +73,6 @@ final class DecksViewCreator implements ActionHandlers {
             cardStackPane.getChildren().add(counterText);
 
             handPane.getChildren().add(cardStackPane);
-            //handPanes.add(handPane);
         }
 
         main.getChildren().addAll(playerTickets);
@@ -89,28 +87,27 @@ final class DecksViewCreator implements ActionHandlers {
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");
         Button ticketsButton = createButtonView(gameState.ticketsPercentage(), StringsFr.TICKETS);
-        //ticketsButton.disableProperty().bind(drawTicketsHandler.isNull().or(gameState.canDrawTickets().not())); //TODO: Is handler correct?
+        ticketsButton.disableProperty().bind(drawTicketsHandler.isNull()); //TODO: Is handler correct?
 
 
         ticketsButton.setOnMouseClicked(e -> drawTicketsHandler.get().onDrawTickets());
 
         List<StackPane> stackPanes = new ArrayList<>();
+
         for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
             int finalI = i;
             stackPanes.add(createCardStackPane(gameState.faceUpCard(i).get()));
             gameState.faceUpCard(i).addListener((p, o, n) -> {
                 stackPanes.get(finalI).getStyleClass().add(n.name());
-                System.out.println("p:" + p + " o:" + o + " n:" + n);
             }); //TODO: Is this correct listener implementation?
 
 
-            //stackPanes.get(i).disableProperty().bind(drawCardHandler.isNull().or(gameState.canDrawCards().not())); //TODO: Is handler correct?
+            stackPanes.get(i).disableProperty().bind(drawCardHandler.isNull()); //TODO: Is handler correct?
             stackPanes.get(i).setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(finalI));
         }
 
         Button cardsButton = createButtonView(gameState.cardsPercentage(), StringsFr.CARDS);
-        //cardsButton.disableProperty().bind(drawCardHandler.isNull().or(gameState.canDrawCards().not())); //TODO: Is handler correct?
-        //gameState.cardsPercentage().addListener((p, o, n) -> ticketsButton = createButtonView(gameState.ticketsPercentage())); //TODO: Fix listener
+        cardsButton.disableProperty().bind(drawCardHandler.isNull()); //TODO: Is handler correct?
         cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(-1));
 
         cardPane.getChildren().add(ticketsButton);

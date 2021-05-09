@@ -61,7 +61,7 @@ public class ObservableGameState {
             faceUpCards.get(slot).set(newCard);
         }
 
-        for(PlayerId id :PlayerId.ALL) {
+        for (PlayerId id : PlayerId.ALL) {
             for (Route route : routes.keySet()) {
                 if (newGameState.playerState(id).routes().contains(route))
                     routes.get(route).set(id);
@@ -70,7 +70,7 @@ public class ObservableGameState {
 
 
         //2. Public Player State
-        for(PlayerId id: PlayerId.ALL) {
+        for (PlayerId id : PlayerId.ALL) {
             playersTicketsCount.get(id).set(newGameState.playerState(id).ticketCount());
             playersCardsCount.get(id).set(newGameState.playerState(id).cardCount());
             playersCarsCount.get(id).set(newGameState.playerState(id).carCount());
@@ -93,28 +93,19 @@ public class ObservableGameState {
 
         for (Route route : routes.keySet()) {
 
-
-
             boolean correctPlayer = publicGameState.currentPlayerId() == playerId;
-
             boolean routeNotOwned = routes.get(route).get() == null;
             boolean routeDoubleNotOwned = true;
 
-            for(Route w: routes.keySet()){
-                if(w.id() == route.id()) continue;
-                if(w.stations().containsAll(route.stations())){
+            for (Route w : routes.keySet()) {
+                if (w.id() == route.id()) continue;
+                if (w.stations().containsAll(route.stations())) {
                     routeDoubleNotOwned = routes.get(w).get() == null;
-
                 }
             }
 
-
-
             boolean playerHasCards = playerState.canClaimRoute(route);
-
             playerCanClaimRoute.get(route).set(playerHasCards && correctPlayer && routeDoubleNotOwned && routeNotOwned);
-
-
         }
     }
 
@@ -172,7 +163,6 @@ public class ObservableGameState {
     }
 
 
-
     //3. PrivatePlayerState Properties
     public ObservableList<Ticket> playerTickets() {
         return FXCollections.unmodifiableObservableList(playerTickets);
@@ -187,10 +177,10 @@ public class ObservableGameState {
         return cardMap;
     }
 
-    private static Map<PlayerId, IntegerProperty> initProperties(){
+    private static Map<PlayerId, IntegerProperty> initProperties() {
         Map<PlayerId, IntegerProperty> intMap = new HashMap<>();
 
-        for(PlayerId id :PlayerId.ALL){
+        for (PlayerId id : PlayerId.ALL) {
             intMap.put(id, new SimpleIntegerProperty(0));
         }
         return intMap;
