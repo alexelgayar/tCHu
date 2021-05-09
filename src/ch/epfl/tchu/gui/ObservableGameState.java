@@ -62,11 +62,14 @@ public class ObservableGameState {
             faceUpCards.get(slot).set(newCard);
         }
 
-        for (PlayerId id : PlayerId.ALL) {
+
             for (Route route : routes.keySet()) {
+                for (PlayerId id : PlayerId.ALL) {
                 if (newGameState.playerState(id).routes().contains(route))
                     routes.get(route).set(id);
             }
+
+
         }
 
 
@@ -140,7 +143,6 @@ public class ObservableGameState {
         return routes;
     }
 
-    //TODO:!!!! Return ReadOnly Object Properties
     public ReadOnlyObjectProperty<PlayerId> routeOwner(Route route) { //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
         return routes.get(route);
     }
@@ -215,6 +217,6 @@ public class ObservableGameState {
     }
 
     public ObservableList<SortedBag<Card>> possibleClaimCards(Route route) {
-        return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route))); //TODO is this correct
+        return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route)));
     }
 }

@@ -55,11 +55,10 @@ final class MapViewCreator implements ActionHandlers {
                             ? "NEUTRAL"
                             : route.color().name());
 
-            gameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name())); //TODO: Problem with routeOwner, ObservableGameState
+            gameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name()));
             routeGroup.disableProperty().bind(claimRouteHandler.isNull().or(gameState.claimable(route).not()));
             routeGroup.setOnMouseClicked(e -> pickClaimCards(gameState, route, claimRouteHandler, cardChooser));
 
-            //TODO: Modularise this
             for (int i = 1; i <= route.length(); ++i) {
                 //Case
                 Group caseGroup = new Group();

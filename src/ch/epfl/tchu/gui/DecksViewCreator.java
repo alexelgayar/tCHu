@@ -48,7 +48,7 @@ final class DecksViewCreator implements ActionHandlers {
 
 
     //Constructs the view of the Player cards
-    public static Node createHandView(ObservableGameState gameState) { //TODO: Verify all the styles are added, widths are correct
+    public static Node createHandView(ObservableGameState gameState) {
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
 
@@ -87,7 +87,7 @@ final class DecksViewCreator implements ActionHandlers {
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");
         Button ticketsButton = createButtonView(gameState.ticketsPercentage(), StringsFr.TICKETS);
-        ticketsButton.disableProperty().bind(drawTicketsHandler.isNull()); //TODO: Is handler correct?
+        ticketsButton.disableProperty().bind(drawTicketsHandler.isNull());
 
 
         ticketsButton.setOnMouseClicked(e -> drawTicketsHandler.get().onDrawTickets());
@@ -99,15 +99,15 @@ final class DecksViewCreator implements ActionHandlers {
             stackPanes.add(createCardStackPane(gameState.faceUpCard(i).get()));
             gameState.faceUpCard(i).addListener((p, o, n) -> {
                 stackPanes.get(finalI).getStyleClass().add(n.name());
-            }); //TODO: Is this correct listener implementation?
+            });
 
 
-            stackPanes.get(i).disableProperty().bind(drawCardHandler.isNull()); //TODO: Is handler correct?
+            stackPanes.get(i).disableProperty().bind(drawCardHandler.isNull());
             stackPanes.get(i).setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(finalI));
         }
 
         Button cardsButton = createButtonView(gameState.cardsPercentage(), StringsFr.CARDS);
-        cardsButton.disableProperty().bind(drawCardHandler.isNull()); //TODO: Is handler correct?
+        cardsButton.disableProperty().bind(drawCardHandler.isNull());
         cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(-1));
 
         cardPane.getChildren().add(ticketsButton);
@@ -121,7 +121,6 @@ final class DecksViewCreator implements ActionHandlers {
     private static StackPane createCardStackPane(Card card) {
         StackPane stackPane = new StackPane();
         stackPane.getStyleClass().add("card");
-
 
         if (card != null) stackPane.getStyleClass().addAll((card == Card.LOCOMOTIVE)
                 ? "NEUTRAL"
