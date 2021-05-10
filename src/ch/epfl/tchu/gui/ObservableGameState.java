@@ -149,15 +149,15 @@ public class ObservableGameState {
 
 
     //2. PublicPlayerState Properties
-    public ReadOnlyIntegerProperty playerTickets(PlayerId id) {
+    public ReadOnlyIntegerProperty playerTicketsCount(PlayerId id) {
         return playersTicketsCount.get(id);
     }
 
-    public ReadOnlyIntegerProperty playerCards(PlayerId id) {
+    public ReadOnlyIntegerProperty playerCardsCount(PlayerId id) {
         return playersCardsCount.get(id);
     }
 
-    public ReadOnlyIntegerProperty playeCars(PlayerId id) {
+    public ReadOnlyIntegerProperty playeCarsCount(PlayerId id) {
         return playersCarsCount.get(id);
     }
 
