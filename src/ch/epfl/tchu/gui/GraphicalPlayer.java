@@ -23,6 +23,7 @@ import javafx.stage.StageStyle;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
 import ch.epfl.tchu.gui.ActionHandlers.*;
 
 import javax.script.Bindings;
@@ -34,15 +35,15 @@ import static javafx.application.Platform.isFxApplicationThread;
  * @author Anirudhh Ramesh (329806)
  * Instantiable class, represents the graphic interface of a tCHu player
  */
-public class GraphicalPlayer { //TODO: Should this be Immutable?
+public class GraphicalPlayer {
 
-   private PlayerId id;
-   private Map<PlayerId, String> playerNames;
-   private ObservableGameState gameState;
-   private ObservableList<Text> textList = null;
-   private Stage mainStage;
+    private PlayerId id;
+    private Map<PlayerId, String> playerNames;
+    private ObservableGameState gameState;
+    private ObservableList<Text> textList = null;
+    private Stage mainStage;
 
-    public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames){
+    public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames) {
         this.id = id;
         this.playerNames = playerNames;
         gameState = new ObservableGameState(id);
@@ -52,8 +53,8 @@ public class GraphicalPlayer { //TODO: Should this be Immutable?
         SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler = new SimpleObjectProperty<>();
         SimpleObjectProperty<DrawCardHandler> drawCardHandler = new SimpleObjectProperty<>();
 
-        Node mapView = MapViewCreator.createMapView(gameState, claimRouteHandler, this :: chooseClaimCards);
-        Node infoView = InfoViewCreator.createInfoView(id,playerNames, gameState, textList);
+        Node mapView = MapViewCreator.createMapView(gameState, claimRouteHandler, this::chooseClaimCards);
+        Node infoView = InfoViewCreator.createInfoView(id, playerNames, gameState, textList);
         Node cardsView = DecksViewCreator.createCardsView(gameState, drawTicketHandler, drawCardHandler);
         Node handsView = DecksViewCreator.createHandView(gameState);
 
@@ -67,27 +68,27 @@ public class GraphicalPlayer { //TODO: Should this be Immutable?
         mainStage.show();
     }
 
-    public void setState(PublicGameState newGameState, PlayerState newPlayerState){
+    public void setState(PublicGameState newGameState, PlayerState newPlayerState) {
         assert isFxApplicationThread();
         gameState.setState(newGameState, newPlayerState);
     }
 
-    public void recieveInfo(String message){
+    public void recieveInfo(String message) {
         assert isFxApplicationThread();
 
         textList.add(new Text(message));
-        if(textList.size() == 6) textList.remove(0);
+        if (textList.size() == 6) textList.remove(0);
         InfoViewCreator.createInfoView(id, playerNames, gameState, textList);
     }
 
-    public void startTurn(DrawTicketsHandler ticketsHandler, DrawCardHandler cardHandler, ClaimRouteHandler routeHandler){
+    public void startTurn(DrawTicketsHandler ticketsHandler, DrawCardHandler cardHandler, ClaimRouteHandler routeHandler) {
 
 
     }
 
-    public void chooseTickets(SortedBag<Ticket> tickets, ChooseTicketsHandler ticketsHandler){
+    public void chooseTickets(SortedBag<Ticket> tickets, ChooseTicketsHandler ticketsHandler) {
 
-        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() -2, tickets.size() == 3? "" : "s");
+        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, tickets.size() == 3 ? "" : "s");
 
         ObservableList<Ticket> observableList = null;
         observableList.addAll(tickets.toList());
@@ -98,15 +99,17 @@ public class GraphicalPlayer { //TODO: Should this be Immutable?
         minChoice.set(listView.getSelectionModel().getSelectedItems().size());
 
         Button button = new Button();
-        button.disableProperty().bind(minChoice.lessThan(tickets.size()-2));
-        button.setOnAction(e -> {mainStage.hide();
-        chooseTickets(SortedBag.of(listView.getSelectionModel().getSelectedItems()), ticketsHandler);});
+        button.disableProperty().bind(minChoice.lessThan(tickets.size() - 2));
+        button.setOnAction(e -> {
+            mainStage.hide();
+            chooseTickets(SortedBag.of(listView.getSelectionModel().getSelectedItems()), ticketsHandler);
+        });
 
         createPane(StringsFr.TICKETS_CHOICE, message, button, listView);
     }
 
 
-    private <E>  void  createPane(String title, String message, Button button, ListView<E> listView){
+    private <E> void createPane(String title, String message, Button button, ListView<E> listView) {
         Stage stage = new Stage(StageStyle.UTILITY);
         stage.initOwner(mainStage);
         stage.initModality(Modality.WINDOW_MODAL);
@@ -122,19 +125,14 @@ public class GraphicalPlayer { //TODO: Should this be Immutable?
         Text text = new Text(message);
         textFlow.getChildren().addAll(text);
 
-
-
         vBox.getChildren().addAll(textFlow, listView, button);
         stage.setScene(scene);
         stage.show();
     }
 
-    public void chooseClaimCards(List<SortedBag<Card>> cardList, ChooseCardsHandler chooseCardsHandler){
+    public void chooseClaimCards(List<SortedBag<Card>> cardList, ChooseCardsHandler chooseCardsHandler) {
 
     }
-
-
-
 
 
 }
