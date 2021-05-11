@@ -34,7 +34,7 @@ import static javafx.application.Platform.isFxApplicationThread;
  * @author Anirudhh Ramesh (329806)
  * Instantiable class, represents the graphic interface of a tCHu player
  */
-public class GraphicalPlayer {
+public class GraphicalPlayer { //TODO: Should this be Immutable?
 
    private PlayerId id;
    private Map<PlayerId, String> playerNames;
