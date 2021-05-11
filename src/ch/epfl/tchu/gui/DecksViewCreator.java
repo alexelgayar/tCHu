@@ -48,7 +48,7 @@ final class DecksViewCreator implements ActionHandlers {
 
 
     //Constructs the view of the Player cards
-    public static Node createHandView(ObservableGameState gameState) {
+    public static HBox createHandView(ObservableGameState gameState) {
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
 
@@ -82,7 +82,7 @@ final class DecksViewCreator implements ActionHandlers {
     }
 
     //Constructs the view of the Cards + Deck
-    public static Node createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
+    public static VBox createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
         VBox cardPane = new VBox();
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");

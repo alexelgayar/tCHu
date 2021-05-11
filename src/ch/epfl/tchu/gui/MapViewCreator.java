@@ -34,7 +34,7 @@ final class MapViewCreator implements ActionHandlers {
     private MapViewCreator() {
     }
 
-    public static Node createMapView(ObservableGameState gameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser) {
+    public static Pane createMapView(ObservableGameState gameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser) {
         Pane mapPane = new Pane();
         mapPane.getStylesheets().addAll("map.css", "colors.css");
 

@@ -24,7 +24,7 @@ final class InfoViewCreator {
 
     private InfoViewCreator(){}
 
-    public static Node createInfoView(PlayerId playerId, Map<PlayerId, String> playerNames, ObservableGameState gameState, ObservableList<Text> textList){
+    public static VBox createInfoView(PlayerId playerId, Map<PlayerId, String> playerNames, ObservableGameState gameState, ObservableList<Text> textList){
 
         VBox main = new VBox();
         main.getStylesheets().addAll("info.css", "colors.css");
