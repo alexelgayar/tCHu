@@ -3,6 +3,7 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -11,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.epfl.tchu.gui.ActionHandlers.*;
+import javafx.util.StringConverter;
 
 import javax.script.Bindings;
 
@@ -42,6 +45,9 @@ public class GraphicalPlayer {
     private ObservableGameState gameState;
     private ObservableList<Text> textList = null;
     private Stage mainStage;
+    SimpleObjectProperty<ClaimRouteHandler> claimRouteHandler;
+    SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler;
+    SimpleObjectProperty<DrawCardHandler> drawCardHandler;
 
     public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames) {
         this.id = id;
@@ -49,9 +55,9 @@ public class GraphicalPlayer {
         gameState = new ObservableGameState(id);
 
 
-        SimpleObjectProperty<ClaimRouteHandler> claimRouteHandler = new SimpleObjectProperty<>();
-        SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler = new SimpleObjectProperty<>();
-        SimpleObjectProperty<DrawCardHandler> drawCardHandler = new SimpleObjectProperty<>();
+        claimRouteHandler = new SimpleObjectProperty<>();
+        drawTicketHandler = new SimpleObjectProperty<>();
+        drawCardHandler = new SimpleObjectProperty<>();
 
         Node mapView = MapViewCreator.createMapView(gameState, claimRouteHandler, this::chooseClaimCards);
         Node infoView = InfoViewCreator.createInfoView(id, playerNames, gameState, textList);
@@ -82,41 +88,112 @@ public class GraphicalPlayer {
     }
 
     public void startTurn(DrawTicketsHandler ticketsHandler, DrawCardHandler cardHandler, ClaimRouteHandler routeHandler) {
+        assert isFxApplicationThread();
+
+        if(gameState.canDrawTickets().get()){
+            DrawTicketsHandler tHandler = () -> ticketsHandler.onDrawTickets();
+            setNull();
+            drawTicketHandler.set(tHandler);
+        }
+
 
 
     }
 
     public void chooseTickets(SortedBag<Ticket> tickets, ChooseTicketsHandler ticketsHandler) {
+        assert isFxApplicationThread();
 
-        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, tickets.size() == 3 ? "" : "s");
+        Stage stage = new Stage(StageStyle.UTILITY);
+
+        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, StringsFr.plural(tickets.size() - 2));
 
         ObservableList<Ticket> observableList = null;
         observableList.addAll(tickets.toList());
         ListView<Ticket> listView = new ListView<>(observableList);
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        IntegerProperty minChoice = null;
-        minChoice.set(listView.getSelectionModel().getSelectedItems().size());
+        Button button = new Button(StringsFr.CHOOSE);
+        button.disableProperty().bind(
+                new SimpleIntegerProperty(listView.getSelectionModel().getSelectedItems().size()).
+                        lessThan(tickets.size() - 2));
 
-        Button button = new Button();
-        button.disableProperty().bind(minChoice.lessThan(tickets.size() - 2));
         button.setOnAction(e -> {
-            mainStage.hide();
-            chooseTickets(SortedBag.of(listView.getSelectionModel().getSelectedItems()), ticketsHandler);
+            stage.hide();
+            ticketsHandler.onChooseTickets(SortedBag.of(listView.getSelectionModel().getSelectedItems()));
         });
 
-        createPane(StringsFr.TICKETS_CHOICE, message, button, listView);
+        createPane(stage, StringsFr.TICKETS_CHOICE, message, button, listView);
+    }
+
+    public void drawCard(DrawCardHandler cardHandler) {
+        assert isFxApplicationThread();
+
+        DrawCardHandler handler = (int i) -> {
+            setNull();
+            cardHandler.onDrawCard(i);
+        };
+        drawCardHandler.set(handler);
+    }
+
+    public void chooseClaimCards(List<SortedBag<Card>> bagList, ChooseCardsHandler cardsHandler) {
+        assert isFxApplicationThread();
+
+        Stage stage = new Stage(StageStyle.UTILITY);
+
+        String message = String.format(StringsFr.CHOOSE_CARDS);
+
+        ObservableList<SortedBag<Card>> observableList = null;
+        observableList.addAll(bagList);
+        ListView<SortedBag<Card>> listView = new ListView<>(observableList);
+        listView.setCellFactory(v ->
+                new TextFieldListCell<>(new CardBagStringConverter()));
+
+        Button button = new Button();
+        button.disableProperty().bind(
+                new SimpleIntegerProperty(listView.getSelectionModel().getSelectedItems().size()).lessThan(1));
+
+        button.setOnAction(e -> {
+            stage.hide();
+            cardsHandler.onChooseCards(listView.getSelectionModel().getSelectedItem());
+        });
+
+        createPane(stage, StringsFr.CARDS_CHOICE, message, button, listView);
+    }
+
+    public void chooseAdditionalCards(List<SortedBag<Card>> bagList, ChooseCardsHandler cardsHandler) {
+        assert isFxApplicationThread();
+
+        Stage stage = new Stage(StageStyle.UTILITY);
+
+        String message = String.format(StringsFr.CHOOSE_ADDITIONAL_CARDS);
+
+        ObservableList<SortedBag<Card>> observableList = null;
+        observableList.addAll(bagList);
+        ListView<SortedBag<Card>> listView = new ListView<>(observableList);
+        listView.setCellFactory(v ->
+                new TextFieldListCell<>(new CardBagStringConverter()));
+
+        Button button = new Button();
+
+        button.setOnAction(e -> {
+            stage.hide();
+            cardsHandler.onChooseCards(listView.getSelectionModel().getSelectedItem());
+        });
+
+        createPane(stage, StringsFr.CARDS_CHOICE, message, button, listView);
     }
 
 
-    private <E> void createPane(String title, String message, Button button, ListView<E> listView) {
-        Stage stage = new Stage(StageStyle.UTILITY);
+    private <E> void createPane(Stage stage, String title, String message, Button button, ListView<E> listView) {
+
         stage.initOwner(mainStage);
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle(title);
         stage.setOnCloseRequest(Event::consume);
 
         VBox vBox = new VBox();
+
+        button.setText(StringsFr.CHOOSE);
 
         Scene scene = new Scene(vBox);
         scene.getStylesheets().addAll("chooser.css");
@@ -130,8 +207,24 @@ public class GraphicalPlayer {
         stage.show();
     }
 
-    public void chooseClaimCards(List<SortedBag<Card>> cardList, ChooseCardsHandler chooseCardsHandler) {
+    private void setNull() {
+        claimRouteHandler.set(null);
+        drawTicketHandler.set(null);
+        drawCardHandler.set(null);
+    }
 
+    public class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+
+
+        @Override
+        public String toString(SortedBag<Card> object) {
+            return Info.cardsName(object);
+        }
+
+        @Override
+        public SortedBag<Card> fromString(String string) {
+            throw new UnsupportedOperationException();
+        }
     }
 
 

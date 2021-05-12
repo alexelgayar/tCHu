@@ -195,7 +195,7 @@ public final class Info {
         return route.station1().name() + StringsFr.EN_DASH_SEPARATOR + route.station2().name();
     }
 
-    private static String cardsName(SortedBag<Card> cards) {
+    protected static String cardsName(SortedBag<Card> cards) {
 
         StringBuilder cardsName = new StringBuilder();
         List<String> cardList = new ArrayList<>();
