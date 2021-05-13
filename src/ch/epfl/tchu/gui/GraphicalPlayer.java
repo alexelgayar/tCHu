@@ -2,6 +2,7 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,8 +30,6 @@ import java.util.Map;
 
 import ch.epfl.tchu.gui.ActionHandlers.*;
 import javafx.util.StringConverter;
-
-import javax.script.Bindings;
 
 import static javafx.application.Platform.isFxApplicationThread;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -127,15 +126,14 @@ public class GraphicalPlayer {
 
         String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, StringsFr.plural(tickets.size() - 2));
 
-        ObservableList<Ticket> observableList = null;
-        observableList.addAll(tickets.toList());
+        ObservableList<Ticket> observableList = observableArrayList(tickets.toList());
         ListView<Ticket> listView = new ListView<>(observableList);
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        Button button = new Button(StringsFr.CHOOSE);
-        button.disableProperty().bind(
-                new SimpleIntegerProperty(listView.getSelectionModel().getSelectedItems().size()).
-                        lessThan(tickets.size() - 2));
+        Button button = new Button();
+
+        button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems())
+                .lessThan(tickets.size() - 2));
 
         button.setOnAction(e -> {
             stage.hide();
@@ -162,15 +160,14 @@ public class GraphicalPlayer {
 
         String message = String.format(StringsFr.CHOOSE_CARDS);
 
-        ObservableList<SortedBag<Card>> observableList = null;
-        observableList.addAll(bagList);
+        ObservableList<SortedBag<Card>> observableList = observableArrayList(bagList);
         ListView<SortedBag<Card>> listView = new ListView<>(observableList);
+
         listView.setCellFactory(v ->
                 new TextFieldListCell<>(new CardBagStringConverter()));
 
         Button button = new Button();
-        button.disableProperty().bind(
-                new SimpleIntegerProperty(listView.getSelectionModel().getSelectedItems().size()).lessThan(1));
+        button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems()).lessThan(1));
 
         button.setOnAction(e -> {
             stage.hide();
@@ -187,8 +184,7 @@ public class GraphicalPlayer {
 
         String message = String.format(StringsFr.CHOOSE_ADDITIONAL_CARDS);
 
-        ObservableList<SortedBag<Card>> observableList = null;
-        observableList.addAll(bagList);
+        ObservableList<SortedBag<Card>> observableList = observableArrayList(bagList);
         ListView<SortedBag<Card>> listView = new ListView<>(observableList);
         listView.setCellFactory(v ->
                 new TextFieldListCell<>(new CardBagStringConverter()));

@@ -22,7 +22,7 @@ public final class GraphicalPlayerTest extends Application {
         p1Routes.add(ChMap.routes().get(45));
         PlayerState p1State =
                 new PlayerState(SortedBag.of(ChMap.tickets().subList(0, 3)),
-                        SortedBag.of(1, Card.WHITE, 3, Card.RED), p1Routes);
+                        SortedBag.of(3, Card.WHITE, 3, Card.RED), p1Routes);
 
         PublicPlayerState p2State =
                 new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
@@ -46,15 +46,18 @@ public final class GraphicalPlayerTest extends Application {
 
         ActionHandlers.DrawTicketsHandler drawTicketsH =
                 () ->
-                    p.receiveInfo("Je tire des billets !");
+                        p.chooseTickets(SortedBag.of(ChMap.tickets().subList(0, 3)), drawnTickets -> p.receiveInfo(drawnTickets.toString()));
 
         ActionHandlers.DrawCardHandler drawCardH =
                 s -> p.receiveInfo(String.format("Je tire une carte de %s !", s));
+
         ClaimRouteHandler claimRouteH =
                 (r, cs) -> {
                     String rn = r.station1() + " - " + r.station2();
                     p.receiveInfo(String.format("Je m'empare de %s avec %s", rn, cs));
                 };
+
+
 
         p.startTurn(drawTicketsH, drawCardH, claimRouteH);
     }

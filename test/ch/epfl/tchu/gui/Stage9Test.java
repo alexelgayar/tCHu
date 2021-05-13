@@ -84,7 +84,7 @@ public final class Stage9Test extends Application {
 
     private static void chooseCards(List<SortedBag<Card>> options,
                                     ChooseCardsHandler chooser) {
-        chooser.onChooseCards(options.get(0));
+        chooser.onChooseCards(options.get(1));
     }
 
     private static void drawTickets() {
