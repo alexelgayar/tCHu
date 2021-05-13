@@ -82,16 +82,6 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Returns an identical state to the receiver, except that the player also has the given cards
-     * @param additionalCards the cards to add to the list of cards of the player
-     * @return an identical state to the receiver, except that the player also has the given cards
-     */
-    public PlayerState withAddedCards(SortedBag<Card> additionalCards) {
-        SortedBag<Card> newCards = cards.union(additionalCards);
-        return new PlayerState(tickets, newCards, routes());
-    }
-
-    /**
      * Method which returns true IFF the player can seize the given route, i.e. if they have enough cars left and they have the necessary cards
      * @param route the route that is tested to see if it can be seized by the player
      * @return returns true IFF the player can seize the given route, i.e. if they have enough cars left and they have the necessary cards
@@ -149,17 +139,15 @@ public final class PlayerState extends PublicPlayerState {
      *
      * @param additionalCardsCount the number of additional cards that must be drawn
      * @param initialCards the cards initially used to claim the route
-     * @param drawnCards the cards drawn from the deck
      * @return the list of all the sets of cards that the player could use to seize a tunnel, sorted in ascending order of the number of locomotive cards
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive), if the set of initial cards is empty or contains more than 2 different types of cards, or if the set of cards drawn does not contain exactly 3 cards
      */
-    public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
+    public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards) {
         //===== Preconditions Check =====//
         boolean additionalCardsCorrect = (additionalCardsCount >= 1) && (additionalCardsCount <= 3);
         boolean initialCardsNotEmpty = (!initialCards.isEmpty());
         boolean initialCardsTwoTypes = (initialCards.toSet().size() <= 2);
-        boolean drawnCardsThree = (drawnCards.size() == 3);
-        Preconditions.checkArgument(additionalCardsCorrect && initialCardsNotEmpty && initialCardsTwoTypes && drawnCardsThree);
+        Preconditions.checkArgument(additionalCardsCorrect && initialCardsNotEmpty && initialCardsTwoTypes);
 
         //===== Computing Possible Cards =====//
         SortedBag<Card> remainingCards = cards.difference(initialCards);

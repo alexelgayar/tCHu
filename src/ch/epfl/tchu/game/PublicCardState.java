@@ -34,14 +34,6 @@ public class PublicCardState {
     }
 
     /**
-     * Returns the total number of cards that are not in the players' hand. Namely, the 5 whose face is up, those from the draw pile and from the discard pile
-     * @return the total number of cards that are not in the players' hand (the 5 face-up cards + drawPile + discardPile)
-     */
-    public int totalSize(){
-        return faceUpCards.size() + deckSize + discardsSize;
-    }
-
-    /**
      * Turns the 5 cards face-up, in the form of a list comprising exactly 5 elements
      * @return the 5-element list of the 5 cards that are face-up
      */

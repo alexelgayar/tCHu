@@ -137,7 +137,7 @@ public final class Trail {
      * @return a textual representation of the trail containing at least the name of the first and last station and the length of the trail in parenthesis
      */
     @Override
-    public String toString() {
+    public String toString() { //TODO: Is there a less complicated method for the toString?
         String text = "Null - Null (0)";
         List<String> stations = new ArrayList<>();
         Station temp = null;

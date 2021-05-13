@@ -165,11 +165,11 @@ public final class Game {
                 int count = claimedRoute.additionalClaimCardsCount(initialClaimCards, drawnCards);
 
                 sendInformation(players, infos.get((gameState.currentPlayerId())).drewAdditionalCards(drawnCards, count));
-                if (count <= 0 || gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards).isEmpty()) {
+                if (count <= 0 || gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards).isEmpty()) {
                     gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                     sendInformation(players, infos.get(gameState.currentPlayerId()).claimedRoute(claimedRoute, initialClaimCards));
                 } else {
-                    List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards, drawnCards);
+                    List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards);
 
                     SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
 

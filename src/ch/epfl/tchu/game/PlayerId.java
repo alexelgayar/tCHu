@@ -13,7 +13,7 @@ public enum PlayerId {
     PLAYER_2;
 
 
-    private static final PlayerId[] AllArray = PlayerId.values();
+    private static final PlayerId[] AllArray = PlayerId.values(); //TODO: Extra attribute used for clarity, as has been suggested in Etape 1
 
     /**
      * List containing all players
