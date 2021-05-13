@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.Node;
@@ -32,6 +33,7 @@ import javafx.util.StringConverter;
 import javax.script.Bindings;
 
 import static javafx.application.Platform.isFxApplicationThread;
+import static javafx.collections.FXCollections.observableArrayList;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -43,7 +45,7 @@ public class GraphicalPlayer {
     private PlayerId id;
     private Map<PlayerId, String> playerNames;
     private ObservableGameState gameState;
-    private ObservableList<Text> textList = null;
+    private ObservableList<Text> textList = observableArrayList();
     private Stage mainStage;
     SimpleObjectProperty<ClaimRouteHandler> claimRouteHandler;
     SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler;
@@ -79,22 +81,40 @@ public class GraphicalPlayer {
         gameState.setState(newGameState, newPlayerState);
     }
 
-    public void recieveInfo(String message) {
+    public void receiveInfo(String message) {
         assert isFxApplicationThread();
 
         textList.add(new Text(message));
         if (textList.size() == 6) textList.remove(0);
-        InfoViewCreator.createInfoView(id, playerNames, gameState, textList);
+
     }
 
     public void startTurn(DrawTicketsHandler ticketsHandler, DrawCardHandler cardHandler, ClaimRouteHandler routeHandler) {
         assert isFxApplicationThread();
 
         if(gameState.canDrawTickets().get()){
-            DrawTicketsHandler tHandler = () -> ticketsHandler.onDrawTickets();
-            setNull();
+            DrawTicketsHandler tHandler = () -> {
+                setNull();
+                ticketsHandler.onDrawTickets();
+
+            };
             drawTicketHandler.set(tHandler);
         }
+
+        if(gameState.canDrawCards().get()){
+            DrawCardHandler cHandler = (int i) -> {
+                setNull();
+                cardHandler.onDrawCard(i);
+                drawCard(cardHandler);
+            };
+            drawCardHandler.set(cHandler);
+        }
+
+        ClaimRouteHandler rHandler = (route, claimCards) -> {
+            setNull();
+            routeHandler.onClaimRoute(route, claimCards);
+        };
+        claimRouteHandler.set(rHandler);
 
 
 
@@ -226,6 +246,4 @@ public class GraphicalPlayer {
             throw new UnsupportedOperationException();
         }
     }
-
-
 }
