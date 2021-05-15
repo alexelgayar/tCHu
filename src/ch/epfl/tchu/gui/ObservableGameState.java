@@ -125,7 +125,7 @@ public class ObservableGameState {
         List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
 
         for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
-            faceUpCards.add(new SimpleObjectProperty<>());
+            faceUpCards.add(new SimpleObjectProperty<>(null));
         }
 
         return faceUpCards;
