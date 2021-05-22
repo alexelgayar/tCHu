@@ -23,7 +23,7 @@ public class GraphicalPlayerAdapter implements Player {
 
     private final BlockingQueue<SortedBag<Ticket>> chosenTickets = new ArrayBlockingQueue<>(1);
 
-    private final BlockingQueue<TurnKind> turnKindQueue = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<TurnKind> turnKindQueue = new ArrayBlockingQueue<>(1); //TODO: Should the capacity be hardcoded to 1
     private final BlockingQueue<Integer> chosenSlot = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<Route> chosenRoute = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<SortedBag<Card>> chosenClaimCards = new ArrayBlockingQueue<>(1);

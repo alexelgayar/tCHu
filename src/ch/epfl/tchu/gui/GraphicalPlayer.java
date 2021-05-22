@@ -53,9 +53,8 @@ public class GraphicalPlayer {
     public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames) {
         this.id = id;
         this.playerNames = playerNames;
+
         gameState = new ObservableGameState(id);
-
-
         claimRouteHandler = new SimpleObjectProperty<>();
         drawTicketHandler = new SimpleObjectProperty<>();
         drawCardHandler = new SimpleObjectProperty<>();
@@ -64,7 +63,6 @@ public class GraphicalPlayer {
         Node infoView = InfoViewCreator.createInfoView(id, playerNames, gameState, textList);
         Node cardsView = DecksViewCreator.createCardsView(gameState, drawTicketHandler, drawCardHandler);
         Node handsView = DecksViewCreator.createHandView(gameState);
-
 
         BorderPane borderPane = new BorderPane(mapView, null, cardsView, handsView, infoView);
 
