@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -18,20 +19,23 @@ import static javafx.application.Platform.runLater;
  */
 public class GraphicalPlayerAdapter implements Player {
 
-    private static GraphicalPlayer graphicalPlayer;
-    private static ActionHandlers.ChooseTicketsHandler chooseTicketsHandler;
-    private static ActionHandlers.ClaimRouteHandler claimRouteHandler;
-    private static ActionHandlers.DrawTicketsHandler drawTicketHandler;
-    private static ActionHandlers.DrawCardHandler drawCardHandler;
+    private GraphicalPlayer graphicalPlayer;
+
+    private final BlockingQueue<SortedBag<Ticket>> chosenTickets = new ArrayBlockingQueue<>(1);
+
+    private final BlockingQueue<TurnKind> turnKindQueue = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<Integer> chosenSlot = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<Route> chosenRoute = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<SortedBag<Card>> chosenClaimCards = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<SortedBag<Card>> chosenAdditionalClaimCards = new ArrayBlockingQueue<>(1);
 
     //Constructor
     public GraphicalPlayerAdapter() {
-
     }
 
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
-        graphicalPlayer = new GraphicalPlayer(ownId, playerNames);
+        runLater(() -> this.graphicalPlayer = new GraphicalPlayer(ownId, playerNames));
     }
 
     @Override
@@ -41,103 +45,129 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
-        graphicalPlayer.setState(newState, ownState);
+        if (graphicalPlayer != null) {
+            graphicalPlayer.setState(newState, ownState); //TODO: Causes nullPointerException
+        }
     }
 
     @Override
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
-        runLater(() -> graphicalPlayer.chooseTickets(tickets, chooseTicketsHandler));
-        //Using a blocking thread
+        runLater(() -> graphicalPlayer.chooseTickets(tickets, drawnTickets -> {
+            try {
+                chosenTickets.put(tickets);
+            } catch (InterruptedException e) {
+                throw new Error(); //TODO: Is there a way to modularise the try/catch for all the methods?
+            }
+        }));
     }
 
     @Override
     public SortedBag<Ticket> chooseInitialTickets() {
-        //Using a blocking thread
-        BlockingQueue<Integer> q = new ArrayBlockingQueue<>(1);
-
-        //TODO: Can I write this out with a single try-catch?
-        new Thread(() -> {
-            try {
-                q.put(1000);
-            } catch (InterruptedException e) {
-                throw new Error();
-            }
-        }).start();
-
         try {
-            System.out.println(q.take());
+            return chosenTickets.take();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new Error();
         }
-
-
-        return null;
     }
 
     @Override
     public TurnKind nextTurn() {
-        //Blocking thread
-        //runLater(() -> graphicalPlayer.startTurn());
-        return null;
+        runLater(() -> graphicalPlayer.startTurn(
+                () -> {
+                    try {
+                        turnKindQueue.put(TurnKind.DRAW_TICKETS);
+                    } catch (InterruptedException e) {
+                        throw new Error();
+                    }
+                },
+                slot -> {
+                    try {
+                        turnKindQueue.put(TurnKind.DRAW_CARDS);
+                        chosenSlot.put(slot);
+                    } catch (InterruptedException e) {
+                        throw new Error();
+                    }
+                },
+                (route, claimCards) -> {
+                    try {
+                        turnKindQueue.put(TurnKind.CLAIM_ROUTE);
+                        chosenRoute.put(route);
+                        chosenClaimCards.put(claimCards);
+                    } catch (InterruptedException e) {
+                        throw new Error();
+                    }
+                }));
+
+        try {
+            return turnKindQueue.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
-//        runLater(() -> graphicalPlayer.chooseTickets(options, ???));
-//        //The handler should place the playerChoice in a blocking Queue
-//        //Return the element that the handler would have placed
-//        //return ???;
-//
-//        BlockingQueue<SortedBag<Ticket>> chosenTickets = new ArrayBlockingQueue<>(1);
-//
-//        runLater(() -> graphicalPlayer.chooseTickets(options,
-//                try {
-//            chosenTickets.put();
-//        }));
-//        return ;
-//
-//
-//        //TODO: Can I write this out with a single try-catch?
-//        new Thread(() -> {
-//            try {
-//                q.put(1000);
-//            } catch (InterruptedException e) {
-//                throw new Error();
-//            }
-//        }).start();
-//
-//        try {
-//            System.out.println(q.take());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-
-
-        return null;
+        setInitialTicketChoice(options);
+        return chooseInitialTickets();
     }
 
     @Override
     public int drawSlot() {
-        //Tests without blocking
-        return 0;
+        if (!chosenSlot.isEmpty()){
+            //Return queue value directly(below)
+        }
+        else{
+            runLater(() -> graphicalPlayer.drawCard(slot -> {
+                try {
+                    chosenSlot.put(slot);
+                } catch (InterruptedException e) {
+                    throw new Error();
+                }
+            }));
+        }
+
+        try {
+            return chosenSlot.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 
     @Override
     public Route claimedRoute() {
-        //Extract and returns the first element of th thread containing the routes
-        return null;
+        try {
+            return chosenRoute.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 
     @Override
     public SortedBag<Card> initialClaimCards() {
-        //Similar to claimedRoute, but uses thread containg the SortedBag of cards
-        return null;
+        try {
+            return chosenClaimCards.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        //calls runlater then blocks waiting for an element tu be placed in the thread containing the sortedBag of cards, which is then returned
-        return null;
+        runLater(() -> graphicalPlayer.chooseAdditionalCards(options, new ActionHandlers.ChooseCardsHandler() {
+            @Override
+            public void onChooseCards(SortedBag<Card> drawnCards) {
+                try {
+                    chosenAdditionalClaimCards.put(drawnCards);
+                } catch (InterruptedException e) {
+                    throw new Error();
+                }
+            }
+        }));
+
+        try {
+            return chosenAdditionalClaimCards.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 }
