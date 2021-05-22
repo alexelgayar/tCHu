@@ -229,7 +229,6 @@ public class GraphicalPlayer {
 
     public class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
 
-
         @Override
         public String toString(SortedBag<Card> object) {
             return Info.cardsName(object);

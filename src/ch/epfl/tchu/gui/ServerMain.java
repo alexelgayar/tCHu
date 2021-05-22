@@ -1,14 +1,24 @@
 package ch.epfl.tchu.gui;
 
 
-import ch.epfl.tchu.game.Game;
+import ch.epfl.tchu.SortedBag;
+import ch.epfl.tchu.game.*;
 import ch.epfl.tchu.net.RemotePlayerClient;
+import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-public class ServerMain extends Application {
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+
+public class ServerMain extends Application { //TODO: I don't get anything when I run ServerMain
 
     public static void main(String[] args){
         launch();
@@ -17,15 +27,45 @@ public class ServerMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();
-        //Analyse the names of the two players from the parameters
-        //Wait for a connection from the client on port 5108
-        //Create the two players, 1. GraphicalPlayer 2. RemotePlayerProxy on Client
+        ServerSocket serverSocket = new ServerSocket(5108); //TODO: Do I need to set a try (similar to TestServer of Etape 8?
 
-        RemotePlayerClient remotePlayerClient = (parameters.isEmpty())
-                ? new RemotePlayerClient(new GraphicalPlayerAdapter(), "localhost", 5108) //TODO: Should this be hardcoded
-                : new RemotePlayerClient(new GraphicalPlayerAdapter(), parameters.get(0), Integer.parseInt(parameters.get(1))); //TODO: Should the index I take be hardcoded?
+        Map<PlayerId, Player> players = new HashMap<>();
+        Map<PlayerId, String> playerNames = new HashMap<>();
+        SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
+        Random rng = new Random();
 
+        //TODO: Is this the correct way to set up the graphical and remote players?
+        GraphicalPlayerAdapter graphicalPlayerAdapter = new GraphicalPlayerAdapter();
+        System.out.println("Test before socket");
+        RemotePlayerProxy remotePlayerProxy = new RemotePlayerProxy(serverSocket.accept());
+        System.out.println("Test after socket");
 
-        //new Thread(()-> Game.play()); //TODO: Do I run the RemotePlayerClient on a new thread?
+        players.put(PLAYER_1, graphicalPlayerAdapter);
+        players.put(PLAYER_2, remotePlayerProxy);
+
+        playerNames.put(PLAYER_1, (parameters.isEmpty())
+                ? "Ada"
+                : parameters.get(0));
+        playerNames.put(PLAYER_2, (parameters.isEmpty())
+                ? "Charles"
+                : parameters.get(1));
+
+        System.out.println("Test");
+        playerNames.forEach((playerId, playerName) -> System.out.println("playerId: " + playerId + "  playerName: " + playerName));
+        new Thread(()-> Game.play(players, playerNames, tickets, rng)); //TODO: Do I run this on a new thread?
     }
 }
+
+//        public final class TestServer {
+//            public static void main(String[] args) throws IOException {
+//                System.out.println("Starting server!");
+//                try (ServerSocket serverSocket = new ServerSocket(5108);
+//                     Socket socket = serverSocket.accept()) {
+//                    Player playerProxy = new RemotePlayerProxy(socket);
+//                    var playerNames = Map.of(PLAYER_1, "Ada",
+//                            PLAYER_2, "Charles");
+//                    playerProxy.initPlayers(PLAYER_1, playerNames);
+//                }
+//                System.out.println("Server done!");
+//            }
+//        }

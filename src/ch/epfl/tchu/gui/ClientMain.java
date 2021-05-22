@@ -11,7 +11,7 @@ import java.util.List;
  * @author Anirudhh Ramesh (329806)
  * Contains the main program of the tCHU client
  */
-public class ClientMain extends Application {
+public class ClientMain extends Application { //TODO: When I run ClientMain I don't get anything
 
     public static void main(String[] args){
         launch();
@@ -20,6 +20,8 @@ public class ClientMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();
+
+        System.out.println("Parameters: " + parameters);
 
         RemotePlayerClient remotePlayerClient = (parameters.isEmpty())
                 ? new RemotePlayerClient(new GraphicalPlayerAdapter(), "localhost", 5108) //TODO: Should this be hardcoded
