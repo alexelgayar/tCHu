@@ -105,6 +105,7 @@ public final class Game {
 
     private static Player.TurnKind playTurn(Player currentPlayer, Map<PlayerId, Player> players){
         updateStates(players);
+
         Player.TurnKind turnKind = currentPlayer.nextTurn();
         sendInformation(players, infos.get(gameState.currentPlayerId()).canPlay());
 

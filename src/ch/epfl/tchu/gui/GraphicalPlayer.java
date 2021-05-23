@@ -81,9 +81,8 @@ public class GraphicalPlayer {
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
 
+        if (textList.size() == 5) textList.remove(0);
         textList.add(new Text(message));
-        if (textList.size() == 6) textList.remove(0);
-
     }
 
     public void startTurn(DrawTicketsHandler ticketsHandler, DrawCardHandler cardHandler, ClaimRouteHandler routeHandler) {
@@ -191,7 +190,9 @@ public class GraphicalPlayer {
 
         button.setOnAction(e -> {
             stage.hide();
-            cardsHandler.onChooseCards(listView.getSelectionModel().getSelectedItem());
+
+            cardsHandler.onChooseCards((listView.getSelectionModel().getSelectedItem() == null) ? SortedBag.of() :
+                    listView.getSelectionModel().getSelectedItem());
         });
 
         createPane(stage, StringsFr.CARDS_CHOICE, message, button, listView);
