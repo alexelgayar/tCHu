@@ -194,7 +194,6 @@ public class ObservableGameState {
         return playerCardTypeCount.get(card);
     }
 
-
     private static Map<Route, BooleanProperty> createPlayerCanClaimRoute() {
         Map<Route, BooleanProperty> claimRouteMap = new HashMap<>();
 
