@@ -88,7 +88,6 @@ final class DecksViewCreator implements ActionHandlers {
         Button ticketsButton = createButtonView(gameState.ticketsPercentage(), StringsFr.TICKETS);
         ticketsButton.disableProperty().bind(drawTicketsHandler.isNull());
 
-
         ticketsButton.setOnMouseClicked(e -> drawTicketsHandler.get().onDrawTickets());
 
         List<StackPane> stackPanes = new ArrayList<>();
@@ -96,7 +95,6 @@ final class DecksViewCreator implements ActionHandlers {
         for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
             int finalI = i;
             stackPanes.add(createCardStackPane(gameState.faceUpCard(i).get()));
-            int finalIndex = stackPanes.get(finalI).getStyleClass().size() - 1;
             gameState.faceUpCard(i).addListener((p, o, n) -> {
                 stackPanes.get(finalI).getStyleClass().setAll("card", (n == Card.LOCOMOTIVE)
                         ? "NEUTRAL"
