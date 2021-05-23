@@ -96,8 +96,11 @@ final class DecksViewCreator implements ActionHandlers {
         for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
             int finalI = i;
             stackPanes.add(createCardStackPane(gameState.faceUpCard(i).get()));
+            int finalIndex = stackPanes.get(finalI).getStyleClass().size() - 1;
             gameState.faceUpCard(i).addListener((p, o, n) -> {
-                stackPanes.get(finalI).getStyleClass().add(n.name());
+                stackPanes.get(finalI).getStyleClass().setAll("card", (n == Card.LOCOMOTIVE)
+                        ? "NEUTRAL"
+                        : n.color().name());;
             });
 
 
@@ -121,7 +124,7 @@ final class DecksViewCreator implements ActionHandlers {
         StackPane stackPane = new StackPane();
         stackPane.getStyleClass().add("card");
 
-        if (card != null) stackPane.getStyleClass().addAll((card == Card.LOCOMOTIVE)
+        if (card != null) stackPane.getStyleClass().add((card == Card.LOCOMOTIVE)
                 ? "NEUTRAL"
                 : card.color().name());
 
