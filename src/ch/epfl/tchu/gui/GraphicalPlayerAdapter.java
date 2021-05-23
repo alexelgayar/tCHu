@@ -45,16 +45,16 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
-        if (graphicalPlayer != null) {
-            graphicalPlayer.setState(newState, ownState); //TODO: Causes nullPointerException
-        }
+
+          runLater(() -> graphicalPlayer.setState(newState, ownState));  ; //TODO: Causes nullPointerException
+
     }
 
     @Override
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
         runLater(() -> graphicalPlayer.chooseTickets(tickets, drawnTickets -> {
             try {
-                chosenTickets.put(tickets);
+                chosenTickets.put(drawnTickets);
             } catch (InterruptedException e) {
                 throw new Error(); //TODO: Is there a way to modularise the try/catch for all the methods?
             }
@@ -153,15 +153,10 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        runLater(() -> graphicalPlayer.chooseAdditionalCards(options, new ActionHandlers.ChooseCardsHandler() {
-            @Override
-            public void onChooseCards(SortedBag<Card> drawnCards) {
-                try {
-                    chosenAdditionalClaimCards.put(drawnCards);
-                } catch (InterruptedException e) {
-                    throw new Error();
-                }
-            }
+        runLater(() -> graphicalPlayer.chooseAdditionalCards(options, chosenCards -> {
+            try {
+                chosenAdditionalClaimCards.put(chosenCards);
+            } catch (InterruptedException e){ throw new Error(); }
         }));
 
         try {
