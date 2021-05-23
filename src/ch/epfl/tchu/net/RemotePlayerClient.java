@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
  * Instantiable class, represents a client of a distant player
  */
 public final class RemotePlayerClient {

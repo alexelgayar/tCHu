@@ -13,8 +13,9 @@ import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-
 /**
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
  * Instantiable class, represents a proxy of a distant player.
  */
 public final class RemotePlayerProxy implements Player {
@@ -25,7 +26,6 @@ public final class RemotePlayerProxy implements Player {
 
     /**
      * Constructor for RemotePlayerProxy
-     *
      * @param socket the socket used to communicate with the player
      */
     public RemotePlayerProxy(Socket socket) {
@@ -61,6 +61,11 @@ public final class RemotePlayerProxy implements Player {
         return msg;
     }
 
+    /**
+     *
+     * @param ownId       the player's own Id
+     * @param playerNames Map that maps each player's Id to their name
+     */
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
 

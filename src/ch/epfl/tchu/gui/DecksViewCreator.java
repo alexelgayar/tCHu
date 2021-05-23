@@ -46,7 +46,6 @@ final class DecksViewCreator implements ActionHandlers {
     private DecksViewCreator() {
     }
 
-
     //Constructs the view of the Player cards
     public static HBox createHandView(ObservableGameState gameState) {
         HBox main = new HBox();

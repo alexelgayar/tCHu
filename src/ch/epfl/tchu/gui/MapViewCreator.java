@@ -111,4 +111,5 @@ final class MapViewCreator implements ActionHandlers {
         void chooseCards(List<SortedBag<Card>> options,
                          ChooseCardsHandler handler);
     }
+
 }
