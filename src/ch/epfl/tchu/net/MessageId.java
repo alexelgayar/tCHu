@@ -1,5 +1,10 @@
 package ch.epfl.tchu.net;
 
+/**
+ * @author Alexandre Iskandar (324406)
+ * @author Anirudhh Ramesh (329806)
+ * Enum class. Enumerates the types of messages the server can send to clients. Messages correspond directly to method of interface Player
+ */
 public enum MessageId {
 
     INIT_PLAYERS,
