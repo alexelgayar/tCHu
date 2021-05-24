@@ -89,9 +89,9 @@ public class ObservableGameState {
         }
 
         for (Card card : Card.values()) {
-            if (playerState.cards().contains(card)) {
+
                 playerCardTypeCount.get(card).set(playerState.cards().countOf(card));
-            }
+
         }
 
 
