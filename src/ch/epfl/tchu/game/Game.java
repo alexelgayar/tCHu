@@ -166,19 +166,26 @@ public final class Game {
                 int count = claimedRoute.additionalClaimCardsCount(initialClaimCards, drawnCards);
 
                 sendInformation(players, infos.get((gameState.currentPlayerId())).drewAdditionalCards(drawnCards, count));
-                if (count <= 0 || gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards).isEmpty()) {
+
+
+                if (count <= 0) {
                     gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                     sendInformation(players, infos.get(gameState.currentPlayerId()).claimedRoute(claimedRoute, initialClaimCards));
                 } else {
-                    List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards);
-
-                    SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
-
-                    if (additionalCards.size() == 0) {
+                    if(gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards).isEmpty()){
                         sendInformation(players, infos.get((gameState.currentPlayerId())).didNotClaimRoute(claimedRoute));
-                    } else {
-                        gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards.union(additionalCards));
-                        sendInformation(players, infos.get((gameState.currentPlayerId())).claimedRoute(claimedRoute, initialClaimCards.union(additionalCards)));
+                    }
+                    else {
+                        List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards);
+
+                        SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
+
+                        if (additionalCards.size() == 0) {
+                            sendInformation(players, infos.get((gameState.currentPlayerId())).didNotClaimRoute(claimedRoute));
+                        } else {
+                            gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards.union(additionalCards));
+                            sendInformation(players, infos.get((gameState.currentPlayerId())).claimedRoute(claimedRoute, initialClaimCards.union(additionalCards)));
+                        }
                     }
                 }
                 gameState = gameState.withMoreDiscardedCards(drawnCards);
