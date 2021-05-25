@@ -11,22 +11,31 @@ import java.util.List;
  * @author Anirudhh Ramesh (329806)
  * Contains the main program of the tCHU client
  */
-public class ClientMain extends Application { //TODO: When I run ClientMain I don't get anything
+public class ClientMain extends Application {
+
+    public static final int NBR_PARAM_ARGS = 2;
+    public static final int DEFAULT_PORT = 5108;
+    public static final String LOCALHOST = "localhost";
 
     public static void main(String[] args){
-        launch();
+        launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();
 
-        System.out.println("Parameters: " + parameters);
+        String name = (parameters.size() == NBR_PARAM_ARGS)
+                ? LOCALHOST
+                : parameters.get(0);
 
-        RemotePlayerClient remotePlayerClient = (parameters.isEmpty())
-                ? new RemotePlayerClient(new GraphicalPlayerAdapter(), "localhost", 5108) //TODO: Should this be hardcoded
-                : new RemotePlayerClient(new GraphicalPlayerAdapter(), parameters.get(0), Integer.parseInt(parameters.get(1))); //TODO: Should the index I take be hardcoded?
+        int port = (parameters.size() == NBR_PARAM_ARGS)
+                ? DEFAULT_PORT :
+                Integer.parseInt(parameters.get(1));//TODO: Should this be hardcoded
 
+        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), name, port);//TODO: Should the index I take be hardcoded?
+
+        System.out.println("Running remotePlayerClient with host: " + name + " port: " + port);
         new Thread(remotePlayerClient::run).start(); //TODO: Do I run the RemotePlayerClient on a new thread?
     }
 }

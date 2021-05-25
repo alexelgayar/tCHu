@@ -17,6 +17,7 @@ public final class FakeServer {
             "CHOOSE_INITIAL_TICKETS");
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Running fake server");
         try (ServerSocket s0 = new ServerSocket(5108);
              Socket s = s0.accept();
              BufferedReader r = new BufferedReader(

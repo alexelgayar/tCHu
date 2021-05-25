@@ -21,7 +21,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 public class ServerMain extends Application { //TODO: I don't get anything when I run ServerMain
 
     public static void main(String[] args){
-        launch();
+        launch(args);
     }
 
     @Override
@@ -55,17 +55,3 @@ public class ServerMain extends Application { //TODO: I don't get anything when 
         new Thread(()-> Game.play(players, playerNames, tickets, rng)).start(); //TODO: Do I run this on a new thread?
     }
 }
-
-//        public final class TestServer {
-//            public static void main(String[] args) throws IOException {
-//                System.out.println("Starting server!");
-//                try (ServerSocket serverSocket = new ServerSocket(5108);
-//                     Socket socket = serverSocket.accept()) {
-//                    Player playerProxy = new RemotePlayerProxy(socket);
-//                    var playerNames = Map.of(PLAYER_1, "Ada",
-//                            PLAYER_2, "Charles");
-//                    playerProxy.initPlayers(PLAYER_1, playerNames);
-//                }
-//                System.out.println("Server done!");
-//            }
-//        }
