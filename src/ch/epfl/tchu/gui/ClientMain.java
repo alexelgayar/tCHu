@@ -27,6 +27,6 @@ public class ClientMain extends Application { //TODO: When I run ClientMain I do
                 ? new RemotePlayerClient(new GraphicalPlayerAdapter(), "localhost", 5108) //TODO: Should this be hardcoded
                 : new RemotePlayerClient(new GraphicalPlayerAdapter(), parameters.get(0), Integer.parseInt(parameters.get(1))); //TODO: Should the index I take be hardcoded?
 
-        new Thread(remotePlayerClient::run); //TODO: Do I run the RemotePlayerClient on a new thread?
+        new Thread(remotePlayerClient::run).start(); //TODO: Do I run the RemotePlayerClient on a new thread?
     }
 }

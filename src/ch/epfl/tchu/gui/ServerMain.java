@@ -52,7 +52,7 @@ public class ServerMain extends Application { //TODO: I don't get anything when 
 
         System.out.println("Test");
         playerNames.forEach((playerId, playerName) -> System.out.println("playerId: " + playerId + "  playerName: " + playerName));
-        new Thread(()-> Game.play(players, playerNames, tickets, rng)); //TODO: Do I run this on a new thread?
+        new Thread(()-> Game.play(players, playerNames, tickets, rng)).start(); //TODO: Do I run this on a new thread?
     }
 }
 
