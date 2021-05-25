@@ -33,10 +33,10 @@ public final class CardState extends PublicCardState{
      * @throws IllegalArgumentException if the deck given contains less than 5 cards
      */
     public static CardState of(Deck<Card> deck){
-        Preconditions.checkArgument(deck.size() >= 5);
+        Preconditions.checkArgument(deck.size() >= Constants.FACE_UP_CARDS_COUNT);
 
-        List<Card> faceUpCards = deck.topCards(5).toList();
-        Deck<Card> drawPile = deck.withoutTopCards(5);
+        List<Card> faceUpCards = deck.topCards(Constants.FACE_UP_CARDS_COUNT).toList();
+        Deck<Card> drawPile = deck.withoutTopCards(Constants.FACE_UP_CARDS_COUNT);
         SortedBag<Card> discardsPile = SortedBag.of();
 
         return new CardState(faceUpCards, drawPile, discardsPile);
@@ -53,7 +53,7 @@ public final class CardState extends PublicCardState{
         Preconditions.checkArgument(!drawPile.isEmpty());
 
         List<Card> faceUpCardsCopy = new ArrayList<>(faceUpCards());
-        faceUpCardsCopy.set(Objects.checkIndex(slot, 5), drawPile.topCard());
+        faceUpCardsCopy.set(Objects.checkIndex(slot, Constants.FACE_UP_CARDS_COUNT), drawPile.topCard());
 
         return new CardState(faceUpCardsCopy, drawPile.withoutTopCard(), discardsPile);
     }

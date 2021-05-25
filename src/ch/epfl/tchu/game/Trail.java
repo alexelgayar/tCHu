@@ -106,7 +106,7 @@ public final class Trail {
     }
 
     //Method to compute the length of the trail given the routes belonging to the trail
-    private int computeTrailLength(List<Route> routes){
+    private static int computeTrailLength(List<Route> routes){
         int length = 0;
         //For-each loop not executed if routes.isEmpty => returns length 0
         for (Route route : routes) {

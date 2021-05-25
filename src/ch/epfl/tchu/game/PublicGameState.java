@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 public class PublicGameState {
 
+    public static final int MIN_DRAW_VALUE = 5;
     private final int ticketsCount;
     private final PublicCardState cardState;
     private final PlayerId currentPlayerId, lastPlayer;
@@ -32,7 +33,7 @@ public class PublicGameState {
      */
     public PublicGameState(int ticketsCount, PublicCardState cardState, PlayerId currentPlayerId, Map<PlayerId, PublicPlayerState> playerState, PlayerId lastPlayer){
         boolean ticketsCountPositive = ticketsCount >= 0;
-        boolean playerStateEqualsTwo = playerState.keySet().size() == 2;
+        boolean playerStateEqualsTwo = playerState.keySet().size() == PlayerId.COUNT;
         Preconditions.checkArgument(ticketsCountPositive && playerStateEqualsTwo);
 
         this.ticketsCount = ticketsCount;
@@ -71,7 +72,7 @@ public class PublicGameState {
      * @return true IFF it is possible to draw cards (=> if the (drawPile + discardsPile) >= 5)
      */
     public boolean canDrawCards(){
-        return (cardState.deckSize() + cardState.discardsSize()) >= 5;
+        return (cardState.deckSize() + cardState.discardsSize()) >= MIN_DRAW_VALUE;
     }
 
     /**

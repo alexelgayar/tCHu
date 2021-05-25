@@ -42,7 +42,7 @@ public final class Trip {
      * @throws IllegalArgumentException if one of the lists os empty, or if the number of points is not strictly positive
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
-        Preconditions.checkArgument((points > 0) && (from != null) && (to != null));
+        Preconditions.checkArgument((points > 0) && (!from.isEmpty()) && (!to.isEmpty()));
 
         List<Trip> allTrips = new ArrayList<>();
 

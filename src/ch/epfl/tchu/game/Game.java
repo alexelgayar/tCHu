@@ -33,7 +33,7 @@ public final class Game {
      * @throws IllegalArgumentException if one of the two associative tables has a size other than 2.
      */
     public static void play(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames, SortedBag<Ticket> tickets, Random rng) {
-        Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
+        Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);
 
         players.forEach(((playerId, player) -> infos.put(playerId, new Info(playerNames.get(playerId)))));
 
@@ -123,7 +123,7 @@ public final class Game {
     }
 
     private static void drawCards(Player currentPlayer, Map<PlayerId, Player> players, Random rng){
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < PlayerId.COUNT; ++i) {
             gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
             if (i == 1) updateStates(players);
 

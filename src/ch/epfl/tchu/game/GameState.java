@@ -42,6 +42,7 @@ public final class GameState extends PublicGameState {
      * @return the initial state of the game
      */
     public static GameState initial(SortedBag<Ticket> tickets, Random rng) {
+        Preconditions.checkArgument(tickets != null);
         Deck<Ticket> ticketDeck = Deck.of(SortedBag.of(tickets), rng);
         Deck<Card> cardDeck = Deck.of(SortedBag.of(Constants.ALL_CARDS), rng);
 
@@ -134,6 +135,7 @@ public final class GameState extends PublicGameState {
      * @return a state identical to the receptor but with the given cards added to the discard pile
      */
     public GameState withMoreDiscardedCards(SortedBag<Card> discardedCards) {
+        Preconditions.checkArgument(discardedCards != null);
         return new GameState(tickets, cardstate.withMoreDiscardedCards(discardedCards), currentPlayerId(), completePlayerState, lastPlayer());
     }
 
@@ -146,7 +148,7 @@ public final class GameState extends PublicGameState {
     public GameState withCardsDeckRecreatedIfNeeded(Random rng) {
         return (cardstate.isDeckEmpty())
                 ? new GameState(tickets, cardstate.withDeckRecreatedFromDiscards(rng), currentPlayerId(), completePlayerState, lastPlayer())
-                : new GameState(tickets, cardstate, currentPlayerId(), completePlayerState, lastPlayer());
+                : this;
     }
 
 
@@ -168,6 +170,7 @@ public final class GameState extends PublicGameState {
      */
     public GameState withInitiallyChosenTickets(PlayerId playerId, SortedBag<Ticket> chosenTickets) {
         Preconditions.checkArgument(completePlayerState.get(playerId).tickets().isEmpty());
+        Preconditions.checkArgument(chosenTickets != null);
 
         Map<PlayerId, PlayerState> newPlayerStateMap = new EnumMap<>(completePlayerState);
         newPlayerStateMap.put(playerId, completePlayerState.get(playerId).withAddedTickets(chosenTickets));
@@ -224,6 +227,8 @@ public final class GameState extends PublicGameState {
      * @return an identical state to the receiver but in which the current player has seized the given route by means of the given cards
      */
     public GameState withClaimedRoute(Route route, SortedBag<Card> cards) {
+        Preconditions.checkArgument(cards != null);
+
         Map<PlayerId, PlayerState> newPlayerStateMap = newPlayerMap(completePlayerState.get(currentPlayerId()).withClaimedRoute(route, cards));
 
         return new GameState(tickets, cardstate.withMoreDiscardedCards(cards), currentPlayerId(), newPlayerStateMap, lastPlayer());

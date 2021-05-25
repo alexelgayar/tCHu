@@ -12,7 +12,7 @@ import java.util.TreeSet;
  */
 public final class Ticket implements Comparable<Ticket> {
 
-    private final String TEXT;
+    private final String text;
     private final List<Trip> trips;
 
     /**
@@ -27,8 +27,8 @@ public final class Ticket implements Comparable<Ticket> {
             Preconditions.checkArgument(trips.get(0).from().toString().equals(w.from().toString()));
         }
 
-        this.trips = trips;
-        this.TEXT = computeText(trips);
+        this.trips = List.copyOf(trips);
+        this.text = computeText(trips);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class Ticket implements Comparable<Ticket> {
      * @return the textual form of a ticket
      */
     public String text() {
-        return TEXT;
+        return text;
     }
 
     /**
@@ -98,7 +98,7 @@ public final class Ticket implements Comparable<Ticket> {
 
     @Override
     public String toString(){
-        return TEXT;
+        return text;
     }
 
 

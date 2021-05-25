@@ -26,7 +26,7 @@ public class PublicCardState {
      * @throws IllegalArgumentException if faceUpCards != 5, or when deckSize and/or discardsSize is less than 0
      */
     public PublicCardState(List<Card> faceUpCards, int deckSize, int discardsSize){
-        Preconditions.checkArgument(faceUpCards.size() == 5 && deckSize >= 0 && discardsSize >= 0);
+        Preconditions.checkArgument(faceUpCards.size() == Constants.FACE_UP_CARDS_COUNT && deckSize >= 0 && discardsSize >= 0);
 
         this.faceUpCards = List.copyOf(faceUpCards);
         this.deckSize = deckSize;

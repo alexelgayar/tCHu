@@ -56,7 +56,7 @@ public final class Info {
      * @return a message declaring that the players, whose names are those given, have finished the game tied by having each won the given points
      */
     public static String draw(List<String> playerNames, int points) {
-        return String.format(StringsFr.DRAW, playerNames.get(0) + " et " + playerNames.get(1), points);
+        return String.format(StringsFr.DRAW, playerNames.get(0) + StringsFr.AND_SEPARATOR + playerNames.get(1), points);
     }
 
     /**
