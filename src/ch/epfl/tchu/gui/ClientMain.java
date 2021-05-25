@@ -26,12 +26,12 @@ public class ClientMain extends Application {
         List<String> parameters = getParameters().getRaw();
 
         String name = (parameters.size() == NBR_PARAM_ARGS)
-                ? LOCALHOST
-                : parameters.get(0);
+                ? parameters.get(0)
+                : LOCALHOST;
 
         int port = (parameters.size() == NBR_PARAM_ARGS)
-                ? DEFAULT_PORT :
-                Integer.parseInt(parameters.get(1));//TODO: Should this be hardcoded
+                ? Integer.parseInt(parameters.get(1))
+                : DEFAULT_PORT;//TODO: Should this be hardcoded
 
         RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), name, port);//TODO: Should the index I take be hardcoded?
 
