@@ -36,9 +36,7 @@ public class ServerMain extends Application { //TODO: I don't get anything when 
 
         //TODO: Is this the correct way to set up the graphical and remote players?
         GraphicalPlayerAdapter graphicalPlayerAdapter = new GraphicalPlayerAdapter();
-        System.out.println("Test before socket");
         RemotePlayerProxy remotePlayerProxy = new RemotePlayerProxy(serverSocket.accept());
-        System.out.println("Test after socket");
 
         players.put(PLAYER_1, graphicalPlayerAdapter);
         players.put(PLAYER_2, remotePlayerProxy);

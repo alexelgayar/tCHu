@@ -177,7 +177,12 @@ public final class Game {
                     else {
                         List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards);
 
-                        SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
+                        System.out.println("possibleAddCards" + possibleAdditionalCards + " count:" + count + " initialClaimCount" + initialClaimCards);
+                        if (possibleAdditionalCards == null){
+                            System.out.println("possible additional cards is null");
+                        }
+                        SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards); //TODO: Causes AdditionalChooseCard to be null
+
 
                         if (additionalCards.size() == 0) {
                             sendInformation(players, infos.get((gameState.currentPlayerId())).didNotClaimRoute(claimedRoute));
