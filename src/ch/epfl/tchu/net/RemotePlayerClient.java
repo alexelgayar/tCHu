@@ -9,7 +9,6 @@ import ch.epfl.tchu.game.Ticket;
 import java.io.*;
 import java.net.Socket;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -23,23 +22,51 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  */
 public final class RemotePlayerClient {
 
-    Player player;
-    String name;
-    int port;
+    private final Player player;
+    private final String name;
+    private final int port;
+    private final BufferedReader r;
+    private final BufferedWriter w;
+    private final Socket socket;
 
-
+    /**
+     * Constructor for RemotePlayerClient
+     *
+     * @param player the distant player that is represented by the client
+     * @param name   name of the proxy
+     * @param port   port used to connect to server
+     */
     public RemotePlayerClient(Player player, String name, int port) {
         this.player = player;
         this.name = name;
         this.port = port;
 
+        try {
+            socket = new Socket(name, port);
+            r = new BufferedReader(new InputStreamReader(socket.getInputStream(), US_ASCII));
+            w = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), US_ASCII));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
+    private void sendMessage(String string) {
+        try {
+            w.write(string);
+            w.write('\n');
+            w.flush();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * Methode that creates a loop during which it waits for a message from the proxy, determines the message type
+     * then deserializes it and then calls the player's corresponding method
+     */
     public void run() {
 
-        try (Socket socket = new Socket(name, port);
-             BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream(), US_ASCII));
-             BufferedWriter w = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), US_ASCII))) {
+        try {
 
             String s;
 
@@ -49,58 +76,44 @@ public final class RemotePlayerClient {
 
                 switch (MessageId.valueOf(list[0])) {
                     case INIT_PLAYERS:
-                        List<String> names = Serdes.stringListSerde.deserialize(list[2]);
+                        List<String> names = Serdes.STRING_LIST_SERDE.deserialize(list[2]);
                         Map<PlayerId, String> playerNames = new EnumMap<>(PlayerId.class);
                         playerNames.put(PlayerId.PLAYER_1, names.get(0));
                         playerNames.put(PlayerId.PLAYER_2, names.get(1));
-                        player.initPlayers(Serdes.playerIdSerde.deserialize(list[1]), playerNames);
+                        player.initPlayers(Serdes.PLAYER_ID_SERDE.deserialize(list[1]), playerNames);
                         break;
                     case RECEIVE_INFO:
-                        player.receiveInfo(Serdes.stringSerde.deserialize(list[1]));
+                        player.receiveInfo(Serdes.STRING_SERDE.deserialize(list[1]));
                         break;
                     case UPDATE_STATE:
-                        player.updateState(Serdes.publicGameStateSerde.deserialize(list[1]),
-                                Serdes.playerStateSerde.deserialize(list[2]));
+                        player.updateState(Serdes.PUBLIC_GAME_STATE_SERDE.deserialize(list[1]),
+                                Serdes.PLAYER_STATE_SERDE.deserialize(list[2]));
                         break;
                     case SET_INITIAL_TICKETS:
-                        player.setInitialTicketChoice(Serdes.ticketBagSerde.deserialize(list[1]));
+                        player.setInitialTicketChoice(Serdes.TICKET_BAG_SERDE.deserialize(list[1]));
                         break;
                     case CHOOSE_INITIAL_TICKETS:
-                            w.write(Serdes.ticketBagSerde.serialize(player.chooseInitialTickets()));
-                            w.write('\n');
-                            w.flush();
+                        sendMessage(Serdes.TICKET_BAG_SERDE.serialize(player.chooseInitialTickets()));
                         break;
                     case NEXT_TURN:
-                            w.write(Serdes.turnKindSerde.serialize(player.nextTurn()));
-                            w.write('\n');
-                            w.flush();
+                        sendMessage(Serdes.TURN_KIND_SERDE.serialize(player.nextTurn()));
                         break;
                     case CHOOSE_TICKETS:
-                        SortedBag<Ticket> bag = player.chooseTickets(Serdes.ticketBagSerde.deserialize(list[1]));
-                            w.write(Serdes.ticketBagSerde.serialize(bag));
-                            w.write('\n');
-                            w.flush();
+                        SortedBag<Ticket> bag = player.chooseTickets(Serdes.TICKET_BAG_SERDE.deserialize(list[1]));
+                        sendMessage(Serdes.TICKET_BAG_SERDE.serialize(bag));
                         break;
                     case DRAW_SLOT:
-                            w.write(Serdes.intSerde.serialize(player.drawSlot()));
-                            w.write('\n');
-                            w.flush();
+                        sendMessage(Serdes.INT_SERDE.serialize(player.drawSlot()));
                         break;
                     case ROUTE:
-                            w.write(Serdes.routeSerde.serialize(player.claimedRoute()));
-                            w.write('\n');
-                            w.flush();
+                        sendMessage(Serdes.ROUTE_SERDE.serialize(player.claimedRoute()));
                         break;
                     case CARDS:
-                            w.write(Serdes.cardBagSerde.serialize(player.initialClaimCards()));
-                            w.write('\n');
-                            w.flush();
+                        sendMessage(Serdes.CARD_BAG_SERDE.serialize(player.initialClaimCards()));
                         break;
                     case CHOOSE_ADDITIONAL_CARDS:
-                        SortedBag<Card> options = player.chooseAdditionalCards(Serdes.cardBagListSerde.deserialize(list[1]));
-                            w.write(Serdes.cardBagSerde.serialize(options));
-                            w.write('\n');
-                            w.flush();
+                        SortedBag<Card> options = player.chooseAdditionalCards(Serdes.CARD_BAG_LIST_SERDE.deserialize(list[1]));
+                        sendMessage(Serdes.CARD_BAG_SERDE.serialize(options));
                         break;
                 }
             }

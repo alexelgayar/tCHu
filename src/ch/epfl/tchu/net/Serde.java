@@ -82,7 +82,6 @@ public interface Serde<E> {
                     return "";
                 }
                 else {
-
                     List<String> strings = new ArrayList<>();
 
                     for (T t : list) {
@@ -90,7 +89,6 @@ public interface Serde<E> {
                     }
 
                     String s = String.join(separator, strings);
-
                     return s;
                 }
             }
@@ -102,14 +100,12 @@ public interface Serde<E> {
                     return new ArrayList<T>();
                 }
                 else {
-
                     String[] s = serializedObject.split(Pattern.quote(separator), -1);
                     List<T> tList = new ArrayList<>();
 
                     for (int i = 0; i < s.length; ++i) {
                         tList.add((T) serde.deserialize(s[i]));
                     }
-
                     return tList;
                 }
             }

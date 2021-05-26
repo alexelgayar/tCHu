@@ -41,8 +41,8 @@ public class SerdesTest {
                 PLAYER_1, new PublicPlayerState(10, 11, rs1),
                 PLAYER_2, new PublicPlayerState(20, 21, List.of()));
         PublicGameState gs = new PublicGameState(40, cs, PLAYER_2, ps, null);
-        assertEquals("40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;:" , Serdes.publicGameStateSerde.serialize(gs));
+        assertEquals("40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;:" , Serdes.PUBLIC_GAME_STATE_SERDE.serialize(gs));
         @SuppressWarnings("unused")
-        PublicGameState gsNew = Serdes.publicGameStateSerde.deserialize("40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;:");
+        PublicGameState gsNew = Serdes.PUBLIC_GAME_STATE_SERDE.deserialize("40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;:");
     }
 }
