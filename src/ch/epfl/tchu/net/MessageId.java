@@ -5,7 +5,7 @@ package ch.epfl.tchu.net;
  * @author Anirudhh Ramesh (329806)
  * Enum class. Enumerates the types of messages the server can send to clients. Messages correspond directly to method of interface Player
  */
-public enum MessageId {
+public enum MessageId { //TODO: Does this need to be public or package-private
 
     INIT_PLAYERS,
     RECEIVE_INFO,
@@ -17,6 +17,6 @@ public enum MessageId {
     DRAW_SLOT,
     ROUTE,
     CARDS,
-    CHOOSE_ADDITIONAL_CARDS;
+    CHOOSE_ADDITIONAL_CARDS
 
 }

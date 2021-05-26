@@ -18,7 +18,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  */
 public final class RemotePlayerProxy implements Player {
 
-    private final Socket socket;
+    private final Socket socket; //TODO: Unused variable
     private final BufferedReader r;
     private final BufferedWriter w;
 
@@ -62,17 +62,18 @@ public final class RemotePlayerProxy implements Player {
     }
 
     /**
-     * Called at the be beginning of the game to communicate to players their own Id's and both player's names
+     * Called at the beginning of the game to communicate to players their own Id's and both player's names
      *
      * @param ownId       the player's own Id
      * @param playerNames Map that maps each player's Id to their name
      */
     @Override
-    public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
+    public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) { //TODO: Should all these methods be public?
 
         List<String> names = new ArrayList<>();
-        names.add(playerNames.get(PlayerId.PLAYER_1));
-        names.add(playerNames.get(PlayerId.PLAYER_2));
+        playerNames.forEach((playerId, name) -> names.add(name)); //TODO: I have converted to for loop (better abstraction)
+//        names.add(playerNames.get(PlayerId.PLAYER_1));
+//        names.add(playerNames.get(PlayerId.PLAYER_2));
 
         sendMessage(String.join(" ",
                 MessageId.INIT_PLAYERS.name(),

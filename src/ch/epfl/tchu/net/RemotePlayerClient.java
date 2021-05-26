@@ -23,7 +23,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public final class RemotePlayerClient {
 
     private final Player player;
-    private final String name;
+    private final String name; //TODO: Unused variables
     private final int port;
     private final BufferedReader r;
     private final BufferedWriter w;
@@ -61,7 +61,7 @@ public final class RemotePlayerClient {
     }
 
     /**
-     * Methode that creates a loop during which it waits for a message from the proxy, determines the message type
+     * Method that creates a loop during which it waits for a message from the proxy, determines the message type
      * then deserializes it and then calls the player's corresponding method
      */
     public void run() {
@@ -81,7 +81,7 @@ public final class RemotePlayerClient {
                         playerNames.put(PlayerId.PLAYER_1, names.get(0));
                         playerNames.put(PlayerId.PLAYER_2, names.get(1));
                         player.initPlayers(Serdes.PLAYER_ID_SERDE.deserialize(list[1]), playerNames);
-                        break;
+                        break; //TODO: Is the break necessary?
                     case RECEIVE_INFO:
                         player.receiveInfo(Serdes.STRING_SERDE.deserialize(list[1]));
                         break;
@@ -118,7 +118,7 @@ public final class RemotePlayerClient {
                 }
             }
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new UncheckedIOException(e); //TODO: Is this the correct exception thrown
         }
     }
 }

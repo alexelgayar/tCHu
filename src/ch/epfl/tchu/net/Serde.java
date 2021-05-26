@@ -71,14 +71,14 @@ public interface Serde<E> {
      * @param <T> the parameter of the type of the method
      * @return a serde capable of (de)serializing the list of values (de)serialized by the given separator and serde
      */
-    static <T> Serde<List<T>> listOf(Serde serde, String separator) {
+    static <T> Serde<List<T>> listOf(Serde serde, String separator) { //TODO: Check all the warnings and fix them
 
-        return new Serde<List<T>>() {
+        return new Serde<List<T>>() { //TODO: Is all the greyed stuff necessary?
 
             @Override
             public String serialize(List<T> list) {
 
-                if(list.isEmpty()){
+                if(list.isEmpty()){ //TODO: Can this not be simplified?
                     return "";
                 }
                 else {
@@ -96,7 +96,7 @@ public interface Serde<E> {
             @Override
             public List<T> deserialize(String serializedObject) {
 
-                if(serializedObject.equals("")){
+                if(serializedObject.equals("")){ //TODO: Can this not be simplified?
                     return new ArrayList<T>();
                 }
                 else {
@@ -104,7 +104,7 @@ public interface Serde<E> {
                     List<T> tList = new ArrayList<>();
 
                     for (int i = 0; i < s.length; ++i) {
-                        tList.add((T) serde.deserialize(s[i]));
+                        tList.add((T) serde.deserialize(s[i])); //TODO: Fix warning
                     }
                     return tList;
                 }
@@ -119,7 +119,7 @@ public interface Serde<E> {
      * @param <T> the parameter of the type of the method
      * @return a serde capable of (de)serializing the SortedBag of values (de)serialized by the given separator and serde
      */
-    static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde serde, String separator) {
+    static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde serde, String separator) { //TODO: Fix warnings
 
         return new Serde<SortedBag<T>>() {
 
