@@ -181,7 +181,7 @@ public final class Game {
                         if (possibleAdditionalCards == null){
                             System.out.println("possible additional cards is null");
                         }
-                        SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards); //TODO: Causes AdditionalChooseCard to be null
+                        SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
 
 
                         if (additionalCards.size() == 0) {
