@@ -16,7 +16,7 @@ import static ch.epfl.tchu.game.PlayerId.*;
  * @author Anirudhh Ramesh (329806)
  * Class containing serdes each capable of (de)serializing a type of object
  */
-public class Serdes {
+public final class Serdes {
 
     /**
      * Serde capable of (de)serializing an integer
