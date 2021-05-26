@@ -108,13 +108,14 @@ public final class PlayerState extends PublicPlayerState {
 
         List<SortedBag<Card>> allPossibleRouteCards = route.possibleClaimCards();
 
-        Set<SortedBag<Card>> allCardCombinations = (cards.size() >= route.length())
-                ? cards.subsetsOfSize(route.length())
-                : new HashSet<>();
+        for (int i = 0; i < allPossibleRouteCards.size(); i++){
+            if (!cards.contains(allPossibleRouteCards.get(i))){
+                allPossibleRouteCards.remove(i);
+                i--;
+            }
+        }
 
-        List<SortedBag<Card>> filteredCards = filterCards(allPossibleRouteCards, allCardCombinations);
-
-        return sortList(filteredCards);
+        return allPossibleRouteCards;
     }
 
     //Filters the the possible route claim card combinations such that only those that the player can obtain are returned

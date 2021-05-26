@@ -257,18 +257,6 @@ class PlayerStateTest {
     }
 
     @Test
-    void playerStatePossibleAdditionalCardsFailsWithInvalidDrawnCards() {
-        var playerState = new PlayerState(SortedBag.of(), SortedBag.of(), List.of());
-        for (var drawnCardsCount : List.of(0, 1, 2, 4, 5)) {
-            assertThrows(IllegalArgumentException.class, () -> {
-                playerState.possibleAdditionalCards(
-                        1,
-                        SortedBag.of(Card.BLUE));
-            });
-        }
-    }
-
-    @Test
     void playerStatePossibleAdditionalCardsWorksWithoutLocomotivesInHand() {
         var playerCards = sixOfEachCard()
                 .difference(SortedBag.of(6, Card.LOCOMOTIVE));
