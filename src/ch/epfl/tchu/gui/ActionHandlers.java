@@ -10,7 +10,8 @@ import ch.epfl.tchu.game.Ticket;
  * @author Anirudhh Ramesh (329806)
  * Interface, has the unique goal of containing 5 nested functional (1 abstract method) interfaces, representing different action handlers
  */
-public interface ActionHandlers {//TODO: Is this the correct class modifiers?
+public interface ActionHandlers {
+
     /**
      * The handler for when a player draws a ticket
      */
