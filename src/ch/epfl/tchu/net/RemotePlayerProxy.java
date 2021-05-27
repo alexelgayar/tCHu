@@ -71,9 +71,7 @@ public final class RemotePlayerProxy implements Player {
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) { //TODO: Should all these methods be public?
 
         List<String> names = new ArrayList<>();
-        playerNames.forEach((playerId, name) -> names.add(name)); //TODO: I have converted to for loop (better abstraction)
-//        names.add(playerNames.get(PlayerId.PLAYER_1));
-//        names.add(playerNames.get(PlayerId.PLAYER_2));
+        playerNames.forEach((playerId, name) -> names.add(name));
 
         sendMessage(String.join(" ",
                 MessageId.INIT_PLAYERS.name(),

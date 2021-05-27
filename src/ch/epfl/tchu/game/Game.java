@@ -177,10 +177,6 @@ public final class Game {
                     else {
                         List<SortedBag<Card>> possibleAdditionalCards = gameState.currentPlayerState().possibleAdditionalCards(count, initialClaimCards);
 
-                        System.out.println("possibleAddCards" + possibleAdditionalCards + " count:" + count + " initialClaimCount" + initialClaimCards);
-                        if (possibleAdditionalCards == null){
-                            System.out.println("possible additional cards is null");
-                        }
                         SortedBag<Card> additionalCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCards);
 
 
