@@ -12,15 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import static ch.epfl.tchu.game.Constants.*;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 /**
  * @author Alexandre Iskandar (324406)
  * @author Anirudhh Ramesh (329806)
  * Instanciable class, represents the observable state of a game in tCHu
  */
-public class ObservableGameState {
+public final class ObservableGameState {
     private PublicGameState publicGameState;
     private PlayerState playerState;
     private final PlayerId playerId;
@@ -34,10 +32,10 @@ public class ObservableGameState {
     private final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
 
     //PublicPlayerState properties
-    private final Map<PlayerId, IntegerProperty> playersTicketsCount = initProperties();
-    private final Map<PlayerId, IntegerProperty> playersCardsCount = initProperties();
-    private final Map<PlayerId, IntegerProperty> playersCarsCount = initProperties();
-    private final Map<PlayerId, IntegerProperty> playersClaimPoints = initProperties();
+    private final Map<PlayerId, IntegerProperty> playerTicketsCount = initProperties();
+    private final Map<PlayerId, IntegerProperty> playerCardsCount = initProperties();
+    private final Map<PlayerId, IntegerProperty> playerCarsCount = initProperties();
+    private final Map<PlayerId, IntegerProperty> playerClaimPoints = initProperties();
 
     //PlayerState properties
     private final ObservableList<Ticket> playerTickets = FXCollections.observableArrayList();
@@ -59,7 +57,7 @@ public class ObservableGameState {
      * @param newGameState   the updated version of the gameState
      * @param newPlayerState the updated version of the player state
      */
-    public void setState(PublicGameState newGameState, PlayerState newPlayerState) { //TODO: Clean up the code here
+    public void setState(PublicGameState newGameState, PlayerState newPlayerState) { //TODO: Anyway to further clean up this code?
         publicGameState = newGameState;
         playerState = newPlayerState;
 
@@ -68,59 +66,47 @@ public class ObservableGameState {
         cardsPercentage.set((100 * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
 
         for (int slot : FACE_UP_CARD_SLOTS) {
-            Card newCard = newGameState.cardState().faceUpCard(slot);
-            faceUpCards.get(slot).set(newCard);
+            faceUpCards.get(slot).set(publicGameState.cardState().faceUpCard(slot));
         }
-
 
         for (Route route : routes.keySet()) {
             for (PlayerId id : PlayerId.ALL) {
-                if (newGameState.playerState(id).routes().contains(route))
+                if (publicGameState.playerState(id).routes().contains(route))
                     routes.get(route).set(id);
             }
         }
-
+        //TODO: Is it alright to mix up for-each loops and lambdas? Anyway to further clean up this code?
         //2. Public Player State
         for (PlayerId id : PlayerId.ALL) {
-            playersTicketsCount.get(id).set(newGameState.playerState(id).ticketCount());
-            playersCardsCount.get(id).set(newGameState.playerState(id).cardCount());
-            playersCarsCount.get(id).set(newGameState.playerState(id).carCount());
-            playersClaimPoints.get(id).set(newGameState.playerState(id).claimPoints());
+            playerTicketsCount.get(id).set(publicGameState.playerState(id).ticketCount());
+            playerCardsCount.get(id).set(publicGameState.playerState(id).cardCount());
+            playerCarsCount.get(id).set(publicGameState.playerState(id).carCount());
+            playerClaimPoints.get(id).set(publicGameState.playerState(id).claimPoints());
         }
 
         //3. Player State
-        if (playerTickets.size() == 0) {
-            playerTickets.addAll(playerState.tickets().toList());
-        } else {
-            playerTickets.setAll(playerState.tickets().toList());
-        }
+        playerTickets.setAll(playerState.tickets().toList());
 
-        for (Card card : Card.values()) {
+        playerCardTypeCount.forEach((card, count) -> playerCardTypeCount.get(card).set(playerState.cards().countOf(card)));
 
-            playerCardTypeCount.get(card).set(playerState.cards().countOf(card));
-
-        }
-
-
-        for (Route route : routes.keySet()) {
-
-            boolean correctPlayer = publicGameState.currentPlayerId() == playerId;
-            boolean routeNotOwned = routes.get(route).get() == null;
+        for (Route route : routes.keySet()) { //TODO: Is it possible to optimize the double for-loop?
             boolean routeDoubleNotOwned = true;
 
             for (Route w : routes.keySet()) {
-                if (w.id() == route.id()) continue;
+                if (w.id().equals(route.id())) continue;
                 if (w.stations().containsAll(route.stations())) {
                     routeDoubleNotOwned = routes.get(w).get() == null;
                 }
             }
 
-            boolean playerHasCards = playerState.canClaimRoute(route);
-            playerCanClaimRoute.get(route).set(playerHasCards && correctPlayer && routeDoubleNotOwned && routeNotOwned);
+            playerCanClaimRoute.get(route).set(playerState.canClaimRoute(route)
+                    && publicGameState.currentPlayerId() == playerId
+                    && routes.get(route).get() == null
+                    && routeDoubleNotOwned);
         }
     }
 
-    //TODO: Reorganise code set up
+    //1. PublicGameState Properties
     /**
      * Returns the percentage of tickets remaining in the pile
      * @return the percentage of tickets remaining in the pile
@@ -137,16 +123,6 @@ public class ObservableGameState {
         return cardsPercentage;
     }
 
-    private static List<ObjectProperty<Card>> createFaceUpCards() {
-        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
-
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
-            faceUpCards.add(new SimpleObjectProperty<>(null));
-        }
-
-        return faceUpCards;
-    }
-
     /**
      * Returns the face up card stored at the given slot
      * @param slot the index of the faceup card to return
@@ -154,14 +130,6 @@ public class ObservableGameState {
      */
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
         return faceUpCards.get(slot);
-    }
-
-    private static Map<Route, ObjectProperty<PlayerId>> createRoutes() {
-        Map<Route, ObjectProperty<PlayerId>> routes = new HashMap<>();
-        for (Route route : ChMap.routes())
-            routes.put(route, new SimpleObjectProperty<>(null));
-
-        return routes;
     }
 
     /**
@@ -173,16 +141,14 @@ public class ObservableGameState {
         return routes.get(route);
     }
 
-
     //2. PublicPlayerState Properties
-
     /**
      * Returns the number of tickets that the player has in their hand
      * @param id the identity of the player
      * @return the number of tickets that the player has in their hand
      */
     public ReadOnlyIntegerProperty playerTicketsCount(PlayerId id) {
-        return playersTicketsCount.get(id);
+        return playerTicketsCount.get(id);
     }
 
     /**
@@ -191,7 +157,7 @@ public class ObservableGameState {
      * @return the number of cards that the player has in their hand
      */
     public ReadOnlyIntegerProperty playerCardsCount(PlayerId id) {
-        return playersCardsCount.get(id);
+        return playerCardsCount.get(id);
     }
 
     /**
@@ -200,7 +166,7 @@ public class ObservableGameState {
      * @return the number of cars that the player owns
      */
     public ReadOnlyIntegerProperty playerCarsCount(PlayerId id) {
-        return playersCarsCount.get(id);
+        return playerCarsCount.get(id);
     }
 
     /**
@@ -209,37 +175,16 @@ public class ObservableGameState {
      * @return the number of claim points that the player has obtained
      */
     public ReadOnlyIntegerProperty playerClaimPoints(PlayerId id) {
-        return playersClaimPoints.get(id);
+        return playerClaimPoints.get(id);
     }
 
-
-    //3. PrivatePlayerState Properties
-
+    //3. PlayerState Properties
     /**
      * Returns a list of the player tickets
      * @return the list of the player tickets
      */
     public ObservableList<Ticket> playerTickets() {
         return FXCollections.unmodifiableObservableList(playerTickets);
-    }
-
-    private static Map<Card, IntegerProperty> createPlayerCardTypeCount() {
-        Map<Card, IntegerProperty> cardMap = new HashMap<>();
-
-        for (Card card : Card.values())
-            cardMap.put(card, new SimpleIntegerProperty(0));
-
-        return cardMap;
-    }
-
-    private static Map<PlayerId, IntegerProperty> initProperties() {
-        Map<PlayerId, IntegerProperty> intMap = new HashMap<>();
-
-        for (PlayerId id : PlayerId.ALL) {
-            intMap.put(id, new SimpleIntegerProperty(0));
-        }
-        return intMap;
-
     }
 
     /**
@@ -249,15 +194,6 @@ public class ObservableGameState {
      */
     public ReadOnlyIntegerProperty playerCardTypeCount(Card card) {
         return playerCardTypeCount.get(card);
-    }
-
-    private static Map<Route, BooleanProperty> createPlayerCanClaimRoute() {
-        Map<Route, BooleanProperty> claimRouteMap = new HashMap<>();
-
-        for (Route route : ChMap.routes())
-            claimRouteMap.put(route, new SimpleBooleanProperty(false));
-
-        return claimRouteMap;
     }
 
     /**
@@ -270,7 +206,6 @@ public class ObservableGameState {
     }
 
     //Additional methods
-
     /**
      * Returns whether it is possible to draw a ticket
      * @return whether it is possible to draw a ticket
@@ -294,5 +229,49 @@ public class ObservableGameState {
      */
     public ObservableList<SortedBag<Card>> possibleClaimCards(Route route) {
         return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route)));
+    }
+
+    //Initializes the face up cards
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
+        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
+        //TODO: How can I convert this to a normal for-loop
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>(null));
+
+        return faceUpCards;
+    }
+
+    //Initializes the routes
+    private static Map<Route, ObjectProperty<PlayerId>> createRoutes() {
+        Map<Route, ObjectProperty<PlayerId>> routes = new HashMap<>();
+        for (Route route : ChMap.routes()) routes.put(route, new SimpleObjectProperty<>(null));
+
+        return routes;
+    }
+
+    //Initializes the players cards
+    private static Map<Card, IntegerProperty> createPlayerCardTypeCount() {
+        Map<Card, IntegerProperty> cardMap = new HashMap<>();
+
+        for (Card card : Card.values()) cardMap.put(card, new SimpleIntegerProperty(0));
+
+        return cardMap;
+    }
+
+    //Initializes the initial public playerState properties
+    private static Map<PlayerId, IntegerProperty> initProperties() {
+        Map<PlayerId, IntegerProperty> intMap = new HashMap<>();
+
+        for (PlayerId id : PlayerId.ALL) intMap.put(id, new SimpleIntegerProperty(0));
+
+        return intMap;
+    }
+
+    //Initializes the claimed routes
+    private static Map<Route, BooleanProperty> createPlayerCanClaimRoute() {
+        Map<Route, BooleanProperty> claimRouteMap = new HashMap<>();
+
+        for (Route route : ChMap.routes()) claimRouteMap.put(route, new SimpleBooleanProperty(false));
+
+        return claimRouteMap;
     }
 }
