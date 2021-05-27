@@ -18,10 +18,18 @@ import java.util.Map;
  * @author Anirudhh Ramesh (329806)
  * Non-instantiable class, represents the creator for the information view
  */
-final class InfoViewCreator {
+public final class InfoViewCreator {
 
     private InfoViewCreator(){}
 
+    /**
+     * Method that creates the info view
+     * @param playerId the id of the player for which the info view is associated
+     * @param playerNames map that maps the players' Ids to their names
+     * @param gameState the observable game state of the current game
+     * @param textList list containing the text that will show up in the InfoView
+     * @return Vbox of the InfoView
+     */
     public static VBox createInfoView(PlayerId playerId, Map<PlayerId, String> playerNames, ObservableGameState gameState, ObservableList<Text> textList){
 
         VBox main = new VBox();
@@ -30,28 +38,8 @@ final class InfoViewCreator {
         VBox playerStats = new VBox();
         playerStats.setId("player-stats");
 
-        for(PlayerId id : PlayerId.ALL){
-            TextFlow playerTextFlow = new TextFlow();
-            playerTextFlow.getStyleClass().addAll(id.name());
-
-            Circle circle = new Circle();
-            circle.getStyleClass().addAll("filled");
-            circle.setRadius(5);
-
-            Text text = new Text();
-
-            text.textProperty().bind(Bindings.format(StringsFr.PLAYER_STATS,
-                    playerNames.get(id),
-                    gameState.playerTicketsCount(id),
-                    gameState.playerCardsCount(id),
-                    gameState.playerCarsCount(id),
-                    gameState.playerClaimPoints(id)));
-
-            playerTextFlow.getChildren().addAll(circle, text);
-            playerStats.getChildren().addAll(playerTextFlow);
-        }
-
-
+        createPlayerStats(playerId, playerNames, gameState, playerStats);
+        createPlayerStats(playerId.next(), playerNames, gameState, playerStats);
 
         Separator separator = new Separator();
         separator.setOrientation(Orientation.HORIZONTAL);
@@ -65,6 +53,28 @@ final class InfoViewCreator {
         main.getChildren().addAll(playerStats, separator, textFlow);
 
         return main;
+    }
+
+    private static void createPlayerStats(PlayerId id,Map<PlayerId, String> playerNames, ObservableGameState gameState, VBox playerStats){
+
+        TextFlow playerTextFlow = new TextFlow();
+        playerTextFlow.getStyleClass().addAll(id.name());
+
+        Circle circle = new Circle();
+        circle.getStyleClass().addAll("filled");
+        circle.setRadius(5);
+
+        Text text = new Text();
+
+        text.textProperty().bind(Bindings.format(StringsFr.PLAYER_STATS,
+                playerNames.get(id),
+                gameState.playerTicketsCount(id),
+                gameState.playerCardsCount(id),
+                gameState.playerCarsCount(id),
+                gameState.playerClaimPoints(id)));
+
+        playerTextFlow.getChildren().addAll(circle, text);
+        playerStats.getChildren().addAll(playerTextFlow);
     }
 
 
