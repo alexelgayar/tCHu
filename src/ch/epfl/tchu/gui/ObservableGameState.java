@@ -18,7 +18,7 @@ import static ch.epfl.tchu.game.Constants.*;
  * @author Anirudhh Ramesh (329806)
  * Instanciable class, represents the observable state of a game in tCHu
  */
-public final class ObservableGameState {
+public final class ObservableGameState { //TODO: Should all GUI classes be package private?
     private PublicGameState publicGameState;
     private PlayerState playerState;
     private final PlayerId playerId;
@@ -125,7 +125,7 @@ public final class ObservableGameState {
 
     /**
      * Returns the face up card stored at the given slot
-     * @param slot the index of the faceup card to return
+     * @param slot the index of the face-up card to return
      * @return the face up card stored at the given slot
      */
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {

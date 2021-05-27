@@ -1,10 +1,11 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
-import ch.epfl.tchu.game.*;
+import ch.epfl.tchu.game.Card;
+import ch.epfl.tchu.game.ChMap;
+import ch.epfl.tchu.game.Route;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -14,11 +15,7 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.epfl.tchu.game.Color.BLACK;
-import static ch.epfl.tchu.game.Color.RED;
 import static ch.epfl.tchu.game.Route.Level.OVERGROUND;
-import static ch.epfl.tchu.game.Route.Level.UNDERGROUND;
-import static ch.epfl.tchu.gui.ActionHandlers.*;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -29,6 +26,7 @@ final class MapViewCreator implements ActionHandlers {
 
     private static final int RECT_WIDTH = 36;
     private static final int RECT_HEIGHT = 12;
+
     private static final int CIRCLE_RADIUS = 3;
 
     private MapViewCreator() {

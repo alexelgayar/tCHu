@@ -1,18 +1,11 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.Card;
-import ch.epfl.tchu.game.Constants;
-import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.game.Ticket;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.value.ObservableListValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
@@ -25,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
-import static ch.epfl.tchu.gui.ActionHandlers.*;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -33,6 +25,9 @@ import static ch.epfl.tchu.gui.ActionHandlers.*;
  * Non-instantiable (=final) and package private (=no modifier). Constructs scene graph to represent the cards.
  */
 final class DecksViewCreator implements ActionHandlers {
+
+    public static final int MIN_CARD_VISIBILITY = 0;
+    public static final int MIN_COUNTER_VISIBILITY = 1;
 
     private static final int OUTSIDE_RECT_W = 60;
     private static final int OUTSIDE_RECT_H = 90;
@@ -46,97 +41,51 @@ final class DecksViewCreator implements ActionHandlers {
     private DecksViewCreator() {
     }
 
-    //TODO: See if this can be cleaned up
-    //TODO: Modularise
     /**
      * Returns the HBox of the player's hand view
-     * @param gameState the observable game state
+     * @param observableGameState the observable game state
      * @return the HBox of the player's hand view
      */
-    public static HBox createHandView(ObservableGameState gameState) {
+    public static HBox createHandView(ObservableGameState observableGameState) {
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
 
-        ListView<Ticket> playerTickets = new ListView<>(gameState.playerTickets());
+        ListView<Ticket> playerTickets = new ListView<>(observableGameState.playerTickets());
         playerTickets.setId("tickets");
 
         HBox handPane = new HBox();
         handPane.setId("hand-pane");
 
+        //Create a stackPane for each card, then add to the handPane
         for (Card card : Card.values()) {
+            ReadOnlyIntegerProperty count = observableGameState.playerCardTypeCount(card);
 
-            ReadOnlyIntegerProperty count = gameState.playerCardTypeCount(card);
-
-            StackPane cardStackPane = createCardStackPane(card);
-            cardStackPane.visibleProperty().bind(Bindings.greaterThan(count, 0));
-
-            Text counterText = new Text();
-            counterText.getStyleClass().add("count");
-            counterText.textProperty().bind(Bindings.convert(count));
-            counterText.visibleProperty().bind(Bindings.greaterThan(count, 1));
-
-            cardStackPane.getChildren().add(counterText);
-
+            StackPane cardStackPane = createCardStackPane(card, count);
             handPane.getChildren().add(cardStackPane);
         }
 
-        main.getChildren().addAll(playerTickets);
-        main.getChildren().addAll(handPane);
+        main.getChildren().addAll(playerTickets, handPane);
 
         return main;
     }
 
-    //TODO: See if this can be cleaned up
-    //TODO: Modularise
-    /**
-     * Returns the VBox of the FaceUpCards view, Tickets and Card buttons
-     * @param gameState the observable game state
-     * @param drawTicketsHandler the action handler for drawing tickets
-     * @param drawCardHandler the action handler for drawing cards
-     * @return the VBox of the FaceUpCards view, Tickets and Card buttons
-     */
-    public static VBox createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
-        VBox cardPane = new VBox();
-        cardPane.setId("card-pane");
-        cardPane.getStylesheets().addAll("decks.css", "colors.css");
-        Button ticketsButton = createButtonView(gameState.ticketsPercentage(), StringsFr.TICKETS);
-        ticketsButton.disableProperty().bind(drawTicketsHandler.isNull());
+    //Creates a card stack pane with text counter
+    private static StackPane createCardStackPane(Card card, ReadOnlyIntegerProperty count){
+        StackPane cardStackPane = createCard(card);
+        cardStackPane.visibleProperty().bind(Bindings.greaterThan(count, MIN_CARD_VISIBILITY));
 
-        ticketsButton.setOnMouseClicked(e -> drawTicketsHandler.get().onDrawTickets());
+        Text counterText = createCardCounter(count);
 
-        List<StackPane> stackPanes = new ArrayList<>();
+        cardStackPane.getChildren().add(counterText);
 
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
-            int finalI = i;
-            stackPanes.add(createCardStackPane(gameState.faceUpCard(i).get()));
-            gameState.faceUpCard(i).addListener((p, o, n) -> {
-                stackPanes.get(finalI).getStyleClass().setAll("card", (n == Card.LOCOMOTIVE)
-                        ? "NEUTRAL"
-                        : n.color().name());;
-            });
-
-
-            stackPanes.get(i).disableProperty().bind(drawCardHandler.isNull());
-            stackPanes.get(i).setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(finalI));
-        }
-
-        Button cardsButton = createButtonView(gameState.cardsPercentage(), StringsFr.CARDS);
-        cardsButton.disableProperty().bind(drawCardHandler.isNull());
-        cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(-1));
-
-        cardPane.getChildren().add(ticketsButton);
-        cardPane.getChildren().addAll(stackPanes);
-        cardPane.getChildren().add(cardsButton);
-
-        return cardPane;
-
+        return cardStackPane;
     }
 
-    private static StackPane createCardStackPane(Card card) {
+    //Creates a card structure for the given card
+    private static StackPane createCard(Card card) {
         StackPane stackPane = new StackPane();
-        stackPane.getStyleClass().add("card");
 
-        if (card != null) stackPane.getStyleClass().add((card == Card.LOCOMOTIVE)
+        if (card != null) stackPane.getStyleClass().addAll("card", (card == Card.LOCOMOTIVE)
                 ? "NEUTRAL"
                 : card.color().name());
 
@@ -152,6 +101,61 @@ final class DecksViewCreator implements ActionHandlers {
         stackPane.getChildren().addAll(outside, inside, trainImage);
 
         return stackPane;
+    }
+
+    //Creates a Text which displays the given count
+    private static Text createCardCounter(ReadOnlyIntegerProperty count){
+        Text counterText = new Text();
+
+        counterText.getStyleClass().add("count");
+        counterText.textProperty().bind(Bindings.convert(count));
+        counterText.visibleProperty().bind(Bindings.greaterThan(count, MIN_COUNTER_VISIBILITY));
+
+        return counterText;
+    }
+
+    //TODO: See if this can be cleaned up
+    //TODO: Modularise
+    /**
+     * Returns the VBox of the FaceUpCards view, Tickets and Card buttons
+     * @param gameState the observable game state
+     * @param drawTicketsHandler the action handler for drawing tickets
+     * @param drawCardHandler the action handler for drawing cards
+     * @return the VBox of the FaceUpCards view, Tickets and Card buttons
+     */
+    public static VBox createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
+        VBox cardPane = new VBox();
+        cardPane.setId("card-pane");
+        cardPane.getStylesheets().addAll("decks.css", "colors.css");
+
+        Button ticketsButton = createButtonView(gameState.ticketsPercentage(), StringsFr.TICKETS);
+        ticketsButton.disableProperty().bind(drawTicketsHandler.isNull());
+        ticketsButton.setOnMouseClicked(e -> drawTicketsHandler.get().onDrawTickets());
+
+        List<StackPane> stackPanes = new ArrayList<>();
+
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
+            int finalI = i;
+            stackPanes.add(createCard(gameState.faceUpCard(i).get()));
+            gameState.faceUpCard(i).addListener((p, o, n) -> {
+                stackPanes.get(finalI).getStyleClass().setAll("card", (n == Card.LOCOMOTIVE)
+                        ? "NEUTRAL"
+                        : n.color().name());;
+            });
+            stackPanes.get(i).disableProperty().bind(drawCardHandler.isNull());
+            stackPanes.get(i).setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(finalI));
+        }
+
+        Button cardsButton = createButtonView(gameState.cardsPercentage(), StringsFr.CARDS);
+        cardsButton.disableProperty().bind(drawCardHandler.isNull());
+        cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(-1));
+
+        cardPane.getChildren().add(ticketsButton);
+        cardPane.getChildren().addAll(stackPanes);
+        cardPane.getChildren().add(cardsButton);
+
+        return cardPane;
+
     }
 
     private static Button createButtonView(ReadOnlyIntegerProperty gaugePercentage, String buttonText) {

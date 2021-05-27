@@ -11,7 +11,7 @@ import java.util.List;
  * @author Anirudhh Ramesh (329806)
  * Contains the main program of the tCHU client
  */
-public class ClientMain extends Application {
+public final class ClientMain extends Application {
 
     public static final int NBR_PARAM_ARGS = 2; //TODO: Should these be constants?
     public static final int DEFAULT_PORT = 5108;

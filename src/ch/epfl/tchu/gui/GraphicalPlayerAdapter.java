@@ -17,7 +17,7 @@ import static javafx.application.Platform.runLater;
  * @author Anirudhh Ramesh (329806)
  * Instantiable class, adapts the instance of GraphicalPlayer to a Player type. All methods run by non-JavaFX thread.
  */
-public class GraphicalPlayerAdapter implements Player { //TODO: Does this class have to be static?
+public final class GraphicalPlayerAdapter implements Player { //TODO: Does this class have to be static?
 
     private GraphicalPlayer graphicalPlayer;
 
