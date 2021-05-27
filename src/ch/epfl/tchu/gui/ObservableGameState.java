@@ -39,23 +39,33 @@ public class ObservableGameState {
     private final Map<PlayerId, IntegerProperty> playersCarsCount = initProperties();
     private final Map<PlayerId, IntegerProperty> playersClaimPoints = initProperties();
 
-
     //PlayerState properties
     private final ObservableList<Ticket> playerTickets = FXCollections.observableArrayList();
     private final Map<Card, IntegerProperty> playerCardTypeCount = createPlayerCardTypeCount();
     private final Map<Route, BooleanProperty> playerCanClaimRoute = createPlayerCanClaimRoute();
 
+    /**
+     * Constructor for ObservableGameState
+     *
+     * @param playerId the identity of the player
+     */
     public ObservableGameState(PlayerId playerId) {
         this.playerId = playerId;
     }
 
-    public void setState(PublicGameState newGameState, PlayerState newPlayerState) {
+    /**
+     * Updates all the values of the observableGameState attributes
+     *
+     * @param newGameState   the updated version of the gameState
+     * @param newPlayerState the updated version of the player state
+     */
+    public void setState(PublicGameState newGameState, PlayerState newPlayerState) { //TODO: Clean up the code here
         publicGameState = newGameState;
         playerState = newPlayerState;
 
         //1. Public Game State
         ticketsPercentage.set((100 * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT);
-        cardsPercentage.set((100* publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
+        cardsPercentage.set((100 * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
 
         for (int slot : FACE_UP_CARD_SLOTS) {
             Card newCard = newGameState.cardState().faceUpCard(slot);
@@ -63,15 +73,12 @@ public class ObservableGameState {
         }
 
 
-            for (Route route : routes.keySet()) {
-                for (PlayerId id : PlayerId.ALL) {
+        for (Route route : routes.keySet()) {
+            for (PlayerId id : PlayerId.ALL) {
                 if (newGameState.playerState(id).routes().contains(route))
                     routes.get(route).set(id);
             }
-
-
         }
-
 
         //2. Public Player State
         for (PlayerId id : PlayerId.ALL) {
@@ -90,7 +97,7 @@ public class ObservableGameState {
 
         for (Card card : Card.values()) {
 
-                playerCardTypeCount.get(card).set(playerState.cards().countOf(card));
+            playerCardTypeCount.get(card).set(playerState.cards().countOf(card));
 
         }
 
@@ -113,10 +120,19 @@ public class ObservableGameState {
         }
     }
 
-    public ReadOnlyIntegerProperty ticketsPercentage() {
+    //TODO: Reorganise code set up
+    /**
+     * Returns the percentage of tickets remaining in the pile
+     * @return the percentage of tickets remaining in the pile
+     */
+    public ReadOnlyIntegerProperty ticketsPercentage() { //TODO Clean up all the smaller methods
         return ticketsPercentage;
     }
 
+    /**
+     * Returns the percentage of cards remaining in the pile
+     * @return the percentage of cards remaining in the pile
+     */
     public ReadOnlyIntegerProperty cardsPercentage() {
         return cardsPercentage;
     }
@@ -131,6 +147,11 @@ public class ObservableGameState {
         return faceUpCards;
     }
 
+    /**
+     * Returns the face up card stored at the given slot
+     * @param slot the index of the faceup card to return
+     * @return the face up card stored at the given slot
+     */
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
         return faceUpCards.get(slot);
     }
@@ -143,30 +164,61 @@ public class ObservableGameState {
         return routes;
     }
 
-    public ReadOnlyObjectProperty<PlayerId> routeOwner(Route route) { //TODO: This seems wrong, do I send the whole map through?/ ReadOnlyObjectProperty doesn't work
+    /**
+     * Returns the owner of the given route, otherwise null if the route is not owned
+     * @param route the route whose owner will be returned
+     * @return the owner of the given route, otherwise null if the route is not owned
+     */
+    public ReadOnlyObjectProperty<PlayerId> routeOwner(Route route) {
         return routes.get(route);
     }
 
 
     //2. PublicPlayerState Properties
+
+    /**
+     * Returns the number of tickets that the player has in their hand
+     * @param id the identity of the player
+     * @return the number of tickets that the player has in their hand
+     */
     public ReadOnlyIntegerProperty playerTicketsCount(PlayerId id) {
         return playersTicketsCount.get(id);
     }
 
+    /**
+     * Returns the number of cards that the player has in their hand
+     * @param id the identity of the player
+     * @return the number of cards that the player has in their hand
+     */
     public ReadOnlyIntegerProperty playerCardsCount(PlayerId id) {
         return playersCardsCount.get(id);
     }
 
-    public ReadOnlyIntegerProperty playeCarsCount(PlayerId id) {
+    /**
+     * Returns the number of cars that the player owns
+     * @param id the identity of the player
+     * @return the number of cars that the player owns
+     */
+    public ReadOnlyIntegerProperty playerCarsCount(PlayerId id) {
         return playersCarsCount.get(id);
     }
 
+    /**
+     * Returns the number of claim points that the player has obtained
+     * @param id the identity of the player
+     * @return the number of claim points that the player has obtained
+     */
     public ReadOnlyIntegerProperty playerClaimPoints(PlayerId id) {
         return playersClaimPoints.get(id);
     }
 
 
     //3. PrivatePlayerState Properties
+
+    /**
+     * Returns a list of the player tickets
+     * @return the list of the player tickets
+     */
     public ObservableList<Ticket> playerTickets() {
         return FXCollections.unmodifiableObservableList(playerTickets);
     }
@@ -190,6 +242,11 @@ public class ObservableGameState {
 
     }
 
+    /**
+     * Returns the number of cards of each type that the player owns
+     * @param card the card whose number is needed
+     * @return the number of cards of each type that the player owns
+     */
     public ReadOnlyIntegerProperty playerCardTypeCount(Card card) {
         return playerCardTypeCount.get(card);
     }
@@ -203,19 +260,38 @@ public class ObservableGameState {
         return claimRouteMap;
     }
 
+    /**
+     * Returns true if the player has the necessary prerequisites to claim the route, else false
+     * @param route the route that is desired to be claimed
+     * @return true if the player has the necessary prerequisites to claim the route, else false
+     */
     public ReadOnlyBooleanProperty claimable(Route route) {
         return playerCanClaimRoute.get(route);
     }
 
     //Additional methods
+
+    /**
+     * Returns whether it is possible to draw a ticket
+     * @return whether it is possible to draw a ticket
+     */
     public ReadOnlyBooleanProperty canDrawTickets() {
         return new SimpleBooleanProperty(publicGameState.canDrawTickets());
     }
 
+    /**
+     * Returns whether it is possible to draw a card
+     * @return whether it is possible to draw a card
+     */
     public ReadOnlyBooleanProperty canDrawCards() {
         return new SimpleBooleanProperty(publicGameState.canDrawCards());
     }
 
+    /**
+     * Returns a sortedBag of cards that the player can use to claim the given route
+     * @param route the route that the player wishes to claim
+     * @return a sortedBag of cards that the player can use to claim the given route
+     */
     public ObservableList<SortedBag<Card>> possibleClaimCards(Route route) {
         return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route)));
     }

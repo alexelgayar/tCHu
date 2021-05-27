@@ -20,10 +20,19 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 public class ServerMain extends Application { //TODO: I don't get anything when I run ServerMain
 
+    /**
+     * The main method of ServerMain
+     * @param args the program arguments of ServerMain
+     */
     public static void main(String[] args){
         launch(args);
     }
 
+    /**
+     * Start method which calls the play method of the Game
+     * @param primaryStage the primary stage
+     * @throws Exception an exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();
@@ -34,10 +43,10 @@ public class ServerMain extends Application { //TODO: I don't get anything when 
         SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
         Random rng = new Random();
 
-        //TODO: Is this the correct way to set up the graphical and remote players?
         GraphicalPlayerAdapter graphicalPlayerAdapter = new GraphicalPlayerAdapter();
         RemotePlayerProxy remotePlayerProxy = new RemotePlayerProxy(serverSocket.accept());
 
+        //TODO: Is there a better way to write this code?
         players.put(PLAYER_1, graphicalPlayerAdapter);
         players.put(PLAYER_2, remotePlayerProxy);
 
@@ -50,6 +59,6 @@ public class ServerMain extends Application { //TODO: I don't get anything when 
 
         System.out.println("Test");
         playerNames.forEach((playerId, playerName) -> System.out.println("playerId: " + playerId + "  playerName: " + playerName));
-        new Thread(()-> Game.play(players, playerNames, tickets, rng)).start(); //TODO: Do I run this on a new thread?
+        new Thread(()-> Game.play(players, playerNames, tickets, rng)).start();
     }
 }

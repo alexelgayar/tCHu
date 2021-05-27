@@ -13,14 +13,23 @@ import java.util.List;
  */
 public class ClientMain extends Application {
 
-    public static final int NBR_PARAM_ARGS = 2;
+    public static final int NBR_PARAM_ARGS = 2; //TODO: Should these be constants?
     public static final int DEFAULT_PORT = 5108;
     public static final String LOCALHOST = "localhost";
 
+    /**
+     * The main method of ClientMain
+     * @param args the program arguments of ClientMain
+     */
     public static void main(String[] args){
         launch(args);
     }
 
+    /**
+     * Start method which calls the run method of the RemotePlayerClient
+     * @param primaryStage the primary stage
+     * @throws Exception an exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();

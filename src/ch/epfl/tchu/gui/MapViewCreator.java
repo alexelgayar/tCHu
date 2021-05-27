@@ -34,6 +34,16 @@ final class MapViewCreator implements ActionHandlers {
     private MapViewCreator() {
     }
 
+    //TODO: See if this can be cleaned up
+    //TODO: Modularise
+
+    /**
+     * Constructs and returns the pane view of the map
+     * @param gameState the observable game state
+     * @param claimRouteHandler the action handler for when the player attempts to claim a route
+     * @param cardChooser a card chooser to claim a route
+     * @return the pane view of the map
+     */
     public static Pane createMapView(ObservableGameState gameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser) {
         Pane mapPane = new Pane();
         mapPane.getStylesheets().addAll("map.css", "colors.css");
@@ -98,7 +108,7 @@ final class MapViewCreator implements ActionHandlers {
 
     private static void pickClaimCards(ObservableGameState gameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser) {
         List<SortedBag<Card>> possibleClaimCards = gameState.possibleClaimCards(route);
-        if (possibleClaimCards.size() == 1) {
+        if (possibleClaimCards.size() == 1) { //TODO: See if this can be cleaned up
             claimRouteH.get().onClaimRoute(route, possibleClaimCards.get(0));
         } else {
             ChooseCardsHandler chooseCardsH = chosenCards -> claimRouteH.get().onClaimRoute(route, chosenCards);
@@ -106,6 +116,9 @@ final class MapViewCreator implements ActionHandlers {
         }
     }
 
+    /**
+     * The card chooser for when a player attempts to claim a route
+     */
     @FunctionalInterface
     interface CardChooser {
         void chooseCards(List<SortedBag<Card>> options,

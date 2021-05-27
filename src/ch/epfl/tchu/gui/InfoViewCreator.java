@@ -5,14 +5,12 @@ import ch.epfl.tchu.game.PlayerId;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -46,7 +44,7 @@ final class InfoViewCreator {
                     playerNames.get(id),
                     gameState.playerTicketsCount(id),
                     gameState.playerCardsCount(id),
-                    gameState.playeCarsCount(id),
+                    gameState.playerCarsCount(id),
                     gameState.playerClaimPoints(id)));
 
             playerTextFlow.getChildren().addAll(circle, text);

@@ -46,7 +46,13 @@ final class DecksViewCreator implements ActionHandlers {
     private DecksViewCreator() {
     }
 
-    //Constructs the view of the Player cards
+    //TODO: See if this can be cleaned up
+    //TODO: Modularise
+    /**
+     * Returns the HBox of the player's hand view
+     * @param gameState the observable game state
+     * @return the HBox of the player's hand view
+     */
     public static HBox createHandView(ObservableGameState gameState) {
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
@@ -80,7 +86,15 @@ final class DecksViewCreator implements ActionHandlers {
         return main;
     }
 
-    //Constructs the view of the Cards + Deck
+    //TODO: See if this can be cleaned up
+    //TODO: Modularise
+    /**
+     * Returns the VBox of the FaceUpCards view, Tickets and Card buttons
+     * @param gameState the observable game state
+     * @param drawTicketsHandler the action handler for drawing tickets
+     * @param drawCardHandler the action handler for drawing cards
+     * @return the VBox of the FaceUpCards view, Tickets and Card buttons
+     */
     public static VBox createCardsView(ObservableGameState gameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
         VBox cardPane = new VBox();
         cardPane.setId("card-pane");
@@ -160,14 +174,5 @@ final class DecksViewCreator implements ActionHandlers {
         button.setGraphic(group);
 
         return button;
-    }
-
-
-    private static void drawTickets(ObjectProperty<DrawTicketsHandler> drawTicketsH) {
-        drawTicketsH.get().onDrawTickets();
-    }
-
-    private static void drawCards(ObjectProperty<DrawCardHandler> drawCardH, int slot) {
-        drawCardH.get().onDrawCard(slot);
     }
 }
