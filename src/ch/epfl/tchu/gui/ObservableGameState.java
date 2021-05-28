@@ -19,16 +19,15 @@ import static ch.epfl.tchu.game.Constants.*;
  * Instanciable class, represents the observable state of a game in tCHu
  */
 public final class ObservableGameState {
-    public static final int HUNDRED_PERCENTAGE = 100;
     private PublicGameState publicGameState;
     private PlayerState playerState;
-    private final PlayerId playerId;
+    private final PlayerId playerId; //TODO: Is this playerId necessary?
 
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
     //PublicGameState properties
-    private final IntegerProperty ticketsPercentage = new SimpleIntegerProperty(0); //TODO: Check initialization value using documentation
-    private final IntegerProperty cardsPercentage = new SimpleIntegerProperty(0);
+    private final IntegerProperty ticketsPercentage = new SimpleIntegerProperty();
+    private final IntegerProperty cardsPercentage = new SimpleIntegerProperty();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
 
@@ -63,8 +62,8 @@ public final class ObservableGameState {
         playerState = newPlayerState;
 
         //1. Public Game State
-        ticketsPercentage.set((HUNDRED_PERCENTAGE * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT);
-        cardsPercentage.set((HUNDRED_PERCENTAGE * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
+        ticketsPercentage.set((HUNDRED_PERCENT * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT); //TODO: Should this be iterated through each player?
+        cardsPercentage.set((HUNDRED_PERCENT * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
 
         for (int slot : FACE_UP_CARD_SLOTS) {
             faceUpCards.get(slot).set(publicGameState.cardState().faceUpCard(slot));
@@ -255,7 +254,7 @@ public final class ObservableGameState {
     private static List<ObjectProperty<Card>> createFaceUpCards() {
         List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
 
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>(null)); //TODO: Check documentation
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>());
 
         return faceUpCards;
     }
@@ -263,7 +262,7 @@ public final class ObservableGameState {
     //Initializes the routes
     private static Map<Route, ObjectProperty<PlayerId>> createRoutes() {
         Map<Route, ObjectProperty<PlayerId>> routes = new HashMap<>();
-        for (Route route : ChMap.routes()) routes.put(route, new SimpleObjectProperty<>(null));
+        for (Route route : ChMap.routes()) routes.put(route, new SimpleObjectProperty<>());
 
         return routes;
     }
@@ -272,7 +271,7 @@ public final class ObservableGameState {
     private static Map<Card, IntegerProperty> createPlayerCardTypeCount() {
         Map<Card, IntegerProperty> cardMap = new HashMap<>();
 
-        for (Card card : Card.values()) cardMap.put(card, new SimpleIntegerProperty(0));
+        for (Card card : Card.values()) cardMap.put(card, new SimpleIntegerProperty());
 
         return cardMap;
     }
@@ -281,7 +280,7 @@ public final class ObservableGameState {
     private static Map<PlayerId, IntegerProperty> initProperties() {
         Map<PlayerId, IntegerProperty> intMap = new HashMap<>();
 
-        for (PlayerId id : PlayerId.ALL) intMap.put(id, new SimpleIntegerProperty(0));
+        for (PlayerId id : PlayerId.ALL) intMap.put(id, new SimpleIntegerProperty());
 
         return intMap;
     }
@@ -290,7 +289,7 @@ public final class ObservableGameState {
     private static Map<Route, BooleanProperty> createPlayerCanClaimRoute() {
         Map<Route, BooleanProperty> claimRouteMap = new HashMap<>();
 
-        for (Route route : ChMap.routes()) claimRouteMap.put(route, new SimpleBooleanProperty(false));
+        for (Route route : ChMap.routes()) claimRouteMap.put(route, new SimpleBooleanProperty());
 
         return claimRouteMap;
     }

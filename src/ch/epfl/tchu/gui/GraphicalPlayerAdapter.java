@@ -19,12 +19,12 @@ import static javafx.application.Platform.runLater;
  */
 public final class GraphicalPlayerAdapter implements Player {
 
-    private static final int BLOCKING_QUEUE_MAX = 1; //TODO: Make sure constants are private by default if not used outside
+    private static final int BLOCKING_QUEUE_MAX = 1;
     private GraphicalPlayer graphicalPlayer;
 
     private final BlockingQueue<SortedBag<Ticket>> chosenTickets = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
 
-    private final BlockingQueue<TurnKind> turnKindQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX); //TODO: Should the capacity be hardcoded to 1
+    private final BlockingQueue<TurnKind> turnKindQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
     private final BlockingQueue<Integer> chosenSlot = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
     private final BlockingQueue<Route> chosenRoute = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
     private final BlockingQueue<SortedBag<Card>> chosenClaimCards = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);

@@ -17,8 +17,7 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.epfl.tchu.game.Constants.DECK_SLOT;
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
+import static ch.epfl.tchu.game.Constants.*;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -27,8 +26,15 @@ import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
  */
 final class DecksViewCreator implements ActionHandlers {
 
-    public static final int MIN_CARD_VISIBILITY = 0;
-    public static final int MIN_COUNTER_VISIBILITY = 1;
+    /**
+     * The value above which, cards will be displayed graphically
+     */
+    private static final int MIN_CARD_VISIBILITY = 0;
+
+    /**
+     * The value above which, the cards counter will be displayed graphically
+     */
+    private static final int MIN_COUNTER_VISIBILITY = 1;
 
     private static final int OUTSIDE_RECT_W = 60;
     private static final int OUTSIDE_RECT_H = 90;
@@ -130,9 +136,7 @@ final class DecksViewCreator implements ActionHandlers {
     private static StackPane createCard(Card card) {
         StackPane stackPane = new StackPane();
 
-        if (card != null) stackPane.getStyleClass().addAll("card", (card == Card.LOCOMOTIVE)
-                ? "NEUTRAL"
-                : card.color().name());
+        if (card != null) stackPane.getStyleClass().addAll("card", (card == Card.LOCOMOTIVE) ? "NEUTRAL" : card.color().name());
 
         Rectangle outside = new Rectangle(OUTSIDE_RECT_W, OUTSIDE_RECT_H);
         outside.getStyleClass().add("outside");
@@ -196,7 +200,7 @@ final class DecksViewCreator implements ActionHandlers {
         fg.getStyleClass().add("foreground");
 
         fg.widthProperty().bind(
-                gaugePercentage.multiply(GAUGE_W).divide(100));
+                gaugePercentage.multiply(GAUGE_W).divide(HUNDRED_PERCENT));
 
         group.getChildren().addAll(bg, fg);
 

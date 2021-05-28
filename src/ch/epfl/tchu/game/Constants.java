@@ -109,4 +109,10 @@ public final class Constants {
      * The default port used by the game
      */
     public static final int DEFAULT_PORT = 5108;
+
+    /**
+     * The value (100) that we multiply integers with to get a percentage
+     */
+    public static final int HUNDRED_PERCENT = 100;
+
 }

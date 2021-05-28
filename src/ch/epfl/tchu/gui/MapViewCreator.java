@@ -15,9 +15,6 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.epfl.tchu.game.Route.Level.OVERGROUND;
-import static ch.epfl.tchu.game.Route.Level.UNDERGROUND;
-
 /**
  * @author Alexandre Iskandar (324406)
  * @author Anirudhh Ramesh (329806)
@@ -25,18 +22,21 @@ import static ch.epfl.tchu.game.Route.Level.UNDERGROUND;
  */
 final class MapViewCreator implements ActionHandlers {
 
-    public static final int ROUTE_AUTOCLAIM_VALUE = 1;
-
     private static final int RECT_WIDTH = 36;
     private static final int RECT_HEIGHT = 12;
 
     private static final int CIRCLE_RADIUS = 3;
 
-    public static final int C1_CENTER_X = 12;
-    public static final int C1_CENTER_Y = 6;
+    private static final int C1_CENTER_X = 12;
+    private static final int C1_CENTER_Y = 6;
 
-    public static final int C2_CENTER_X = 24;
-    public static final int C2_CENTER_Y = 6;
+    private static final int C2_CENTER_X = 24;
+    private static final int C2_CENTER_Y = 6;
+
+    /**
+     * If possible card choices = this constant (1) , then the route will be automatically claimed
+     */
+    private static final int ROUTE_AUTO_CLAIM_VALUE = 1;
 
     private MapViewCreator() {
     }
@@ -89,11 +89,7 @@ final class MapViewCreator implements ActionHandlers {
         routeGroup.setId(route.id());
         routeGroup.getStyleClass().add("route");
         routeGroup.getStyleClass().add(route.level().name());
-
-        routeGroup.getStyleClass().add( //TODO: Check
-                route.color() == null
-                        ? "NEUTRAL"
-                        : route.color().name());
+        routeGroup.getStyleClass().add(route.color() == null ? "NEUTRAL" : route.color().name());
 
         observableGameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name()));
         routeGroup.disableProperty().bind(claimRouteHandler.isNull().or(observableGameState.claimable(route).not()));
@@ -145,7 +141,7 @@ final class MapViewCreator implements ActionHandlers {
     private static void pickClaimCards(ObservableGameState observableGameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser) {
         List<SortedBag<Card>> possibleClaimCards = observableGameState.possibleClaimCards(route);
 
-        if (possibleClaimCards.size() == ROUTE_AUTOCLAIM_VALUE) { //TODO: Comment constants
+        if (possibleClaimCards.size() == ROUTE_AUTO_CLAIM_VALUE) {
             claimRouteH.get().onClaimRoute(route, possibleClaimCards.get(0));
         } else {
             ChooseCardsHandler chooseCardsH = chosenCards -> claimRouteH.get().onClaimRoute(route, chosenCards);
