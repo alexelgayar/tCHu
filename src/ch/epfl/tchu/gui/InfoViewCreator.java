@@ -8,6 +8,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -66,6 +67,7 @@ final class InfoViewCreator {
         circle.setRadius(5);
 
         Text text = new Text();
+        text.setFont(Font.font("Courier New", 12));
 
         text.textProperty().bind(Bindings.format(StringsFr.PLAYER_STATS,
                 playerNames.get(id),

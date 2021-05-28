@@ -14,6 +14,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
@@ -37,6 +39,8 @@ import static javafx.collections.FXCollections.observableArrayList;
  */
 public final class GraphicalPlayer {
 
+    private final PlayerId id;
+    Map<PlayerId, String> playerNames;
     private final ObservableGameState gameState;
     private final ObservableList<Text> textList = observableArrayList();
     private final Stage mainStage;
@@ -45,6 +49,7 @@ public final class GraphicalPlayer {
     private final SimpleObjectProperty<DrawCardHandler> drawCardHandler;
     private static final int MAX_TEXT_SIZE = 5;
     private static final int REQUIRED_CARD_CHOICE_VALUE = 1;
+    private Color currentColor = null;
 
 
     /**
@@ -55,6 +60,8 @@ public final class GraphicalPlayer {
      */
     public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames) {
 
+        this.id = id;
+        this.playerNames = playerNames;
         gameState = new ObservableGameState(id);
         claimRouteHandler = new SimpleObjectProperty<>();
         drawTicketHandler = new SimpleObjectProperty<>();
@@ -93,9 +100,16 @@ public final class GraphicalPlayer {
      */
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
+        Text text = new Text(message);
+        text.setFont(Font.font("Courier New", 13));
+
+        if(message.contains(playerNames.get(id))) currentColor = playerColor(id);
+        else if (message.contains(playerNames.get(id.next()))) currentColor = playerColor(id.next());
+
+        text.setFill(currentColor);
 
         if (textList.size() == MAX_TEXT_SIZE) textList.remove(0);
-        textList.add(new Text(message));
+        textList.add(text);
     }
 
     /**
@@ -288,5 +302,10 @@ public final class GraphicalPlayer {
         public SortedBag<Card> fromString(String string) {
             throw new UnsupportedOperationException();
         }
+    }
+
+    private Color playerColor(PlayerId id){
+        if(id == PlayerId.PLAYER_1) return Color.CORAL;
+        else return Color.DARKCYAN;
     }
 }
