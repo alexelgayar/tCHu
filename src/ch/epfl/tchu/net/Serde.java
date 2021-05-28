@@ -73,7 +73,7 @@ public interface Serde<E> {
      */
     static <T> Serde<List<T>> listOf(Serde serde, String separator) { //TODO: Check all the warnings and fix them
 
-        return new Serde<List<T>>() { //TODO: Is all the greyed stuff necessary?
+        return new Serde<>() { //TODO: Is all the greyed stuff necessary?
 
             @Override
             public String serialize(List<T> list) {
@@ -87,9 +87,7 @@ public interface Serde<E> {
                     for (T t : list) {
                         strings.add(serde.serialize(t));
                     }
-
-                    String s = String.join(separator, strings);
-                    return s;
+                    return String.join(separator, strings);
                 }
             }
 
@@ -97,14 +95,14 @@ public interface Serde<E> {
             public List<T> deserialize(String serializedObject) {
 
                 if(serializedObject.equals("")){ //TODO: Can this not be simplified?
-                    return new ArrayList<T>();
+                    return new ArrayList<>();
                 }
                 else {
                     String[] s = serializedObject.split(Pattern.quote(separator), -1);
                     List<T> tList = new ArrayList<>();
 
-                    for (int i = 0; i < s.length; ++i) {
-                        tList.add((T) serde.deserialize(s[i])); //TODO: Fix warning
+                    for(String string: s){
+                        tList.add((T) serde.deserialize(string));
                     }
                     return tList;
                 }
@@ -121,14 +119,13 @@ public interface Serde<E> {
      */
     static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde serde, String separator) { //TODO: Fix warnings
 
-        return new Serde<SortedBag<T>>() {
+        return new Serde<>() {
 
             @Override
             public String serialize(SortedBag<T> bag) {
 
                 List list = bag.toList();
-                String y = listOf(serde, separator).serialize(list);
-                return y;
+                return listOf(serde, separator).serialize(list);
             }
 
             @Override
