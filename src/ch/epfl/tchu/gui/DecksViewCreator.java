@@ -17,6 +17,7 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ch.epfl.tchu.game.Constants.DECK_SLOT;
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
 
 /**
@@ -43,6 +44,7 @@ final class DecksViewCreator implements ActionHandlers {
 
     /**
      * Returns the HBox of the player's hand view
+     *
      * @param observableGameState the observable game state
      * @return the HBox of the player's hand view
      */
@@ -64,9 +66,10 @@ final class DecksViewCreator implements ActionHandlers {
 
     /**
      * Returns the VBox of the FaceUpCards view, Tickets and Card buttons
+     *
      * @param observableGameState the observable game state
-     * @param drawTicketsHandler the action handler for drawing tickets
-     * @param drawCardHandler the action handler for drawing cards
+     * @param drawTicketsHandler  the action handler for drawing tickets
+     * @param drawCardHandler     the action handler for drawing cards
      * @return the VBox of the FaceUpCards view, Tickets and Card buttons
      */
     public static VBox createCardsView(ObservableGameState observableGameState, ObjectProperty<DrawTicketsHandler> drawTicketsHandler, ObjectProperty<DrawCardHandler> drawCardHandler) {
@@ -85,7 +88,7 @@ final class DecksViewCreator implements ActionHandlers {
         //Create the cards button
         Button cardsButton = createButtonView(observableGameState.cardsPercentage(), StringsFr.CARDS);
         cardsButton.disableProperty().bind(drawCardHandler.isNull());
-        cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(-1));
+        cardsButton.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(DECK_SLOT));
 
         cardPane.getChildren().add(ticketsButton);
         cardPane.getChildren().addAll(stackPanes);
@@ -96,7 +99,7 @@ final class DecksViewCreator implements ActionHandlers {
     }
 
     //Creates a card stack pane for each value
-    private static HBox createCardsHBox (ObservableGameState observableGameState){
+    private static HBox createCardsHBox(ObservableGameState observableGameState) {
         HBox handPane = new HBox();
         handPane.setId("hand-pane");
 
@@ -112,7 +115,7 @@ final class DecksViewCreator implements ActionHandlers {
     }
 
     //Creates a single card stack pane with text counter
-    private static StackPane createCardStackPane(Card card, ReadOnlyIntegerProperty count){
+    private static StackPane createCardStackPane(Card card, ReadOnlyIntegerProperty count) {
         StackPane cardStackPane = createCard(card);
         cardStackPane.visibleProperty().bind(Bindings.greaterThan(count, MIN_CARD_VISIBILITY));
 
@@ -146,7 +149,7 @@ final class DecksViewCreator implements ActionHandlers {
     }
 
     //Creates a Text which displays the given count
-    private static Text createCardCounter(ReadOnlyIntegerProperty count){
+    private static Text createCardCounter(ReadOnlyIntegerProperty count) {
         Text counterText = new Text();
 
         counterText.getStyleClass().add("count");
@@ -158,10 +161,10 @@ final class DecksViewCreator implements ActionHandlers {
 
 
     //Creates all FACE_UP_CARDS_COUNT (5) of the Face-Up Cards
-    private static List<StackPane> createFaceUpCards(ObservableGameState observableGameState, ObjectProperty<DrawCardHandler> drawCardHandler){
+    private static List<StackPane> createFaceUpCards(ObservableGameState observableGameState, ObjectProperty<DrawCardHandler> drawCardHandler) {
         List<StackPane> faceUpCards = new ArrayList<>();
 
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i){
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) {
             faceUpCards.add(createFaceUpCard(i, observableGameState, drawCardHandler));
         }
 
@@ -169,7 +172,7 @@ final class DecksViewCreator implements ActionHandlers {
     }
 
     //Creates a single Face-Up card
-    private static StackPane createFaceUpCard(int index, ObservableGameState observableGameState, ObjectProperty<DrawCardHandler> drawCardHandler){
+    private static StackPane createFaceUpCard(int index, ObservableGameState observableGameState, ObjectProperty<DrawCardHandler> drawCardHandler) {
         StackPane card = createCard(observableGameState.faceUpCard(index).get());
 
         observableGameState.faceUpCard(index).addListener((p, o, n) -> card.getStyleClass().setAll("card", (n == Card.LOCOMOTIVE) ? "NEUTRAL" : n.color().name()));

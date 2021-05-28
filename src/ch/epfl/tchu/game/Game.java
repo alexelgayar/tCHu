@@ -211,13 +211,13 @@ public final class Game {
         players.forEach(((playerId, player) -> playerLongestTrail.put(playerId, Trail.longest(gameState.playerState(playerId).routes()))));
 
         if (playerLongestTrail.get(PlayerId.PLAYER_1).length() > playerLongestTrail.get(PlayerId.PLAYER_2).length()) {
-            playerPoints.put(PlayerId.PLAYER_1, playerPoints.get(PlayerId.PLAYER_1) + 10);
+            playerPoints.put(PlayerId.PLAYER_1, playerPoints.get(PlayerId.PLAYER_1) + Constants.LONGEST_TRAIL_BONUS_POINTS);
             sendInformation(players, infos.get(PlayerId.PLAYER_1).getsLongestTrailBonus(playerLongestTrail.get(PlayerId.PLAYER_1)));
         } else if (playerLongestTrail.get(PlayerId.PLAYER_2).length() > playerLongestTrail.get(PlayerId.PLAYER_1).length()) {
-            playerPoints.put(PlayerId.PLAYER_2, playerPoints.get(PlayerId.PLAYER_2) + 10);
+            playerPoints.put(PlayerId.PLAYER_2, playerPoints.get(PlayerId.PLAYER_2) + Constants.LONGEST_TRAIL_BONUS_POINTS);
             sendInformation(players, infos.get(PlayerId.PLAYER_2).getsLongestTrailBonus(playerLongestTrail.get(PlayerId.PLAYER_2)));
         } else {
-            playerPoints.forEach(((playerId, score) -> playerPoints.put(playerId, playerPoints.get(playerId) + 10)));
+            playerPoints.forEach(((playerId, score) -> playerPoints.put(playerId, playerPoints.get(playerId) + Constants.LONGEST_TRAIL_BONUS_POINTS)));
             infos.forEach(((playerId, info) -> sendInformation(players, info.getsLongestTrailBonus(playerLongestTrail.get(playerId)))));
         }
 

@@ -104,4 +104,9 @@ public final class Constants {
      * Nombre de points bonus obtenus par le(s) joueur(s) disposant du plus long chemin.
      */
     public static final int LONGEST_TRAIL_BONUS_POINTS = 10;
+
+    /**
+     * The default port used by the game
+     */
+    public static final int DEFAULT_PORT = 5108;
 }

@@ -107,16 +107,19 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     }
 
     //1. PublicGameState Properties
+
     /**
      * Returns the percentage of tickets remaining in the pile
+     *
      * @return the percentage of tickets remaining in the pile
      */
-    public ReadOnlyIntegerProperty ticketsPercentage() { //TODO Clean up all the smaller methods
+    public ReadOnlyIntegerProperty ticketsPercentage() {
         return ticketsPercentage;
     }
 
     /**
      * Returns the percentage of cards remaining in the pile
+     *
      * @return the percentage of cards remaining in the pile
      */
     public ReadOnlyIntegerProperty cardsPercentage() {
@@ -125,6 +128,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns the face up card stored at the given slot
+     *
      * @param slot the index of the face-up card to return
      * @return the face up card stored at the given slot
      */
@@ -134,6 +138,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns the owner of the given route, otherwise null if the route is not owned
+     *
      * @param route the route whose owner will be returned
      * @return the owner of the given route, otherwise null if the route is not owned
      */
@@ -142,8 +147,10 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     }
 
     //2. PublicPlayerState Properties
+
     /**
      * Returns the number of tickets that the player has in their hand
+     *
      * @param id the identity of the player
      * @return the number of tickets that the player has in their hand
      */
@@ -153,6 +160,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns the number of cards that the player has in their hand
+     *
      * @param id the identity of the player
      * @return the number of cards that the player has in their hand
      */
@@ -162,6 +170,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns the number of cars that the player owns
+     *
      * @param id the identity of the player
      * @return the number of cars that the player owns
      */
@@ -171,6 +180,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns the number of claim points that the player has obtained
+     *
      * @param id the identity of the player
      * @return the number of claim points that the player has obtained
      */
@@ -179,8 +189,10 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     }
 
     //3. PlayerState Properties
+
     /**
      * Returns a list of the player tickets
+     *
      * @return the list of the player tickets
      */
     public ObservableList<Ticket> playerTickets() {
@@ -189,6 +201,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns the number of cards of each type that the player owns
+     *
      * @param card the card whose number is needed
      * @return the number of cards of each type that the player owns
      */
@@ -198,6 +211,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns true if the player has the necessary prerequisites to claim the route, else false
+     *
      * @param route the route that is desired to be claimed
      * @return true if the player has the necessary prerequisites to claim the route, else false
      */
@@ -206,8 +220,10 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     }
 
     //Additional methods
+
     /**
      * Returns whether it is possible to draw a ticket
+     *
      * @return whether it is possible to draw a ticket
      */
     public ReadOnlyBooleanProperty canDrawTickets() {
@@ -216,6 +232,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns whether it is possible to draw a card
+     *
      * @return whether it is possible to draw a card
      */
     public ReadOnlyBooleanProperty canDrawCards() {
@@ -224,6 +241,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
     /**
      * Returns a sortedBag of cards that the player can use to claim the given route
+     *
      * @param route the route that the player wishes to claim
      * @return a sortedBag of cards that the player can use to claim the given route
      */
@@ -235,7 +253,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     private static List<ObjectProperty<Card>> createFaceUpCards() {
         List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
         //TODO: How can I convert this to a normal for-loop
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>(null));
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>(null)); //TODO: Should the initialization values be constants
 
         return faceUpCards;
     }
