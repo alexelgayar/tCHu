@@ -38,7 +38,7 @@ public final class ServerMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();
-        ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT); //TODO: Do I need to set a try (similar to TestServer of Etape 8?
+        ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
 
         Map<PlayerId, Player> players = new HashMap<>();
         Map<PlayerId, String> playerNames = new HashMap<>();
@@ -48,7 +48,6 @@ public final class ServerMain extends Application {
         GraphicalPlayerAdapter graphicalPlayerAdapter = new GraphicalPlayerAdapter();
         RemotePlayerProxy remotePlayerProxy = new RemotePlayerProxy(serverSocket.accept());
 
-        //TODO: Is there a better way to write this code?
         players.put(PLAYER_1, graphicalPlayerAdapter);
         players.put(PLAYER_2, remotePlayerProxy);
 

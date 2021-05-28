@@ -15,7 +15,7 @@ import static ch.epfl.tchu.game.Constants.DEFAULT_PORT;
  */
 public final class ClientMain extends Application {
 
-    public static final int NBR_PARAM_ARGS = 2; //TODO: Should these be constants?
+    public static final int NBR_PARAM_ARGS = 2; //TODO: Make private constant
     public static final String LOCALHOST = "localhost";
 
     /**
@@ -31,10 +31,9 @@ public final class ClientMain extends Application {
      * Start method which calls the run method of the RemotePlayerClient
      *
      * @param primaryStage the primary stage
-     * @throws Exception an exception
      */
     @Override
-    public void start(Stage primaryStage) throws Exception { //TODO: Should an exception be thrown somewhere?
+    public void start(Stage primaryStage) {
         List<String> parameters = getParameters().getRaw();
 
         String name = (parameters.size() == NBR_PARAM_ARGS)
@@ -42,7 +41,7 @@ public final class ClientMain extends Application {
                 : LOCALHOST;
 
         int port = (parameters.size() == NBR_PARAM_ARGS)
-                ? Integer.parseInt(parameters.get(1)) //TODO: Should the index I take be hardcoded?
+                ? Integer.parseInt(parameters.get(1))
                 : DEFAULT_PORT;
 
         RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), name, port);

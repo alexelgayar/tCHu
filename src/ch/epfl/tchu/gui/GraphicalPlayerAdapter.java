@@ -19,7 +19,7 @@ import static javafx.application.Platform.runLater;
  */
 public final class GraphicalPlayerAdapter implements Player {
 
-    public static final int BLOCKING_QUEUE_MAX = 1;
+    private static final int BLOCKING_QUEUE_MAX = 1; //TODO: Make sure constants are private by default if not used outside
     private GraphicalPlayer graphicalPlayer;
 
     private final BlockingQueue<SortedBag<Ticket>> chosenTickets = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
@@ -79,10 +79,10 @@ public final class GraphicalPlayerAdapter implements Player {
             try {
                 chosenTickets.put(drawnTickets);
             } catch (InterruptedException e) {
-                throw new Error(); //TODO: Is there a way to modularise the try/catch for all the methods?
+                throw new Error();
             }
         }));
-    }
+    } //TODO: Define auxiliary methods -> Factors a bit of code
 
     /**
      * Blocks while waiting for the queue (also used by setInitialTicketChoice) contains a value, then returns this value
@@ -104,7 +104,7 @@ public final class GraphicalPlayerAdapter implements Player {
      * @return the value that is put inside the blocking queue (otherwise block if no value is contained)
      */
     @Override
-    public TurnKind nextTurn() { //TODO: Any way to clean this up?
+    public TurnKind nextTurn() { //TODO: Try modularise put and take
         runLater(() -> graphicalPlayer.startTurn(
                 () -> {
                     try {
@@ -156,7 +156,7 @@ public final class GraphicalPlayerAdapter implements Player {
      * @return Checks if queue contains a slot, if yes returns the slot else if not calls the method drawCard of the graphical player and returns the value of this
      */
     @Override
-    public int drawSlot() { //TODO: See if this can be optimized
+    public int drawSlot() { //TODO: Try auxiliary methods here for put and take
         if (chosenSlot.isEmpty()) {
             runLater(() -> graphicalPlayer.drawCard(slot -> {
                 try {
