@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static ch.epfl.tchu.gui.StringsFr.SPACE;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
@@ -67,7 +68,7 @@ public final class RemotePlayerClient {
 
             while ((s = r.readLine()) != null) {
 
-                String[] list = s.split(Pattern.quote(" "), -1);
+                String[] list = s.split(Pattern.quote(SPACE), -1);
 
                 switch (MessageId.valueOf(list[0])) {
                     case INIT_PLAYERS:

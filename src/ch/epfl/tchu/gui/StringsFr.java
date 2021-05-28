@@ -85,4 +85,10 @@ public final class StringsFr {
     public static String plural(int value) {
         return Math.abs(value) <= 1 ? "" : "s";
     }
+
+    /**
+     * Space separator
+     */
+    public static final String SPACE = " ";
+
 }

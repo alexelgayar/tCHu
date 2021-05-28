@@ -34,22 +34,6 @@ public final class GraphicalPlayerAdapter implements Player {
     public GraphicalPlayerAdapter() {
     }
 
-    private static <T> void putInQueue(BlockingQueue<T> queue, T object) {
-        try {
-            queue.put(object);
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
-    }
-
-    private static <T> T takeFromQueue(BlockingQueue<T> queue) {
-        try {
-            return queue.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
-    }
-
     /**
      * Creates an instance of a graphical player GraphicalPlayer, which is adapted. The instance is stored as an attribute to use in other methods.
      *
@@ -181,5 +165,24 @@ public final class GraphicalPlayerAdapter implements Player {
         runLater(() -> graphicalPlayer.chooseAdditionalCards(options, chosenCards -> putInQueue(chosenAdditionalClaimCards, chosenCards)));
 
         return takeFromQueue(chosenAdditionalClaimCards);
+    }
+
+
+    //Puts the given object into the given queue
+    private static <T> void putInQueue(BlockingQueue<T> queue, T object) {
+        try {
+            queue.put(object);
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
+    }
+
+    //Returns the object stored within the given queue, or blocks if none inside
+    private static <T> T takeFromQueue(BlockingQueue<T> queue) {
+        try {
+            return queue.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 }
