@@ -18,7 +18,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  */
 public final class RemotePlayerProxy implements Player {
 
-    private final Socket socket; //TODO: Unused variable
     private final BufferedReader r;
     private final BufferedWriter w;
 
@@ -28,7 +27,6 @@ public final class RemotePlayerProxy implements Player {
      * @param socket the socket used to communicate with the player
      */
     public RemotePlayerProxy(Socket socket) {
-        this.socket = socket;
         try {
             r = new BufferedReader(
                     new InputStreamReader(socket.getInputStream(), US_ASCII));
