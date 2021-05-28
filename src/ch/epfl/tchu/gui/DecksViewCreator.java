@@ -136,7 +136,8 @@ final class DecksViewCreator implements ActionHandlers {
     private static StackPane createCard(Card card) {
         StackPane stackPane = new StackPane();
 
-        if (card != null) stackPane.getStyleClass().addAll("card", (card == Card.LOCOMOTIVE) ? "NEUTRAL" : card.color().name());
+        if (card != null)
+            stackPane.getStyleClass().addAll("card", (card == Card.LOCOMOTIVE) ? "NEUTRAL" : card.color().name());
 
         Rectangle outside = new Rectangle(OUTSIDE_RECT_W, OUTSIDE_RECT_H);
         outside.getStyleClass().add("outside");

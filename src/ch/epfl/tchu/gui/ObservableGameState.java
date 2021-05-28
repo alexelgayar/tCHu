@@ -98,9 +98,9 @@ public final class ObservableGameState {
 
             playerCanClaimRoute.get(route).set(
                     playerState.canClaimRoute(route)
-                    && publicGameState.currentPlayerId() == playerId
-                    && routes.get(route).get() == null
-                    && routeDoubleNotOwned);
+                            && publicGameState.currentPlayerId() == playerId
+                            && routes.get(route).get() == null
+                            && routeDoubleNotOwned);
         }
     }
 

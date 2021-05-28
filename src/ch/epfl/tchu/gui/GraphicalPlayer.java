@@ -19,8 +19,10 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 import java.util.List;
 import java.util.Map;
+
 import ch.epfl.tchu.gui.ActionHandlers.*;
 import javafx.util.StringConverter;
 
@@ -47,7 +49,8 @@ public final class GraphicalPlayer {
 
     /**
      * Constructor for a GraphicalPlayer that creates the graphical interface
-     * @param id the id of the player to which the interface corresponds
+     *
+     * @param id          the id of the player to which the interface corresponds
      * @param playerNames map that maps the players' Ids to their names
      */
     public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames) {
@@ -74,7 +77,7 @@ public final class GraphicalPlayer {
     /**
      * Updates all the values of the observableGameState attributes
      *
-     * @param newGameState the updated version of the gameState
+     * @param newGameState   the updated version of the gameState
      * @param newPlayerState the updated version of the player state
      */
     public void setState(PublicGameState newGameState, PlayerState newPlayerState) {
@@ -85,6 +88,7 @@ public final class GraphicalPlayer {
     /**
      * Updates the InfoView when a new text in received by adding the message to the bottom and making
      * sure that the list doesn't exceed 5 messages
+     *
      * @param message the new message that is received
      */
     public void receiveInfo(String message) {
@@ -96,26 +100,27 @@ public final class GraphicalPlayer {
 
     /**
      * Lets a player perform one of the three permitted action during their turn
+     *
      * @param ticketsHandler handler that is used to draw tickets
-     * @param cardHandler handler that is used to draw cards
-     * @param routeHandler handler that is used to claim routes
+     * @param cardHandler    handler that is used to draw cards
+     * @param routeHandler   handler that is used to claim routes
      */
     public void startTurn(DrawTicketsHandler ticketsHandler, DrawCardHandler cardHandler, ClaimRouteHandler routeHandler) {
         assert isFxApplicationThread();
 
-        if(gameState.canDrawTickets().get()){
-            drawTicketHandler.set( () -> {
+        if (gameState.canDrawTickets().get()) {
+            drawTicketHandler.set(() -> {
                 setNull();
                 ticketsHandler.onDrawTickets();
-            } );
+            });
         }
 
-        if(gameState.canDrawCards().get()){
-            drawCardHandler.set( (int i) -> {
+        if (gameState.canDrawCards().get()) {
+            drawCardHandler.set((int i) -> {
                 setNull();
                 cardHandler.onDrawCard(i);
                 drawCard(cardHandler);
-            } );
+            });
         }
 
         claimRouteHandler.set((route, claimCards) -> {
@@ -127,7 +132,8 @@ public final class GraphicalPlayer {
 
     /**
      * Open a window to let the player choose the tickets that they want to keep
-     * @param tickets all the tickets that the player can choose from
+     *
+     * @param tickets        all the tickets that the player can choose from
      * @param ticketsHandler handler that is called with the chosen tickets as an argument
      */
     public void chooseTickets(SortedBag<Ticket> tickets, ChooseTicketsHandler ticketsHandler) {
@@ -157,6 +163,7 @@ public final class GraphicalPlayer {
 
     /**
      * Called that is called when a player chooses to draw cards, letting them draw a second one
+     *
      * @param cardHandler handler that is called with the drawn card slot as an argument
      */
     public void drawCard(DrawCardHandler cardHandler) {
@@ -170,7 +177,8 @@ public final class GraphicalPlayer {
 
     /**
      * Opens a window to let player choose with which cards they want to claim a route
-     * @param bagList list containing all sorted bags of cards the player could claim the route with
+     *
+     * @param bagList      list containing all sorted bags of cards the player could claim the route with
      * @param cardsHandler handler that is called with the player's choice as an argument
      */
     public void chooseClaimCards(List<SortedBag<Card>> bagList, ChooseCardsHandler cardsHandler) {
@@ -195,7 +203,8 @@ public final class GraphicalPlayer {
 
     /**
      * Opens a window to let player choose with which additional cards they want to claim an underground route
-     * @param bagList list containing all sorted bags of additional cards the player could claim the route with
+     *
+     * @param bagList      list containing all sorted bags of additional cards the player could claim the route with
      * @param cardsHandler handler that is called with the player's choice as an argument
      */
     public void chooseAdditionalCards(List<SortedBag<Card>> bagList, ChooseCardsHandler cardsHandler) {
@@ -218,7 +227,7 @@ public final class GraphicalPlayer {
         createPane(stage, StringsFr.CARDS_CHOICE, message, button, listView);
     }
 
-    private static ListView<SortedBag<Card>> createCardsListView(List<SortedBag<Card>> bagList){
+    private static ListView<SortedBag<Card>> createCardsListView(List<SortedBag<Card>> bagList) {
         ObservableList<SortedBag<Card>> observableList = observableArrayList(bagList);
         ListView<SortedBag<Card>> listView = new ListView<>(observableList);
         listView.setCellFactory(v ->
@@ -263,6 +272,7 @@ public final class GraphicalPlayer {
 
         /**
          * Converts a sorted bag of cards to a string
+         *
          * @param object sorted bag to be converted
          * @return string corresponding to the sorted bag passed as an argument
          */

@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Anirudhh Ramesh (329806)
  * Non-instantiable class, represents the creator for the information view
  */
- final class InfoViewCreator {
+final class InfoViewCreator {
 
     private InfoViewCreator() {
     }

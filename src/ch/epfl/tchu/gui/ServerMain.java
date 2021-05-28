@@ -20,6 +20,9 @@ import static ch.epfl.tchu.game.Constants.DEFAULT_PORT;
 
 public final class ServerMain extends Application {
 
+    private static final String DEFAULT_PLAYER_1 = "Ada";
+    private static final String DEFAULT_PLAYER_2 = "Charles";
+
     /**
      * The main method of ServerMain
      *
@@ -52,10 +55,10 @@ public final class ServerMain extends Application {
         players.put(PLAYER_2, remotePlayerProxy);
 
         playerNames.put(PLAYER_1, (parameters.isEmpty())
-                ? "Ada"
+                ? DEFAULT_PLAYER_1
                 : parameters.get(0));
         playerNames.put(PLAYER_2, (parameters.isEmpty())
-                ? "Charles"
+                ? DEFAULT_PLAYER_2
                 : parameters.get(1));
 
         new Thread(() -> Game.play(players, playerNames, tickets, rng)).start();

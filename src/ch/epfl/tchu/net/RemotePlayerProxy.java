@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static ch.epfl.tchu.gui.StringsFr.SPACE;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
@@ -71,7 +72,7 @@ public final class RemotePlayerProxy implements Player {
         List<String> names = new ArrayList<>();
         playerNames.forEach((playerId, name) -> names.add(name));
 
-        sendMessage(String.join(" ",
+        sendMessage(String.join(SPACE,
                 MessageId.INIT_PLAYERS.name(),
                 Serdes.PLAYER_ID_SERDE.serialize(ownId),
                 Serdes.STRING_LIST_SERDE.serialize(names)));
@@ -86,7 +87,7 @@ public final class RemotePlayerProxy implements Player {
     @Override
     public void receiveInfo(String info) {
 
-        sendMessage(String.join(" ",
+        sendMessage(String.join(SPACE,
                 MessageId.RECEIVE_INFO.name(),
                 Serdes.STRING_SERDE.serialize(info)));
 
@@ -101,7 +102,7 @@ public final class RemotePlayerProxy implements Player {
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
 
-        sendMessage(String.join(" ",
+        sendMessage(String.join(SPACE,
                 MessageId.UPDATE_STATE.name(),
                 Serdes.PUBLIC_GAME_STATE_SERDE.serialize(newState),
                 Serdes.PLAYER_STATE_SERDE.serialize(ownState)
@@ -117,7 +118,7 @@ public final class RemotePlayerProxy implements Player {
     @Override
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
 
-        sendMessage(String.join(" ",
+        sendMessage(String.join(SPACE,
                 MessageId.SET_INITIAL_TICKETS.name(),
                 Serdes.TICKET_BAG_SERDE.serialize(tickets)));
 
@@ -153,7 +154,7 @@ public final class RemotePlayerProxy implements Player {
      */
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
-        sendMessage(String.join(" ",
+        sendMessage(String.join(SPACE,
                 MessageId.CHOOSE_TICKETS.name(),
                 Serdes.TICKET_BAG_SERDE.serialize(options)));
         return Serdes.TICKET_BAG_SERDE.deserialize(receiveMessage());
@@ -200,7 +201,7 @@ public final class RemotePlayerProxy implements Player {
      */
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        sendMessage(String.join(" ",
+        sendMessage(String.join(SPACE,
                 MessageId.CHOOSE_ADDITIONAL_CARDS.name(),
                 Serdes.CARD_BAG_LIST_SERDE.serialize(options)));
         return Serdes.CARD_BAG_SERDE.deserialize(receiveMessage());
