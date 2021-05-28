@@ -15,8 +15,8 @@ import static ch.epfl.tchu.game.Constants.DEFAULT_PORT;
  */
 public final class ClientMain extends Application {
 
-    public static final int NBR_PARAM_ARGS = 2; //TODO: Make private constant
-    public static final String LOCALHOST = "localhost";
+    private static final int NBR_PARAM_ARGS = 2;
+    private static final String LOCALHOST = "localhost";
 
     /**
      * The main method of ClientMain

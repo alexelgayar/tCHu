@@ -3,6 +3,9 @@ package ch.epfl.tchu.gui;
 public final class StringsFr {
     private StringsFr() {}
 
+    // Name of the game
+    public static final String T_CHU = "tCHu";
+
     // Nom des cartes
     public static final String BLACK_CARD = "noire";
     public static final String BLUE_CARD = "bleue";

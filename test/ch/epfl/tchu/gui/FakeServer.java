@@ -9,7 +9,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class FakeServer {
     // Messages d'exemple de la §2.1 de l'étape 7
-    private static final List<String> MESSAGES = List.of( //TODO: Nothing appears when I run this code
+    private static final List<String> MESSAGES = List.of(
             "INIT_PLAYERS 0 QWRh,Q2hhcmxlcw==",
             "RECEIVE_INFO QWRhIGpvdWVyYSBlbiBwcmVtaWVyLgoK",
             "SET_INITIAL_TICKETS 6,1,44,42,42",
