@@ -1,6 +1,5 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.net.RemotePlayerClient;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -35,7 +34,7 @@ public final class ClientMain extends Application {
      * @throws Exception an exception
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception { //TODO: Should an exception be thrown somewhere?
         List<String> parameters = getParameters().getRaw();
 
         String name = (parameters.size() == NBR_PARAM_ARGS)
