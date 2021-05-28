@@ -242,7 +242,7 @@ public final class Serdes {
                     PlayerId.PLAYER_2, PUBLIC_PLAYER_STATE_SERDE.deserialize(s[4]));
 
             return new PublicGameState(
-                    INT_SERDE.deserialize(s[0]), //TODO: Check whether these should all use fixed indices?
+                    INT_SERDE.deserialize(s[0]),
                     PUBLIC_CARD_STATE_SERDE.deserialize(s[1]),
                     PLAYER_ID_SERDE.deserialize(s[2]),
                     playerState,

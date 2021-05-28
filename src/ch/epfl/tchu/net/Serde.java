@@ -93,7 +93,7 @@ public interface Serde<E> {
             @Override
             public List<T> deserialize(String serializedObject) {
 
-                if(serializedObject.equals("")){ //TODO: Can this not be simplified?
+                if(serializedObject.equals("")){
                     return new ArrayList<>();
                 }
                 else {

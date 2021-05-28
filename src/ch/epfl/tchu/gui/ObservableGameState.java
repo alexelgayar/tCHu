@@ -21,7 +21,7 @@ import static ch.epfl.tchu.game.Constants.*;
 public final class ObservableGameState {
     private PublicGameState publicGameState;
     private PlayerState playerState;
-    private final PlayerId playerId; //TODO: Is this playerId necessary?
+    private final PlayerId playerId;
 
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
@@ -62,7 +62,7 @@ public final class ObservableGameState {
         playerState = newPlayerState;
 
         //1. Public Game State
-        ticketsPercentage.set((HUNDRED_PERCENT * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT); //TODO: Should this be iterated through each player?
+        ticketsPercentage.set((HUNDRED_PERCENT * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT);
         cardsPercentage.set((HUNDRED_PERCENT * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
 
         for (int slot : FACE_UP_CARD_SLOTS) {
@@ -89,18 +89,15 @@ public final class ObservableGameState {
 
         playerCardTypeCount.forEach((card, count) -> playerCardTypeCount.get(card).set(playerState.cards().countOf(card)));
 
-        //TODO: Use collection API using lambdas?
         for (Route route : routes.keySet()) {
             boolean routeDoubleNotOwned = true;
 
             for (Route w : routes.keySet()) {
-                if (w.id().equals(route.id())) continue;
-                if (w.stations().containsAll(route.stations())) {
-                    routeDoubleNotOwned = routes.get(w).get() == null;
-                }
+                if (w.stations().containsAll(route.stations())) routeDoubleNotOwned = routes.get(w).get() == null;
             }
 
-            playerCanClaimRoute.get(route).set(playerState.canClaimRoute(route)
+            playerCanClaimRoute.get(route).set(
+                    playerState.canClaimRoute(route)
                     && publicGameState.currentPlayerId() == playerId
                     && routes.get(route).get() == null
                     && routeDoubleNotOwned);

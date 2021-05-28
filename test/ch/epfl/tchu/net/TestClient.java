@@ -71,7 +71,6 @@ public final class TestClient {
 
         @Override
         public int drawSlot() {
-            // TODO Auto-generated method stub
             return 3;
         }
 
@@ -82,14 +81,12 @@ public final class TestClient {
 
         @Override
         public SortedBag<Card> initialClaimCards() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public SortedBag<Card> chooseAdditionalCards(
                 List<SortedBag<Card>> options) {
-            // TODO Auto-generated method stub
             return null;
         }
 

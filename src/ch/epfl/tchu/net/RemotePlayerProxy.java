@@ -66,7 +66,7 @@ public final class RemotePlayerProxy implements Player {
      * @param playerNames Map that maps each player's Id to their name
      */
     @Override
-    public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) { //TODO: Should all these methods be public?
+    public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
 
         List<String> names = new ArrayList<>();
         playerNames.forEach((playerId, name) -> names.add(name));
