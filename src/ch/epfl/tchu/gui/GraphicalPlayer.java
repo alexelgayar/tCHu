@@ -130,7 +130,8 @@ public final class GraphicalPlayer {
 
         Stage stage = new Stage(StageStyle.UTILITY);
 
-        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, StringsFr.plural(tickets.size() - 2));
+        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT,
+                StringsFr.plural(tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT));
 
         ObservableList<Ticket> observableList = observableArrayList(tickets.toList());
         ListView<Ticket> listView = new ListView<>(observableList);

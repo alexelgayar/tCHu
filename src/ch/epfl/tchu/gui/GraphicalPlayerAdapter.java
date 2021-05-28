@@ -2,11 +2,9 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
-import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -34,6 +32,22 @@ public final class GraphicalPlayerAdapter implements Player {
      * Constructor for GraphicalPlayerAdapter
      */
     public GraphicalPlayerAdapter() {
+    }
+
+    private static <T> void putInQueue(BlockingQueue<T> queue, T object) {
+        try {
+            queue.put(object);
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
+    }
+
+    private static <T> T takeFromQueue(BlockingQueue<T> queue) {
+        try {
+            return queue.take();
+        } catch (InterruptedException e) {
+            throw new Error();
+        }
     }
 
     /**
@@ -75,14 +89,8 @@ public final class GraphicalPlayerAdapter implements Player {
      */
     @Override
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
-        runLater(() -> graphicalPlayer.chooseTickets(tickets, drawnTickets -> {
-            try {
-                chosenTickets.put(drawnTickets);
-            } catch (InterruptedException e) {
-                throw new Error();
-            }
-        }));
-    } //TODO: Define auxiliary methods -> Factors a bit of code
+        runLater(() -> graphicalPlayer.chooseTickets(tickets, drawnTickets -> putInQueue(chosenTickets, drawnTickets)));
+    }
 
     /**
      * Blocks while waiting for the queue (also used by setInitialTicketChoice) contains a value, then returns this value
@@ -91,11 +99,7 @@ public final class GraphicalPlayerAdapter implements Player {
      */
     @Override
     public SortedBag<Ticket> chooseInitialTickets() {
-        try {
-            return chosenTickets.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
+        return takeFromQueue(chosenTickets);
     }
 
     /**
@@ -104,38 +108,21 @@ public final class GraphicalPlayerAdapter implements Player {
      * @return the value that is put inside the blocking queue (otherwise block if no value is contained)
      */
     @Override
-    public TurnKind nextTurn() { //TODO: Try modularise put and take
-        runLater(() -> graphicalPlayer.startTurn(
-                () -> {
-                    try {
-                        turnKindQueue.put(TurnKind.DRAW_TICKETS);
-                    } catch (InterruptedException e) {
-                        throw new Error();
-                    }
-                },
+    public TurnKind nextTurn() {
+        runLater(() -> graphicalPlayer.startTurn(() -> putInQueue(turnKindQueue, TurnKind.DRAW_TICKETS),
+
                 slot -> {
-                    try {
-                        turnKindQueue.put(TurnKind.DRAW_CARDS);
-                        chosenSlot.put(slot);
-                    } catch (InterruptedException e) {
-                        throw new Error();
-                    }
+                    putInQueue(turnKindQueue, TurnKind.DRAW_CARDS);
+                    putInQueue(chosenSlot, slot);
                 },
+
                 (route, claimCards) -> {
-                    try {
-                        turnKindQueue.put(TurnKind.CLAIM_ROUTE);
-                        chosenRoute.put(route);
-                        chosenClaimCards.put(claimCards);
-                    } catch (InterruptedException e) {
-                        throw new Error();
-                    }
+                    putInQueue(turnKindQueue, TurnKind.CLAIM_ROUTE);
+                    putInQueue(chosenRoute, route);
+                    putInQueue(chosenClaimCards, claimCards);
                 }));
 
-        try {
-            return turnKindQueue.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
+        return takeFromQueue(turnKindQueue);
     }
 
     /**
@@ -156,22 +143,11 @@ public final class GraphicalPlayerAdapter implements Player {
      * @return Checks if queue contains a slot, if yes returns the slot else if not calls the method drawCard of the graphical player and returns the value of this
      */
     @Override
-    public int drawSlot() { //TODO: Try auxiliary methods here for put and take
+    public int drawSlot() {
         if (chosenSlot.isEmpty()) {
-            runLater(() -> graphicalPlayer.drawCard(slot -> {
-                try {
-                    chosenSlot.put(slot);
-                } catch (InterruptedException e) {
-                    throw new Error();
-                }
-            }));
+            runLater(() -> graphicalPlayer.drawCard(slot -> putInQueue(chosenSlot, slot)));
         }
-
-        try {
-            return chosenSlot.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
+        return takeFromQueue(chosenSlot);
     }
 
     /**
@@ -181,11 +157,7 @@ public final class GraphicalPlayerAdapter implements Player {
      */
     @Override
     public Route claimedRoute() {
-        try {
-            return chosenRoute.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
+        return takeFromQueue(chosenRoute);
     }
 
     /**
@@ -195,11 +167,7 @@ public final class GraphicalPlayerAdapter implements Player {
      */
     @Override
     public SortedBag<Card> initialClaimCards() {
-        try {
-            return chosenClaimCards.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
+        return takeFromQueue(chosenClaimCards);
     }
 
     /**
@@ -210,18 +178,8 @@ public final class GraphicalPlayerAdapter implements Player {
      */
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        runLater(() -> graphicalPlayer.chooseAdditionalCards(options, chosenCards -> {
-            try {
-                chosenAdditionalClaimCards.put(chosenCards);
-            } catch (InterruptedException e) {
-                throw new Error();
-            }
-        }));
+        runLater(() -> graphicalPlayer.chooseAdditionalCards(options, chosenCards -> putInQueue(chosenAdditionalClaimCards, chosenCards)));
 
-        try {
-            return chosenAdditionalClaimCards.take();
-        } catch (InterruptedException e) {
-            throw new Error();
-        }
+        return takeFromQueue(chosenAdditionalClaimCards);
     }
 }
