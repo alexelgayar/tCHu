@@ -71,14 +71,14 @@ public interface Serde<E> {
      * @param <T> the parameter of the type of the method
      * @return a serde capable of (de)serializing the list of values (de)serialized by the given separator and serde
      */
-    static <T> Serde<List<T>> listOf(Serde<T> serde, String separator) { //TODO: Check all the warnings and fix them
+    static <T> Serde<List<T>> listOf(Serde<T> serde, String separator) {
 
-        return new Serde<>() { //TODO: Is all the greyed stuff necessary?
+        return new Serde<>() {
 
             @Override
             public String serialize(List<T> list) {
 
-                if(list.isEmpty()){ //TODO: Can this not be simplified?
+                if(list.isEmpty()){
                     return "";
                 }
                 else {
@@ -117,7 +117,7 @@ public interface Serde<E> {
      * @param <T> the parameter of the type of the method
      * @return a serde capable of (de)serializing the SortedBag of values (de)serialized by the given separator and serde
      */
-    static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> serde, String separator) { //TODO: Fix warnings
+    static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> serde, String separator) {
 
         return new Serde<>() {
 
