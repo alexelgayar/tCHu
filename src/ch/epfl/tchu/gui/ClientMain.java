@@ -1,10 +1,13 @@
 package ch.epfl.tchu.gui;
 
+import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.net.RemotePlayerClient;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.util.List;
+
+import static ch.epfl.tchu.game.Constants.DEFAULT_PORT;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -14,19 +17,20 @@ import java.util.List;
 public final class ClientMain extends Application {
 
     public static final int NBR_PARAM_ARGS = 2; //TODO: Should these be constants?
-    public static final int DEFAULT_PORT = 5108;
     public static final String LOCALHOST = "localhost";
 
     /**
      * The main method of ClientMain
+     *
      * @param args the program arguments of ClientMain
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 
     /**
      * Start method which calls the run method of the RemotePlayerClient
+     *
      * @param primaryStage the primary stage
      * @throws Exception an exception
      */
@@ -39,12 +43,11 @@ public final class ClientMain extends Application {
                 : LOCALHOST;
 
         int port = (parameters.size() == NBR_PARAM_ARGS)
-                ? Integer.parseInt(parameters.get(1))
-                : DEFAULT_PORT;//TODO: Should this be hardcoded
+                ? Integer.parseInt(parameters.get(1)) //TODO: Should the index I take be hardcoded?
+                : DEFAULT_PORT;
 
-        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), name, port);//TODO: Should the index I take be hardcoded?
+        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), name, port);
 
-        System.out.println("Running remotePlayerClient with host: " + name + " port: " + port);
-        new Thread(remotePlayerClient::run).start(); //TODO: Do I run the RemotePlayerClient on a new thread?
+        new Thread(remotePlayerClient::run).start();
     }
 }

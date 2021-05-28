@@ -47,13 +47,13 @@ final class TestServer {
             var id = "id";
 
             var emptyPlayerState = new PlayerState(SortedBag.of(), SortedBag.of(), List.of());
-            playerProxy.setInitialTicketChoice(SortedBag.of(2,ChMap.tickets().get(0),3,ChMap.tickets().get(4)));
+            playerProxy.setInitialTicketChoice(SortedBag.of(2, ChMap.tickets().get(0), 3, ChMap.tickets().get(4)));
 
             System.out.println(playerProxy.nextTurn());
             System.out.println(playerProxy.chooseInitialTickets());
-            System.out.println(playerProxy.chooseTickets(SortedBag.of(1,ChMap.tickets().get(0),3,ChMap.tickets().get(3))));
+            System.out.println(playerProxy.chooseTickets(SortedBag.of(1, ChMap.tickets().get(0), 3, ChMap.tickets().get(3))));
             System.out.println(playerProxy.drawSlot());
-           System.out.println(playerProxy.claimedRoute().station1().name()+" -> " + playerProxy.claimedRoute().station2().name());
+            System.out.println(playerProxy.claimedRoute().station1().name() + " -> " + playerProxy.claimedRoute().station2().name());
         }
         System.out.println("Server done!");
     }

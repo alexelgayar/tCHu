@@ -3,13 +3,11 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
-import ch.epfl.tchu.net.RemotePlayerClient;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,25 +16,29 @@ import java.util.Random;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
-public class ServerMain extends Application { //TODO: I don't get anything when I run ServerMain
+import static ch.epfl.tchu.game.Constants.DEFAULT_PORT;
+
+public class ServerMain extends Application {
 
     /**
      * The main method of ServerMain
+     *
      * @param args the program arguments of ServerMain
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 
     /**
      * Start method which calls the play method of the Game
+     *
      * @param primaryStage the primary stage
      * @throws Exception an exception
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
         List<String> parameters = getParameters().getRaw();
-        ServerSocket serverSocket = new ServerSocket(5108); //TODO: Do I need to set a try (similar to TestServer of Etape 8?
+        ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT); //TODO: Do I need to set a try (similar to TestServer of Etape 8?
 
         Map<PlayerId, Player> players = new HashMap<>();
         Map<PlayerId, String> playerNames = new HashMap<>();
@@ -57,8 +59,6 @@ public class ServerMain extends Application { //TODO: I don't get anything when 
                 ? "Charles"
                 : parameters.get(1));
 
-        System.out.println("Test");
-        playerNames.forEach((playerId, playerName) -> System.out.println("playerId: " + playerId + "  playerName: " + playerName));
-        new Thread(()-> Game.play(players, playerNames, tickets, rng)).start();
+        new Thread(() -> Game.play(players, playerNames, tickets, rng)).start();
     }
 }

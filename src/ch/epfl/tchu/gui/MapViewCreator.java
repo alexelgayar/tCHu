@@ -24,19 +24,28 @@ import static ch.epfl.tchu.game.Route.Level.OVERGROUND;
  */
 final class MapViewCreator implements ActionHandlers {
 
+    public static final int ROUTE_AUTOCLAIM_VALUE = 1;
+
     private static final int RECT_WIDTH = 36;
     private static final int RECT_HEIGHT = 12;
 
     private static final int CIRCLE_RADIUS = 3;
+
+    public static final int C1_CENTER_X = 12;
+    public static final int C1_CENTER_Y = 6;
+
+    public static final int C2_CENTER_X = 24;
+    public static final int C2_CENTER_Y = 6;
 
     private MapViewCreator() {
     }
 
     /**
      * Constructs and returns the pane view of the map
+     *
      * @param observableGameState the observable game state
-     * @param claimRouteHandler the action handler for when the player attempts to claim a route
-     * @param cardChooser a card chooser to claim a route
+     * @param claimRouteHandler   the action handler for when the player attempts to claim a route
+     * @param cardChooser         a card chooser to claim a route
      * @return the pane view of the map
      */
     public static Pane createMapView(ObservableGameState observableGameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser) {
@@ -99,7 +108,7 @@ final class MapViewCreator implements ActionHandlers {
     }
 
     //Creates a list of route cases
-    private static List<Group> createCases(Route route){
+    private static List<Group> createCases(Route route) {
         List<Group> caseGroups = new ArrayList<>();
 
         for (int i = 1; i <= route.length(); ++i) {
@@ -122,14 +131,14 @@ final class MapViewCreator implements ActionHandlers {
     }
 
     //Creates a wagon
-    private static Group createWagon(){
+    private static Group createWagon() {
         Group wagon = new Group();
         wagon.getStyleClass().add("car");
 
         Rectangle r = new Rectangle(RECT_WIDTH, RECT_HEIGHT);
         r.getStyleClass().add("filled");
-        Circle c1 = new Circle(12, 6, CIRCLE_RADIUS);
-        Circle c2 = new Circle(24, 6, CIRCLE_RADIUS);
+        Circle c1 = new Circle(C1_CENTER_X, C1_CENTER_Y, CIRCLE_RADIUS);
+        Circle c2 = new Circle(C2_CENTER_X, C2_CENTER_Y, CIRCLE_RADIUS);
 
         wagon.getChildren().addAll(r, c1, c2);
         return wagon;
@@ -138,7 +147,7 @@ final class MapViewCreator implements ActionHandlers {
     private static void pickClaimCards(ObservableGameState observableGameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser) {
         List<SortedBag<Card>> possibleClaimCards = observableGameState.possibleClaimCards(route);
 
-        if (possibleClaimCards.size() == 1) { //TODO: Any way to clean this up?
+        if (possibleClaimCards.size() == ROUTE_AUTOCLAIM_VALUE) { //TODO: Any way to clean this up?
             claimRouteH.get().onClaimRoute(route, possibleClaimCards.get(0));
         } else {
             ChooseCardsHandler chooseCardsH = chosenCards -> claimRouteH.get().onClaimRoute(route, chosenCards);

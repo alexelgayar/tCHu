@@ -16,7 +16,7 @@ public interface ActionHandlers {
      * The handler for when a player draws a ticket
      */
     @FunctionalInterface
-    interface DrawTicketsHandler{
+    interface DrawTicketsHandler {
         void onDrawTickets();
     }
 
@@ -24,7 +24,7 @@ public interface ActionHandlers {
      * The handler for when a player draws a card
      */
     @FunctionalInterface
-    interface DrawCardHandler{
+    interface DrawCardHandler {
         void onDrawCard(int slot);
     }
 
@@ -32,7 +32,7 @@ public interface ActionHandlers {
      * The handler for when a player (tries to) claims a route
      */
     @FunctionalInterface
-    interface ClaimRouteHandler{
+    interface ClaimRouteHandler {
         void onClaimRoute(Route route, SortedBag<Card> claimCards);
     }
 
@@ -40,7 +40,7 @@ public interface ActionHandlers {
      * The handler for when a player chooses the tickets
      */
     @FunctionalInterface
-    interface ChooseTicketsHandler{
+    interface ChooseTicketsHandler {
         void onChooseTickets(SortedBag<Ticket> drawnTickets);
     }
 
@@ -48,7 +48,7 @@ public interface ActionHandlers {
      * The handler for when a player choose the initial/additional cards they will use
      */
     @FunctionalInterface
-    interface ChooseCardsHandler{
+    interface ChooseCardsHandler {
         void onChooseCards(SortedBag<Card> drawnCards);
     }
 }
