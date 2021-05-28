@@ -97,7 +97,7 @@ public interface Serde<E> {
                     return new ArrayList<>();
                 }
                 else {
-                    String[] s = serializedObject.split(Pattern.quote(separator), -1); //TODO: Add a constant here?
+                    String[] s = serializedObject.split(Pattern.quote(separator), -1);
                     List<T> tList = new ArrayList<>();
 
                     for(String string: s){
