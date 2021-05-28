@@ -20,17 +20,19 @@ import java.util.Map;
  */
 public final class InfoViewCreator {
 
-    private InfoViewCreator(){}
+    private InfoViewCreator() {
+    }
 
     /**
      * Method that creates the info view
-     * @param playerId the id of the player for which the info view is associated
+     *
+     * @param playerId    the id of the player for which the info view is associated
      * @param playerNames map that maps the players' Ids to their names
-     * @param gameState the observable game state of the current game
-     * @param textList list containing the text that will show up in the InfoView
+     * @param gameState   the observable game state of the current game
+     * @param textList    list containing the text that will show up in the InfoView
      * @return Vbox of the InfoView
      */
-    public static VBox createInfoView(PlayerId playerId, Map<PlayerId, String> playerNames, ObservableGameState gameState, ObservableList<Text> textList){
+    public static VBox createInfoView(PlayerId playerId, Map<PlayerId, String> playerNames, ObservableGameState gameState, ObservableList<Text> textList) {
 
         VBox main = new VBox();
         main.getStylesheets().addAll("info.css", "colors.css");
@@ -44,7 +46,6 @@ public final class InfoViewCreator {
         Separator separator = new Separator();
         separator.setOrientation(Orientation.HORIZONTAL);
 
-
         TextFlow textFlow = new TextFlow();
         textFlow.setId("game-info");
 
@@ -55,7 +56,7 @@ public final class InfoViewCreator {
         return main;
     }
 
-    private static void createPlayerStats(PlayerId id,Map<PlayerId, String> playerNames, ObservableGameState gameState, VBox playerStats){
+    private static void createPlayerStats(PlayerId id, Map<PlayerId, String> playerNames, ObservableGameState gameState, VBox playerStats) {
 
         TextFlow playerTextFlow = new TextFlow();
         playerTextFlow.getStyleClass().addAll(id.name());

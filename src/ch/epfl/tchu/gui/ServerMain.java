@@ -18,7 +18,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 import static ch.epfl.tchu.game.Constants.DEFAULT_PORT;
 
-public class ServerMain extends Application {
+public final class ServerMain extends Application {
 
     /**
      * The main method of ServerMain
