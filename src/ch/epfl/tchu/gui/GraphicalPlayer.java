@@ -41,6 +41,9 @@ public final class GraphicalPlayer {
     private final SimpleObjectProperty<ClaimRouteHandler> claimRouteHandler;
     private final SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler;
     private final SimpleObjectProperty<DrawCardHandler> drawCardHandler;
+    private static final int MAX_TEXT_SIZE = 5;
+    private static final int REQUIRED_CARD_CHOICE_VALUE = 1;
+
 
     /**
      * Constructor for a GraphicalPlayer that creates the graphical interface
@@ -87,7 +90,7 @@ public final class GraphicalPlayer {
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
 
-        if (textList.size() == 5) textList.remove(0); //TODO: Name constant
+        if (textList.size() == MAX_TEXT_SIZE) textList.remove(0);
         textList.add(new Text(message));
     }
 
@@ -132,7 +135,8 @@ public final class GraphicalPlayer {
 
         Stage stage = new Stage(StageStyle.UTILITY);
 
-        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, StringsFr.plural(tickets.size() - 2)); //TODO: Name constants
+        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT,
+                StringsFr.plural(tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT));
 
         ObservableList<Ticket> observableList = observableArrayList(tickets.toList());
         ListView<Ticket> listView = new ListView<>(observableList);
@@ -141,7 +145,7 @@ public final class GraphicalPlayer {
         Button button = new Button();
 
         button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems())
-                .lessThan(tickets.size() - 2)); //TODO: Name constants
+                .lessThan(tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT));
 
         button.setOnAction(e -> {
             stage.hide();
@@ -179,7 +183,7 @@ public final class GraphicalPlayer {
         ListView<SortedBag<Card>> listView = createCardsListView(bagList);
 
         Button button = new Button();
-        button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems()).lessThan(1)); //TODO: Name Constants, Constants.DISCARDABLE_TICKETS_COUNT?
+        button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems()).lessThan(REQUIRED_CARD_CHOICE_VALUE));
 
         button.setOnAction(e -> {
             stage.hide();
