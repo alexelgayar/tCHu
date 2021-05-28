@@ -31,22 +31,22 @@ public interface Serde<E> {
 
     /**
      * Returns the serde corresponding to the given serialisation and deserialization function
-     * @param serFun the serialization function
-     * @param deserFun the deserialization function
+     * @param serializeFunction the serialization function
+     * @param deserializeFunction the deserialization function
      * @param <T> the parameter of the type of the method
      * @return the serde corresponding to the given serialisation and deserialization function
      */
-    static <T> Serde<T> of(Function<T, String> serFun, Function<String, T> deserFun) {
+    static <T> Serde<T> of(Function<T, String> serializeFunction, Function<String, T> deserializeFunction) {
 
         return new Serde<>() {
             @Override
             public String serialize(T plainObject) {
-                return serFun.apply(plainObject);
+                return serializeFunction.apply(plainObject);
             }
 
             @Override
             public T deserialize(String serializedObject) {
-                return deserFun.apply(serializedObject);
+                return deserializeFunction.apply(serializedObject);
             }
         };
     }
@@ -59,9 +59,9 @@ public interface Serde<E> {
      */
     static <T> Serde<T> oneOf(List<T> list) {
         Function<T, String> serFun = t -> Integer.toString(list.indexOf(t));
-        Function<String, T> deserFun = s -> list.get(Integer.parseInt(s));
+        Function<String, T> deserializeFunction = s -> list.get(Integer.parseInt(s));
 
-        return Serde.of(serFun, deserFun);
+        return Serde.of(serFun, deserializeFunction);
     }
 
     /**
@@ -71,7 +71,7 @@ public interface Serde<E> {
      * @param <T> the parameter of the type of the method
      * @return a serde capable of (de)serializing the list of values (de)serialized by the given separator and serde
      */
-    static <T> Serde<List<T>> listOf(Serde serde, String separator) { //TODO: Check all the warnings and fix them
+    static <T> Serde<List<T>> listOf(Serde<T> serde, String separator) { //TODO: Check all the warnings and fix them
 
         return new Serde<>() { //TODO: Is all the greyed stuff necessary?
 
@@ -102,7 +102,7 @@ public interface Serde<E> {
                     List<T> tList = new ArrayList<>();
 
                     for(String string: s){
-                        tList.add((T) serde.deserialize(string));
+                        tList.add(serde.deserialize(string));
                     }
                     return tList;
                 }
@@ -117,20 +117,20 @@ public interface Serde<E> {
      * @param <T> the parameter of the type of the method
      * @return a serde capable of (de)serializing the SortedBag of values (de)serialized by the given separator and serde
      */
-    static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde serde, String separator) { //TODO: Fix warnings
+    static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> serde, String separator) { //TODO: Fix warnings
 
         return new Serde<>() {
 
             @Override
             public String serialize(SortedBag<T> bag) {
 
-                List list = bag.toList();
+                List<T> list = bag.toList();
                 return listOf(serde, separator).serialize(list);
             }
 
             @Override
             public SortedBag<T> deserialize(String serializedObject) {
-                List list = Serde.listOf(serde, separator).deserialize(serializedObject);
+                List<T> list = Serde.listOf(serde, separator).deserialize(serializedObject);
                 return SortedBag.of(list);
             }
         };
