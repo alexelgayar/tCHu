@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ch.epfl.tchu.game.Route.Level.OVERGROUND;
+import static ch.epfl.tchu.game.Route.Level.UNDERGROUND;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -87,12 +88,9 @@ final class MapViewCreator implements ActionHandlers {
 
         routeGroup.setId(route.id());
         routeGroup.getStyleClass().add("route");
-        routeGroup.getStyleClass().add(
-                route.level() == OVERGROUND
-                        ? "OVERGROUND"
-                        : "UNDERGROUND");
+        routeGroup.getStyleClass().add(route.level().name());
 
-        routeGroup.getStyleClass().add(
+        routeGroup.getStyleClass().add( //TODO: Check
                 route.color() == null
                         ? "NEUTRAL"
                         : route.color().name());
@@ -147,7 +145,7 @@ final class MapViewCreator implements ActionHandlers {
     private static void pickClaimCards(ObservableGameState observableGameState, Route route, ObjectProperty<ClaimRouteHandler> claimRouteH, CardChooser cardChooser) {
         List<SortedBag<Card>> possibleClaimCards = observableGameState.possibleClaimCards(route);
 
-        if (possibleClaimCards.size() == ROUTE_AUTOCLAIM_VALUE) { //TODO: Any way to clean this up?
+        if (possibleClaimCards.size() == ROUTE_AUTOCLAIM_VALUE) { //TODO: Comment constants
             claimRouteH.get().onClaimRoute(route, possibleClaimCards.get(0));
         } else {
             ChooseCardsHandler chooseCardsH = chosenCards -> claimRouteH.get().onClaimRoute(route, chosenCards);

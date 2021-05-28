@@ -18,7 +18,8 @@ import static ch.epfl.tchu.game.Constants.*;
  * @author Anirudhh Ramesh (329806)
  * Instanciable class, represents the observable state of a game in tCHu
  */
-public final class ObservableGameState { //TODO: Should all GUI classes be package private?
+public final class ObservableGameState {
+    public static final int HUNDRED_PERCENTAGE = 100;
     private PublicGameState publicGameState;
     private PlayerState playerState;
     private final PlayerId playerId;
@@ -26,7 +27,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
     //PublicGameState properties
-    private final IntegerProperty ticketsPercentage = new SimpleIntegerProperty(0);
+    private final IntegerProperty ticketsPercentage = new SimpleIntegerProperty(0); //TODO: Check initialization value using documentation
     private final IntegerProperty cardsPercentage = new SimpleIntegerProperty(0);
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
@@ -57,13 +58,13 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
      * @param newGameState   the updated version of the gameState
      * @param newPlayerState the updated version of the player state
      */
-    public void setState(PublicGameState newGameState, PlayerState newPlayerState) { //TODO: Anyway to further clean up this code?
+    public void setState(PublicGameState newGameState, PlayerState newPlayerState) {
         publicGameState = newGameState;
         playerState = newPlayerState;
 
         //1. Public Game State
-        ticketsPercentage.set((100 * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT);
-        cardsPercentage.set((100 * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
+        ticketsPercentage.set((HUNDRED_PERCENTAGE * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT);
+        cardsPercentage.set((HUNDRED_PERCENTAGE * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
 
         for (int slot : FACE_UP_CARD_SLOTS) {
             faceUpCards.get(slot).set(publicGameState.cardState().faceUpCard(slot));
@@ -75,7 +76,7 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
                     routes.get(route).set(id);
             }
         }
-        //TODO: Is it alright to mix up for-each loops and lambdas? Anyway to further clean up this code?
+
         //2. Public Player State
         for (PlayerId id : PlayerId.ALL) {
             playerTicketsCount.get(id).set(publicGameState.playerState(id).ticketCount());
@@ -89,7 +90,8 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
 
         playerCardTypeCount.forEach((card, count) -> playerCardTypeCount.get(card).set(playerState.cards().countOf(card)));
 
-        for (Route route : routes.keySet()) { //TODO: Is it possible to optimize the double for-loop?
+        //TODO: Use collection API using lambdas?
+        for (Route route : routes.keySet()) {
             boolean routeDoubleNotOwned = true;
 
             for (Route w : routes.keySet()) {
@@ -252,8 +254,8 @@ public final class ObservableGameState { //TODO: Should all GUI classes be packa
     //Initializes the face up cards
     private static List<ObjectProperty<Card>> createFaceUpCards() {
         List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
-        //TODO: How can I convert this to a normal for-loop
-        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>(null)); //TODO: Should the initialization values be constants
+
+        for (int i = 0; i < FACE_UP_CARDS_COUNT; ++i) faceUpCards.add(new SimpleObjectProperty<>(null)); //TODO: Check documentation
 
         return faceUpCards;
     }
