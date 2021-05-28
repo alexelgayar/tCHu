@@ -33,8 +33,6 @@ import static javafx.collections.FXCollections.observableArrayList;
  */
 public final class GraphicalPlayer {
 
-    private final PlayerId id;
-    private final Map<PlayerId, String> playerNames;
     private final ObservableGameState gameState;
     private final ObservableList<Text> textList = observableArrayList();
     private final Stage mainStage;
@@ -48,8 +46,6 @@ public final class GraphicalPlayer {
      * @param playerNames map that maps the players' Ids to their names
      */
     public GraphicalPlayer(PlayerId id, Map<PlayerId, String> playerNames) {
-        this.id = id;
-        this.playerNames = playerNames;
 
         gameState = new ObservableGameState(id);
         claimRouteHandler = new SimpleObjectProperty<>();
