@@ -83,7 +83,6 @@ public interface Serde<E> {
                 }
                 else {
                     List<String> strings = new ArrayList<>();
-
                     for (T t : list) {
                         strings.add(serde.serialize(t));
                     }
@@ -123,15 +122,12 @@ public interface Serde<E> {
 
             @Override
             public String serialize(SortedBag<T> bag) {
-
-                List<T> list = bag.toList();
-                return listOf(serde, separator).serialize(list);
+                return listOf(serde, separator).serialize(bag.toList());
             }
 
             @Override
             public SortedBag<T> deserialize(String serializedObject) {
-                List<T> list = Serde.listOf(serde, separator).deserialize(serializedObject);
-                return SortedBag.of(list);
+                return SortedBag.of(Serde.listOf(serde, separator).deserialize(serializedObject));
             }
         };
     }
