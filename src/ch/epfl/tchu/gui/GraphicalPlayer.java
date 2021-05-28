@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import ch.epfl.tchu.gui.ActionHandlers.*;
 import javafx.util.StringConverter;
+
+import static ch.epfl.tchu.gui.StringsFr.T_CHU;
 import static javafx.application.Platform.isFxApplicationThread;
 import static javafx.collections.FXCollections.observableArrayList;
 
@@ -62,7 +64,7 @@ public final class GraphicalPlayer {
         mainStage = new Stage();
         Scene scene = new Scene(borderPane);
         mainStage.setScene(scene);
-        mainStage.setTitle("tCHu - " + playerNames.get(id));
+        mainStage.setTitle(T_CHU + StringsFr.EN_DASH_SEPARATOR + playerNames.get(id));
         mainStage.show();
     }
 
@@ -85,7 +87,7 @@ public final class GraphicalPlayer {
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
 
-        if (textList.size() == 5) textList.remove(0);
+        if (textList.size() == 5) textList.remove(0); //TODO: Name constant
         textList.add(new Text(message));
     }
 
@@ -130,8 +132,7 @@ public final class GraphicalPlayer {
 
         Stage stage = new Stage(StageStyle.UTILITY);
 
-        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT,
-                StringsFr.plural(tickets.size() - Constants.DISCARDABLE_TICKETS_COUNT));
+        String message = String.format(StringsFr.CHOOSE_TICKETS, tickets.size() - 2, StringsFr.plural(tickets.size() - 2)); //TODO: Name constants
 
         ObservableList<Ticket> observableList = observableArrayList(tickets.toList());
         ListView<Ticket> listView = new ListView<>(observableList);
@@ -140,7 +141,7 @@ public final class GraphicalPlayer {
         Button button = new Button();
 
         button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems())
-                .lessThan(tickets.size() - 2));
+                .lessThan(tickets.size() - 2)); //TODO: Name constants
 
         button.setOnAction(e -> {
             stage.hide();
@@ -178,7 +179,7 @@ public final class GraphicalPlayer {
         ListView<SortedBag<Card>> listView = createCardsListView(bagList);
 
         Button button = new Button();
-        button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems()).lessThan(1));
+        button.disableProperty().bind(Bindings.size(listView.getSelectionModel().getSelectedItems()).lessThan(1)); //TODO: Name Constants, Constants.DISCARDABLE_TICKETS_COUNT?
 
         button.setOnAction(e -> {
             stage.hide();
