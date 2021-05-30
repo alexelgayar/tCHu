@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.Ticket;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -114,8 +115,11 @@ final class DecksViewCreator implements ActionHandlers {
             ReadOnlyIntegerProperty count = observableGameState.playerCardTypeCount(card);
 
             StackPane cardStackPane = createCardStackPane(card, count);
+            cardStackPane.disableProperty().bind(new SimpleBooleanProperty(true));
             handPane.getChildren().add(cardStackPane);
         }
+
+
 
         return handPane;
     }
