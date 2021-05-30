@@ -6,6 +6,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -101,12 +102,13 @@ public final class GraphicalPlayer {
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
         Text text = new Text(message);
-        text.setFont(Font.font("Courier New", 13));
+        //text.setFont(Font.font("Courier New", 13));
 
         if(message.contains(playerNames.get(id))) currentColor = playerColor(id);
         else if (message.contains(playerNames.get(id.next()))) currentColor = playerColor(id.next());
 
         text.setFill(currentColor);
+
 
         if (textList.size() == MAX_TEXT_SIZE) textList.remove(0);
         textList.add(text);

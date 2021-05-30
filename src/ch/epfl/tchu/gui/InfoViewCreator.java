@@ -6,7 +6,10 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -47,8 +50,12 @@ final class InfoViewCreator {
         Separator separator = new Separator();
         separator.setOrientation(Orientation.HORIZONTAL);
 
+
         TextFlow textFlow = new TextFlow();
         textFlow.setId("game-info");
+
+
+
 
         Bindings.bindContent(textFlow.getChildren(), textList);
 
@@ -67,7 +74,7 @@ final class InfoViewCreator {
         circle.setRadius(5);
 
         Text text = new Text();
-        text.setFont(Font.font("Courier New", 12));
+       // text.setFont(Font.font("Courier New", 12));
 
         text.textProperty().bind(Bindings.format(StringsFr.PLAYER_STATS,
                 playerNames.get(id),
@@ -76,8 +83,21 @@ final class InfoViewCreator {
                 gameState.playerCarsCount(id),
                 gameState.playerClaimPoints(id)));
 
+
+        gameState.getCurrentPlayer().addListener((p, o, n) -> {
+            if(n == id) circle.setRadius(7);
+            else circle.setRadius(5);
+        });
+
+
         playerTextFlow.getChildren().addAll(circle, text);
         playerStats.getChildren().addAll(playerTextFlow);
+
+    }
+
+    private static Color playerColor(PlayerId id){
+        if(id == PlayerId.PLAYER_1) return Color.CORAL;
+        else return Color.DARKCYAN;
     }
 
 

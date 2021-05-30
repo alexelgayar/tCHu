@@ -26,6 +26,7 @@ public final class ObservableGameState {
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
     //PublicGameState properties
+    private ObjectProperty<PlayerId> currentPlayer = new SimpleObjectProperty<>();
     private final IntegerProperty ticketsPercentage = new SimpleIntegerProperty();
     private final IntegerProperty cardsPercentage = new SimpleIntegerProperty();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
@@ -64,6 +65,8 @@ public final class ObservableGameState {
         //1. Public Game State
         ticketsPercentage.set((HUNDRED_PERCENT * publicGameState.ticketsCount()) / TOTAL_TICKETS_COUNT);
         cardsPercentage.set((HUNDRED_PERCENT * publicGameState.cardState().deckSize()) / TOTAL_CARDS_COUNT);
+        currentPlayer.set(newGameState.currentPlayerId());
+
 
         for (int slot : FACE_UP_CARD_SLOTS) {
             faceUpCards.get(slot).set(publicGameState.cardState().faceUpCard(slot));
@@ -102,6 +105,7 @@ public final class ObservableGameState {
                             && routes.get(route).get() == null
                             && routeDoubleNotOwned);
         }
+
     }
 
     //1. PublicGameState Properties
@@ -247,6 +251,10 @@ public final class ObservableGameState {
         return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route)));
     }
 
+    public ReadOnlyObjectProperty<PlayerId> getCurrentPlayer(){
+        return currentPlayer;
+    }
+
     //Initializes the face up cards
     private static List<ObjectProperty<Card>> createFaceUpCards() {
         List<ObjectProperty<Card>> faceUpCards = new ArrayList<>(FACE_UP_CARDS_COUNT);
@@ -290,4 +298,6 @@ public final class ObservableGameState {
 
         return claimRouteMap;
     }
+
+
 }
