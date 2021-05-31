@@ -28,8 +28,7 @@ public final class ServerMain extends Application {
      *
      * @param args the program arguments of ServerMain
      */
-    public static void main(String[] args) {
-        launch(args);
+    public static void main(String[] args) { launch(args);
     }
 
     /**
@@ -40,11 +39,11 @@ public final class ServerMain extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        List<String> parameters = getParameters().getRaw();
+        //List<String> parameters = getParameters().getRaw();
         ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
 
         Map<PlayerId, Player> players = new HashMap<>();
-        Map<PlayerId, String> playerNames = new HashMap<>();
+       // Map<PlayerId, String> playerNames = new HashMap<>();
         SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
         Random rng = new Random();
 
@@ -54,13 +53,13 @@ public final class ServerMain extends Application {
         players.put(PLAYER_1, graphicalPlayerAdapter);
         players.put(PLAYER_2, remotePlayerProxy);
 
-        playerNames.put(PLAYER_1, (parameters.isEmpty())
-                ? DEFAULT_PLAYER_1
-                : parameters.get(0));
-        playerNames.put(PLAYER_2, (parameters.isEmpty())
-                ? DEFAULT_PLAYER_2
-                : parameters.get(1));
+//        playerNames.put(PLAYER_1, (parameters.isEmpty())
+//                ? DEFAULT_PLAYER_1
+//                : parameters.get(0));
+//        playerNames.put(PLAYER_2, (parameters.isEmpty())
+//                ? DEFAULT_PLAYER_2
+//                : parameters.get(1));
 
-        new Thread(() -> Game.play(players, playerNames, tickets, rng)).start();
+        new Thread(() -> Game.play(players, tickets, rng)).start();
     }
 }
