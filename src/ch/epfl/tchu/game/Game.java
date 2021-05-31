@@ -27,13 +27,18 @@ public final class Game {
      * the random generator tng is used to create the initial state of the game and to shuffle the cards from the discard pile to make a new draw when necessary
      *
      * @param players     the players who will play the game of tCHu
-     * @param playerNames the name of the players
      * @param tickets     the tickets available for the game of tCHu
      * @param rng         the random number generator rng is used to create the initial state of the game and to shuffle the cards from the discards pile to make a new draw when necessary
      * @throws IllegalArgumentException if one of the two associative tables has a size other than 2.
      */
-    public static void play(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames, SortedBag<Ticket> tickets, Random rng) {
-        Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);
+    public static void play(Map<PlayerId, Player> players, SortedBag<Ticket> tickets, Random rng) {
+
+        Map<PlayerId, String> playerNames = new HashMap<>();
+
+        players.forEach((playerId, Player) -> Player.setPlayerName());
+        players.forEach((playerId, Player) -> playerNames.put(playerId, Player.choosePlayerName()));
+
+       Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);
 
         players.forEach(((playerId, player) -> infos.put(playerId, new Info(playerNames.get(playerId)))));
 

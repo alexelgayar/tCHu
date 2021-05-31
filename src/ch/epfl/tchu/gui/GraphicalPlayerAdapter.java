@@ -27,6 +27,8 @@ public final class GraphicalPlayerAdapter implements Player {
     private final BlockingQueue<Route> chosenRoute = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
     private final BlockingQueue<SortedBag<Card>> chosenClaimCards = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
     private final BlockingQueue<SortedBag<Card>> chosenAdditionalClaimCards = new ArrayBlockingQueue<>(BLOCKING_QUEUE_MAX);
+    private final BlockingQueue<String> playerNameQueue = new ArrayBlockingQueue<>(1);
+
 
     /**
      * Constructor for GraphicalPlayerAdapter
@@ -64,6 +66,16 @@ public final class GraphicalPlayerAdapter implements Player {
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
         runLater(() -> graphicalPlayer.setState(newState, ownState));
+    }
+
+    @Override
+    public void setPlayerName() {
+        runLater(() -> GraphicalPlayer.choosePlayerName(string -> putInQueue(playerNameQueue, string)));
+    }
+
+    @Override
+    public String choosePlayerName() {
+        return takeFromQueue(playerNameQueue);
     }
 
     /**

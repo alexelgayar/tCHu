@@ -36,6 +36,11 @@ public interface Player {
      */
     void updateState(PublicGameState newState, PlayerState ownState);
 
+
+    void setPlayerName();
+
+    String choosePlayerName();
+
     /**
      * Called at the beginning of the game to communicate to the players the 5 tickets that they got proposed
      *

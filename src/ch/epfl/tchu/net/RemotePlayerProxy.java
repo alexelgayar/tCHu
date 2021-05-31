@@ -73,10 +73,15 @@ public final class RemotePlayerProxy implements Player {
         playerNames.forEach((playerId, name) -> names.add(name));
 
         sendMessage(String.join(SPACE,
-                MessageId.INIT_PLAYERS.name(),
-                Serdes.PLAYER_ID_SERDE.serialize(ownId),
+                MessageId.CHOOSE_NAME.name(),
                 Serdes.STRING_LIST_SERDE.serialize(names)));
 
+    }
+
+    @Override
+    public String choosePlayerName() {
+        sendMessage(MessageId.CHOOSE_NAME.name());
+        return Serdes.STRING_SERDE.deserialize(receiveMessage());
     }
 
     /**
@@ -108,6 +113,11 @@ public final class RemotePlayerProxy implements Player {
                 Serdes.PLAYER_STATE_SERDE.serialize(ownState)
         ));
 
+    }
+
+    @Override
+    public void setPlayerName() {
+        sendMessage(MessageId.SET_PLAYER_NAME.name());
     }
 
     /**

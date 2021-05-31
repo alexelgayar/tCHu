@@ -68,9 +68,20 @@ public final class RemotePlayerClient {
 
             while ((s = r.readLine()) != null) {
 
+
                 String[] list = s.split(Pattern.quote(SPACE), -1);
 
+                System.out.println(MessageId.valueOf(list[0]).name());
+
                 switch (MessageId.valueOf(list[0])) {
+
+                    case SET_PLAYER_NAME:
+                        player.setPlayerName();
+                        break;
+                    case CHOOSE_NAME:
+                        String name = player.choosePlayerName();
+                        sendMessage(Serdes.STRING_SERDE.serialize(name));
+                        break;
                     case INIT_PLAYERS:
                         List<String> names = Serdes.STRING_LIST_SERDE.deserialize(list[2]);
                         Map<PlayerId, String> playerNames = new EnumMap<>(PlayerId.class);

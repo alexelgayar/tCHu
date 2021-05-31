@@ -51,4 +51,9 @@ public interface ActionHandlers {
     interface ChooseCardsHandler {
         void onChooseCards(SortedBag<Card> drawnCards);
     }
+
+    @FunctionalInterface
+    interface ChooseNameHandler{
+        void onChooseName(String s);
+    }
 }

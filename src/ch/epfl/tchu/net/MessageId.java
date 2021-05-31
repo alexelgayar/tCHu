@@ -7,6 +7,8 @@ package ch.epfl.tchu.net;
  */
 public enum MessageId {
 
+    SET_PLAYER_NAME,
+    CHOOSE_NAME,
     INIT_PLAYERS,
     RECEIVE_INFO,
     UPDATE_STATE,

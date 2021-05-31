@@ -6,14 +6,14 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -23,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,7 @@ public final class GraphicalPlayer {
     private final SimpleObjectProperty<ClaimRouteHandler> claimRouteHandler;
     private final SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler;
     private final SimpleObjectProperty<DrawCardHandler> drawCardHandler;
+    private final SimpleObjectProperty<ChooseNameHandler> chooseNameHandler = new SimpleObjectProperty<>();
     private static final int MAX_TEXT_SIZE = 5;
     private static final int REQUIRED_CARD_CHOICE_VALUE = 1;
     private Color currentColor = null;
@@ -91,6 +93,42 @@ public final class GraphicalPlayer {
     public void setState(PublicGameState newGameState, PlayerState newPlayerState) {
         assert isFxApplicationThread();
         gameState.setState(newGameState, newPlayerState);
+    }
+
+
+    public static void choosePlayerName(ChooseNameHandler nameHandler){
+        assert isFxApplicationThread();
+
+        Stage stage = new Stage(StageStyle.UTILITY);
+        Label chooseName = new Label("Ecrit ton nom");
+        TextField textField = new TextField();
+
+        Button submitButton = new Button("Soumettre");
+
+        GridPane grid = new GridPane();
+        grid.addRow(0, chooseName, textField);
+        grid.add(submitButton, 0, 1, 1, 1);
+
+        GridPane.setHalignment(submitButton, HPos.CENTER);
+
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add("chooser.css");
+
+        stage.setScene(scene);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Choix du nom");
+        stage.setOnCloseRequest(Event::consume);
+        stage.show();
+
+        submitButton.setOnAction(e -> {
+            stage.hide();
+            try {
+                nameHandler.onChooseName(textField.getText());
+            } catch (IllegalFormatException e1){
+                chooseName.setText("Entrez seulement une chaîne de caractères");
+            }
+        });
+
     }
 
     /**
