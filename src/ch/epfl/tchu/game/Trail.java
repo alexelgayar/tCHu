@@ -18,7 +18,7 @@ public final class Trail {
     private Trail(Station s1, Station s2, List<Route> r) {
         this.s1 = s1;
         this.s2 = s2;
-        this.routes = r;
+        this.routes = List.copyOf(r);
         this.length = computeTrailLength(r);
     }
 
@@ -160,6 +160,25 @@ public final class Trail {
         }
 
         return text;
+    }
+
+    public List<Route> trailRoutes(){
+        return routes;
+    }
+
+    /**
+     * Computes the shortest path between two stations
+     * @return the shortest path between two stations
+     */
+    public static Trail shortestTicketPath(Ticket ticket){
+        Station from = ticket.s1();
+        Station to = ticket.s2();
+
+        //Connect the routes and return the smallest possible trail
+        //Would you have to connect all possible routes then return the smallest one out of this?
+        //Does Trip.all contain the smallest route?
+
+        return null;
     }
 
 }

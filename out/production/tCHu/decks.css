@@ -33,6 +33,11 @@
     -fx-effect: dropshadow(gaussian, black, 5, 0, 1, 1);
 }
 
+.card:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
 /* Tickets and cards pane (right) */
 
 #card-pane {

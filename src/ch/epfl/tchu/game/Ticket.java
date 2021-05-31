@@ -15,6 +15,9 @@ public final class Ticket implements Comparable<Ticket> {
     private final String text;
     private final List<Trip> trips;
 
+    private final Station s1;
+    private final Station s2;
+
     /**
      * Constructor which constructs a ticket out of a list of trips
      * @param trips list containing all the trips
@@ -29,6 +32,9 @@ public final class Ticket implements Comparable<Ticket> {
 
         this.trips = List.copyOf(trips);
         this.text = computeText(trips);
+
+        this.s1 = trips.get(0).from();
+        this.s2 = trips.get(0).to();
     }
 
     /**
@@ -101,6 +107,13 @@ public final class Ticket implements Comparable<Ticket> {
         return text;
     }
 
+    public Station s1(){
+        return s1;
+    }
+
+    public Station s2(){
+        return s2;
+    }
 
 }
 
