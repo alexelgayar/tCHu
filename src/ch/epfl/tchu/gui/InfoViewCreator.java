@@ -94,11 +94,4 @@ final class InfoViewCreator {
         playerStats.getChildren().addAll(playerTextFlow);
 
     }
-
-    private static Color playerColor(PlayerId id){
-        if(id == PlayerId.PLAYER_1) return Color.CORAL;
-        else return Color.DARKCYAN;
-    }
-
-
 }
