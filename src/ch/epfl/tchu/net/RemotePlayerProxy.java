@@ -73,7 +73,8 @@ public final class RemotePlayerProxy implements Player {
         playerNames.forEach((playerId, name) -> names.add(name));
 
         sendMessage(String.join(SPACE,
-                MessageId.CHOOSE_NAME.name(),
+                MessageId.INIT_PLAYERS.name(),
+                Serdes.PLAYER_ID_SERDE.serialize(ownId),
                 Serdes.STRING_LIST_SERDE.serialize(names)));
 
     }

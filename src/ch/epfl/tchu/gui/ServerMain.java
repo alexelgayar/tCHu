@@ -39,7 +39,7 @@ public final class ServerMain extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //List<String> parameters = getParameters().getRaw();
+     //   List<String> parameters = getParameters().getRaw();
         ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
 
         Map<PlayerId, Player> players = new HashMap<>();

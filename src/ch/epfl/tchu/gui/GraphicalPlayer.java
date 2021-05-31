@@ -49,7 +49,6 @@ public final class GraphicalPlayer {
     private final SimpleObjectProperty<ClaimRouteHandler> claimRouteHandler;
     private final SimpleObjectProperty<DrawTicketsHandler> drawTicketHandler;
     private final SimpleObjectProperty<DrawCardHandler> drawCardHandler;
-    private final SimpleObjectProperty<ChooseNameHandler> chooseNameHandler = new SimpleObjectProperty<>();
     private static final int MAX_TEXT_SIZE = 5;
     private static final int REQUIRED_CARD_CHOICE_VALUE = 1;
     private Color currentColor = null;
@@ -100,7 +99,7 @@ public final class GraphicalPlayer {
         assert isFxApplicationThread();
 
         Stage stage = new Stage(StageStyle.UTILITY);
-        Label chooseName = new Label("Ecrit ton nom");
+        Label chooseName = new Label("Ecris ton nom");
         TextField textField = new TextField();
 
         Button submitButton = new Button("Soumettre");
@@ -115,7 +114,7 @@ public final class GraphicalPlayer {
         scene.getStylesheets().add("chooser.css");
 
         stage.setScene(scene);
-        stage.initModality(Modality.WINDOW_MODAL);
+        //stage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle("Choix du nom");
         stage.setOnCloseRequest(Event::consume);
         stage.show();

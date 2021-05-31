@@ -19,7 +19,7 @@ public final class ClientMain extends Application {
     private static final String LOCALHOST = "localhost";
 
     /**
-     * The main method of ClientMain
+     * The main method of ClientMaing
      *
      * @param args the program arguments of ClientMain
      */
