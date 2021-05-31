@@ -2,6 +2,7 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -76,6 +77,8 @@ public final class GraphicalPlayer {
 
         BorderPane borderPane = new BorderPane(mapView, null, cardsView, handsView, infoView);
 
+
+
         mainStage = new Stage();
         Scene scene = new Scene(borderPane);
         mainStage.setScene(scene);
@@ -97,6 +100,8 @@ public final class GraphicalPlayer {
 
     public static void choosePlayerName(ChooseNameHandler nameHandler){
         assert isFxApplicationThread();
+
+
 
         Stage stage = new Stage(StageStyle.UTILITY);
         Label chooseName = new Label("Ecris ton nom");

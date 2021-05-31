@@ -5,6 +5,7 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.net.ServerSocket;
@@ -59,6 +60,8 @@ public final class ServerMain extends Application {
 //        playerNames.put(PLAYER_2, (parameters.isEmpty())
 //                ? DEFAULT_PLAYER_2
 //                : parameters.get(1));
+
+        Platform.setImplicitExit(false);
 
         new Thread(() -> Game.play(players, tickets, rng)).start();
     }
