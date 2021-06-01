@@ -101,7 +101,7 @@ public final class GraphicalPlayer {
     public static void choosePlayerName(ChooseNameHandler nameHandler){
         assert isFxApplicationThread();
 
-
+        Platform.setImplicitExit(false);
 
         Stage stage = new Stage(StageStyle.UTILITY);
         Label chooseName = new Label("Ecris ton nom");

@@ -33,15 +33,15 @@ public final class Game {
      */
     public static void play(Map<PlayerId, Player> players, SortedBag<Ticket> tickets, Random rng) {
 
-//        Map<PlayerId, String> playerNames = new HashMap<>();
-//        playerNames.put(PlayerId.PLAYER_1, "ada");
-//        playerNames.put(PlayerId.PLAYER_2, "charles");
 
        Map<PlayerId, String> playerNames = new HashMap<>();
        players.forEach((playerId, Player) -> Player.setPlayerName());
        players.forEach((playerId, Player) -> playerNames.put(playerId, Player.choosePlayerName()));
+       if(playerNames.get(PlayerId.PLAYER_1).equals("")) playerNames.put(PlayerId.PLAYER_1, "Ada");
+       if(playerNames.get(PlayerId.PLAYER_2).equals("")) playerNames.put(PlayerId.PLAYER_2, "Charles");
 
-       Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);
+
+        Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);
 
         players.forEach(((playerId, player) -> infos.put(playerId, new Info(playerNames.get(playerId)))));
 

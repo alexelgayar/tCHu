@@ -41,6 +41,9 @@ public final class ServerMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
      //   List<String> parameters = getParameters().getRaw();
+
+
+
         ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
 
         Map<PlayerId, Player> players = new HashMap<>();
@@ -61,7 +64,7 @@ public final class ServerMain extends Application {
 //                ? DEFAULT_PLAYER_2
 //                : parameters.get(1));
 
-        Platform.setImplicitExit(false);
+
 
         new Thread(() -> Game.play(players, tickets, rng)).start();
     }
