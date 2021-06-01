@@ -135,8 +135,6 @@ public final class GraphicalPlayer {
         stage.show();
 
 
-
-
         submitButton.setOnAction(e -> {
                 stage.hide();
                 try {
