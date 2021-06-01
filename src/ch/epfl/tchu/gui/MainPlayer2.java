@@ -7,7 +7,9 @@ import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 public class MainPlayer2 extends Application {
 
+    public static Stage stage;
 
     public static void main(String[] args) {
 
@@ -39,36 +43,17 @@ public class MainPlayer2 extends Application {
 
         Platform.setImplicitExit(false);
 
-        Stage stage = new Stage(StageStyle.UTILITY);
+        Parent root = FXMLLoader.load(getClass().getResource("/main-menu.fxml"));
 
-        Button serverButton = new Button("Host");
-        Button clientButton = new Button("Join");
+        stage = new Stage(StageStyle.UTILITY);
 
-        GridPane grid = new GridPane();
-        grid.add(serverButton, 0, 1, 1, 2);
-        grid.add(clientButton, 1, 1, 1, 2);
-
-        Scene scene = new Scene(grid);
-
-        stage.setScene(scene);
+        stage.setScene(new Scene(root));
         stage.setTitle("Main Menu");
         stage.show();
 
-        serverButton.setOnAction(e -> {
-            stage.hide();
-            launchServer();
-
-        });
-
-        clientButton.setOnAction(e -> {
-            stage.hide();
-            joinGame();
-        });
-
-
     }
 
-    public void launchServer(){
+    public static void launchServer(){
 
         try{
             ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
@@ -95,37 +80,26 @@ public class MainPlayer2 extends Application {
 
     public void joinGame(){
 
-        Stage stage = new Stage(StageStyle.UTILITY);
+        try {
 
-        GridPane grid = new GridPane();
+            Stage clientWindow;   clientWindow = new Stage(StageStyle.UTILITY);
 
-        Label hostName = new Label("Entrez le nom du hote: ");
-        TextField hostText = new TextField();
+            Parent root = FXMLLoader.load(getClass().getResource("/main-menu.fxml"));
 
-        Label port = new Label("Enter le numero du port: ");
-        TextField portNumber = new TextField();
+            clientWindow.setScene(new Scene(root));
+            clientWindow.setTitle("Joindre une partie");
+            clientWindow.setOnCloseRequest(Event::consume);
+            clientWindow.show();
 
-        grid.addRow(0, hostName, hostText);
-        grid.addRow(1, port, portNumber);
+        } catch (IOException e) {
+            throw new Error();
+        }
 
-        Button submitButton = new Button("Soumettre");
 
-        grid.add(submitButton, 1, 2, 1, 1);
-        GridPane.setHalignment(submitButton, HPos.CENTER);
 
-        Scene scene = new Scene(grid);
-        stage.setScene(scene);
-        stage.setTitle("Joindre une partie");
-        stage.setOnCloseRequest(Event::consume);
-        stage.show();
-
-        submitButton.setOnAction(e -> {
-            stage.hide();
-            launchClient(hostText.getText(), Integer.parseInt(portNumber.getText()));
-        });
     }
 
-    public void launchClient(String host, int port){
+    public static void launchClient(String host, int port){
 
         RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), host, port);
 
