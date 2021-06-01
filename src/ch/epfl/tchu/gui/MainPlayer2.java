@@ -53,59 +53,5 @@ public class MainPlayer2 extends Application {
 
     }
 
-    public static void launchServer(){
 
-        try{
-            ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
-
-            Map<PlayerId, Player> players = new HashMap<>();
-            // Map<PlayerId, String> playerNames = new HashMap<>();
-            SortedBag<Ticket> tickets = SortedBag.of(ChMap.tickets());
-            Random rng = new Random();
-
-            GraphicalPlayerAdapter graphicalPlayerAdapter = new GraphicalPlayerAdapter();
-            RemotePlayerProxy remotePlayerProxy = new RemotePlayerProxy(serverSocket.accept());
-
-            players.put(PLAYER_1, graphicalPlayerAdapter);
-            players.put(PLAYER_2, remotePlayerProxy);
-
-            new Thread(() -> Game.play(players, tickets, rng)).start();
-
-
-        } catch (IOException e) {
-            throw new Error();
-        }
-
-    }
-
-    public void joinGame(){
-
-        try {
-
-            Stage clientWindow;   clientWindow = new Stage(StageStyle.UTILITY);
-
-            Parent root = FXMLLoader.load(getClass().getResource("/main-menu.fxml"));
-
-            clientWindow.setScene(new Scene(root));
-            clientWindow.setTitle("Joindre une partie");
-            clientWindow.setOnCloseRequest(Event::consume);
-            clientWindow.show();
-
-        } catch (IOException e) {
-            throw new Error();
-        }
-
-
-
-    }
-
-    public static void launchClient(String host, int port){
-
-        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), host, port);
-
-        new Thread(remotePlayerClient::run).start();
-
-
-
-    }
 }
