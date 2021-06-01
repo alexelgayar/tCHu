@@ -2,7 +2,6 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.net.RemotePlayerClient;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -35,9 +34,6 @@ public final class ClientMain extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-
-
-
         List<String> parameters = getParameters().getRaw();
 
         String name = (parameters.size() == NBR_PARAM_ARGS)

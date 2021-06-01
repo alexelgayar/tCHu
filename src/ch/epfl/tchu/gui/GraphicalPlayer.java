@@ -104,7 +104,7 @@ public final class GraphicalPlayer {
         Platform.setImplicitExit(false);
 
         Stage stage = new Stage(StageStyle.UTILITY);
-        Label chooseName = new Label("Ecris ton nom");
+        Label chooseName = new Label("Écrivez votre nom (ou laissez vide pour un nom par défaut)");
         TextField textField = new TextField();
 
         Button submitButton = new Button("Soumettre");

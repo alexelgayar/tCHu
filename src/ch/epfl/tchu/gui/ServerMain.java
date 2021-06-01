@@ -42,7 +42,7 @@ public final class ServerMain extends Application {
     public void start(Stage primaryStage) throws Exception {
      //   List<String> parameters = getParameters().getRaw();
 
-
+        Platform.setImplicitExit(false);
 
         ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
 
