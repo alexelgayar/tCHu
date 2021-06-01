@@ -70,7 +70,9 @@ public final class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void setPlayerName() {
-        runLater(() -> GraphicalPlayer.choosePlayerName(string -> putInQueue(playerNameQueue, string)));
+        runLater(() -> GraphicalPlayer.choosePlayerName(string ->
+                putInQueue(playerNameQueue, string)
+        ));
     }
 
     @Override

@@ -4,6 +4,8 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -78,11 +80,11 @@ public final class GraphicalPlayer {
         BorderPane borderPane = new BorderPane(mapView, null, cardsView, handsView, infoView);
 
 
-
         mainStage = new Stage();
         Scene scene = new Scene(borderPane);
         mainStage.setScene(scene);
         mainStage.setTitle(T_CHU + StringsFr.EN_DASH_SEPARATOR + playerNames.get(id));
+
         mainStage.show();
     }
 
@@ -98,25 +100,33 @@ public final class GraphicalPlayer {
     }
 
 
-    public static void choosePlayerName(ChooseNameHandler nameHandler){
+    public static void choosePlayerName(ChooseNameHandler nameHandler) {
         assert isFxApplicationThread();
 
         Platform.setImplicitExit(false);
 
         Stage stage = new Stage(StageStyle.UTILITY);
-        Label chooseName = new Label("Écrivez votre nom (ou laissez vide pour un nom par défaut)");
+        Label chooseName = new Label("Écrivez votre nom :");
         TextField textField = new TextField();
 
         Button submitButton = new Button("Soumettre");
 
-        GridPane grid = new GridPane();
-        grid.addRow(0, chooseName, textField);
-        grid.add(submitButton, 0, 1, 1, 1);
+        Label warningText = new Label("Entrez une chaine de characteres non vide!");
+        warningText.setTextFill(Color.RED);
+        warningText.setVisible(false);
 
+        GridPane grid = new GridPane();
+        grid.addRow(0, warningText);
+        grid.addRow(1, chooseName, textField);
+        grid.addRow(2, submitButton);
+       // grid.add(submitButton, 0, 1, 1, 1);
+
+        GridPane.setHalignment(warningText, HPos.CENTER);
         GridPane.setHalignment(submitButton, HPos.CENTER);
 
+
         Scene scene = new Scene(grid);
-        scene.getStylesheets().add("chooser.css");
+       // scene.getStylesheets().add("chooser.css");
 
         stage.setScene(scene);
         //stage.initModality(Modality.WINDOW_MODAL);
@@ -124,14 +134,19 @@ public final class GraphicalPlayer {
         stage.setOnCloseRequest(Event::consume);
         stage.show();
 
+
+
+
         submitButton.setOnAction(e -> {
-            stage.hide();
-            try {
-                nameHandler.onChooseName(textField.getText());
-            } catch (IllegalFormatException e1){
-                chooseName.setText("Entrez seulement une chaîne de caractères");
+                stage.hide();
+                try {
+                    nameHandler.onChooseName(textField.getText());
+                } catch (IllegalFormatException e1) {
+                    chooseName.setText("Entrez seulement une chaîne de caractères");
+                }
             }
-        });
+        );
+
 
     }
 
@@ -146,7 +161,7 @@ public final class GraphicalPlayer {
         Text text = new Text(message);
         //text.setFont(Font.font("Courier New", 13));
 
-        if(message.contains(playerNames.get(id))) currentColor = playerColor(id);
+        if (message.contains(playerNames.get(id))) currentColor = playerColor(id);
         else if (message.contains(playerNames.get(id.next()))) currentColor = playerColor(id.next());
 
         text.setFill(currentColor);
@@ -348,8 +363,8 @@ public final class GraphicalPlayer {
         }
     }
 
-    private Color playerColor(PlayerId id){
-        if(id == PlayerId.PLAYER_1) return Color.CORAL;
+    private Color playerColor(PlayerId id) {
+        if (id == PlayerId.PLAYER_1) return Color.CORAL;
         else return Color.DARKCYAN;
     }
 }
