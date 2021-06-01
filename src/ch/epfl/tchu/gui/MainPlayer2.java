@@ -6,12 +6,15 @@ import ch.epfl.tchu.net.RemotePlayerClient;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.HashMap;
@@ -25,8 +28,6 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 public class MainPlayer2 extends Application {
 
-    private static final int NBR_PARAM_ARGS = 2;
-    private static final String LOCALHOST = "localhost";
 
     public static void main(String[] args) {
 
@@ -44,8 +45,8 @@ public class MainPlayer2 extends Application {
         Button clientButton = new Button("Join");
 
         GridPane grid = new GridPane();
-        grid.add(serverButton, 0, 1, 1, 1);
-        grid.add(clientButton, 0, 2, 1, 1);
+        grid.add(serverButton, 0, 1, 1, 2);
+        grid.add(clientButton, 1, 1, 1, 2);
 
         Scene scene = new Scene(grid);
 
@@ -56,14 +57,12 @@ public class MainPlayer2 extends Application {
         serverButton.setOnAction(e -> {
             stage.hide();
             launchServer();
-            launchClient();
-
 
         });
 
         clientButton.setOnAction(e -> {
             stage.hide();
-            launchClient();
+            joinGame();
         });
 
 
@@ -94,19 +93,41 @@ public class MainPlayer2 extends Application {
 
     }
 
-    public void launchClient(){
+    public void joinGame(){
 
-        List<String> parameters = getParameters().getRaw();
+        Stage stage = new Stage(StageStyle.UTILITY);
 
-        String name = (parameters.size() == NBR_PARAM_ARGS)
-                ? parameters.get(0)
-                : LOCALHOST;
+        GridPane grid = new GridPane();
 
-        int port = (parameters.size() == NBR_PARAM_ARGS)
-                ? Integer.parseInt(parameters.get(1))
-                : DEFAULT_PORT;
+        Label hostName = new Label("Entrez le nom du hote: ");
+        TextField hostText = new TextField();
 
-        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), LOCALHOST, DEFAULT_PORT);
+        Label port = new Label("Enter le numero du port: ");
+        TextField portNumber = new TextField();
+
+        grid.addRow(0, hostName, hostText);
+        grid.addRow(1, port, portNumber);
+
+        Button submitButton = new Button("Soumettre");
+
+        grid.add(submitButton, 1, 2, 1, 1);
+        GridPane.setHalignment(submitButton, HPos.CENTER);
+
+        Scene scene = new Scene(grid);
+        stage.setScene(scene);
+        stage.setTitle("Joindre une partie");
+        stage.setOnCloseRequest(Event::consume);
+        stage.show();
+
+        submitButton.setOnAction(e -> {
+            stage.hide();
+            launchClient(hostText.getText(), Integer.parseInt(portNumber.getText()));
+        });
+    }
+
+    public void launchClient(String host, int port){
+
+        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), host, port);
 
         new Thread(remotePlayerClient::run).start();
 

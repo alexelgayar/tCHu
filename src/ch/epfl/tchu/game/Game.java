@@ -37,8 +37,8 @@ public final class Game {
        Map<PlayerId, String> playerNames = new HashMap<>();
        players.forEach((playerId, Player) -> Player.setPlayerName());
        players.forEach((playerId, Player) -> playerNames.put(playerId, Player.choosePlayerName()));
-       List<String> randomNames = new ArrayList<String>(List.of("The Polar Express", "Arnie", "Alex", "Toy Story",
-               "Micrea", "Sherlock", "Schinz", "Salim", "DaBaby", "Cécile", "Sharif", "Eugenio", "Takanori", "Durazo"));
+       List<String> randomNames = new ArrayList<>(List.of("The Polar Express", "Arnie", "Alex", "Toy Story",
+               "Mircea", "Sherlock", "Schinz", "Salim", "DaBaby", "Cécile", "Sharif", "Eugenio", "Takanori", "Durazo"));
        if(playerNames.get(PlayerId.PLAYER_1).equals("")) playerNames.put(PlayerId.PLAYER_1, randomNames.get(rng.nextInt(randomNames.size())));
        randomNames.remove(playerNames.get(PlayerId.PLAYER_1));
        if(playerNames.get(PlayerId.PLAYER_2).equals("")) playerNames.put(PlayerId.PLAYER_2, randomNames.get(rng.nextInt(randomNames.size())));
