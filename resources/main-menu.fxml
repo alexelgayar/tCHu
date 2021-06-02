@@ -11,7 +11,7 @@
    <children>
       <ImageView fitHeight="481.0" fitWidth="633.0" layoutX="-2.0" layoutY="-2.0" opacity="0.1" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@map.png" />
+            <Image url="@dark.png" />
          </image>
       </ImageView>
       <Button layoutX="221.0" layoutY="144.0" mnemonicParsing="false" onAction="#hostButton" prefHeight="43.0" prefWidth="189.0" styleClass="btn" stylesheets="@menu.css" text="Host Game">
