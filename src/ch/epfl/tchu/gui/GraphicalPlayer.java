@@ -9,9 +9,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
@@ -26,6 +28,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
@@ -106,18 +110,23 @@ public final class GraphicalPlayer {
 
         Stage stage = new Stage(StageStyle.UTILITY);
         Label chooseName = new Label("Écrivez votre nom : ");
+        chooseName.setTextFill(Color.WHITE);
+        chooseName.setFont(new Font("Kefa", 13));
+
         TextField textField = new TextField();
+        textField.setPrefWidth(220);
+        textField.getStyleClass().add("txtfield");
+        textField.setPromptText("Laissez vide pour un nom par défaut");
 
-        Button submitButton = new Button("Soumettre");
+        Button btn = new Button("Soumettre");
+        btn.getStyleClass().add("btn");
 
-
-        submitButton.setOnAction(e -> {
-
+        btn.setOnAction(e -> {
                     try {
                         Random rng = new Random();
                         String randomName = Game.randomNames.get(rng.nextInt(Game.randomNames.size()));
                         Game.randomNames.remove(randomName);
-                        nameHandler.onChooseName(textField.getText().isEmpty()? randomName : textField.getText());
+                        nameHandler.onChooseName(textField.getText().isEmpty() ? randomName : textField.getText());
 
                         stage.hide();
 
@@ -127,22 +136,15 @@ public final class GraphicalPlayer {
                 }
         );
 
-        Label warningText = new Label("Entrez une chaine de characteres non vide!");
-        warningText.setTextFill(Color.RED);
-        warningText.setVisible(false);
 
         GridPane grid = new GridPane();
-        //grid.addRow(0, warningText);
-        grid.addRow(1, chooseName, textField);
-        grid.addRow(2, submitButton);
-        // grid.add(submitButton, 0, 1, 1, 1);
+        grid.getStyleClass().add("parent");
 
-        GridPane.setHalignment(warningText, HPos.CENTER);
-        GridPane.setHalignment(submitButton, HPos.CENTER);
+        grid.addRow(1, chooseName, textField, btn);
 
 
-        Scene scene = new Scene(grid);
-        // scene.getStylesheets().add("chooser.css");
+        Scene scene = new Scene(grid, 405, 30);
+        scene.getStylesheets().add("menu.css");
 
         stage.setScene(scene);
         //stage.initModality(Modality.WINDOW_MODAL);
@@ -365,7 +367,7 @@ public final class GraphicalPlayer {
     }
 
     private Color playerColor(PlayerId id) {
-        if (id == PlayerId.PLAYER_1) return Color.CORAL;
-        else return Color.DARKCYAN;
+        if (id == PlayerId.PLAYER_1) return Color.LIGHTBLUE;
+        else return Color.LIGHTPINK;
     }
 }
