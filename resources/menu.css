@@ -1,0 +1,24 @@
+.parent{
+    -fx-background-color: #303138;
+}
+
+.txtfield{
+    -fx-background-color: #3B4148;
+    -fx-background-radius: 0px;
+    -fx-prompt-text-fill: #ADADAD;
+    -fx-text-fill: #FFFFFF;
+}
+.txtfield:focused{
+    -fx-background-color:  #292C34;
+    -fx-background-radius: 0px;
+    -fx-prompt-text-fill: #ADADAD;
+    -fx-text-fill: #FFFFFF;
+}
+.btn{
+    -fx-background-color: #EA4C88;
+    -fx-text-fill: #FFFFFF;
+}
+
+.btn:hover{
+    -fx-background-color: #171717;
+}

@@ -7,28 +7,42 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.gui.menuController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="parent" stylesheets="@menu.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.gui.menuController">
    <children>
-      <Button layoutX="88.0" layoutY="331.0" mnemonicParsing="false" onAction="#hostButton" prefHeight="36.0" prefWidth="173.0" text="Host Game">
-         <font>
-            <Font name="Kefa Regular" size="19.0" />
-         </font>
-      </Button>
-      <Button layoutX="338.0" layoutY="331.0" mnemonicParsing="false" onAction="#clientButton" prefHeight="36.0" prefWidth="173.0" text="Join Game">
-         <font>
-            <Font name="Kefa Regular" size="19.0" />
-         </font>
-      </Button>
-      <Label layoutX="247.0" layoutY="22.0" text="tChu" textAlignment="CENTER">
-         <font>
-            <Font name="Kefa Regular" size="50.0" />
-         </font>
-      </Label>
-      <ImageView fitHeight="236.0" fitWidth="334.0" layoutX="133.0" layoutY="91.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="481.0" fitWidth="633.0" layoutX="-2.0" layoutY="-2.0" opacity="0.1" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@map.png" />
          </image>
       </ImageView>
+      <Button layoutX="221.0" layoutY="144.0" mnemonicParsing="false" onAction="#hostButton" prefHeight="43.0" prefWidth="189.0" styleClass="btn" stylesheets="@menu.css" text="Host Game">
+         <font>
+            <Font name="Kefa Regular" size="19.0" />
+         </font>
+      </Button>
+      <Button layoutX="221.0" layoutY="214.0" mnemonicParsing="false" onAction="#clientButton" prefHeight="46.0" prefWidth="189.0" styleClass="btn" stylesheets="@menu.css" text="Join Game">
+         <font>
+            <Font name="Kefa Regular" size="19.0" />
+         </font>
+      </Button>
+      <Label layoutX="112.0" layoutY="3.0" text="tCHu - Main Menu" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="50.0" />
+         </font>
+      </Label>
+      <Label layoutX="268.0" layoutY="339.0" text="Project By" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="244.0" layoutY="355.0" text="Alexandre Iskandar" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="249.0" layoutY="371.0" text="Anirudhh Ramesh" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

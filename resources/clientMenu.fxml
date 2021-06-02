@@ -8,34 +8,49 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.gui.clientController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="parent" stylesheets="@menu.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.gui.clientController">
     <children>
-        <Label layoutX="247.0" layoutY="14.0" text="tChu" textAlignment="CENTER">
+        <Label layoutX="160.0" layoutY="14.0" prefHeight="44.0" prefWidth="285.0" text=" tCHu - Join Game" textAlignment="CENTER" textFill="WHITE">
             <font>
-                <Font name="Kefa Regular" size="50.0" />
+                <Font name="Kefa Regular" size="36.0" />
             </font>
         </Label>
-        <ImageView fitHeight="236.0" fitWidth="334.0" layoutX="133.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="459.0" fitWidth="642.0" layoutX="-14.0" layoutY="-13.0" opacity="0.1" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@map.png" />
             </image>
         </ImageView>
-      <Label layoutX="77.0" layoutY="320.0" text="Enter host name :">
+      <Label layoutX="98.0" layoutY="156.0" text="Enter host name :" textFill="WHITE">
          <font>
             <Font name="Kefa Regular" size="17.0" />
          </font>
       </Label>
-      <Label layoutX="124.0" layoutY="349.0" text="Enter port :">
+      <Label layoutX="145.0" layoutY="185.0" text="Enter port :" textFill="WHITE">
          <font>
             <Font name="Kefa Regular" size="17.0" />
          </font>
       </Label>
-      <TextField fx:id="hostname" layoutX="230.0" layoutY="318.0" prefHeight="26.0" prefWidth="206.0" />
-      <TextField fx:id="portnumber" layoutX="230.0" layoutY="346.0" prefHeight="26.0" prefWidth="206.0" />
-      <Button layoutX="453.0" layoutY="318.0" mnemonicParsing="false" onAction="#connectClient" prefHeight="53.0" prefWidth="90.0" text="Connect">
+      <TextField fx:id="hostname" layoutX="251.0" layoutY="154.0" prefHeight="26.0" prefWidth="206.0" promptText="deafult: localhost" styleClass="txtfield" stylesheets="@menu.css" />
+      <TextField fx:id="portnumber" layoutX="251.0" layoutY="182.0" prefHeight="26.0" prefWidth="206.0" promptText="default : 5108" styleClass="txtfield" stylesheets="@menu.css" />
+      <Button layoutX="251.0" layoutY="215.0" mnemonicParsing="false" onAction="#connectClient" prefHeight="32.0" prefWidth="206.0" styleClass="btn" stylesheets="@menu.css" text="Connect">
          <font>
             <Font name="Kefa Regular" size="14.0" />
          </font>
       </Button>
+      <Label layoutX="277.0" layoutY="334.0" text="Project by" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="250.0" layoutY="356.0" text="Alexandre Iskandar" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="254.0" layoutY="371.0" text="Anirudhh Ramesh" textFill="WHITE">
+         <font>
+            <Font name="Kefa Regular" size="13.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
