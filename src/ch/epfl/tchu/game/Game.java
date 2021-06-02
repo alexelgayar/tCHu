@@ -15,8 +15,7 @@ public final class Game {
 
     private static final Map<PlayerId, Info> infos = new HashMap<>();
     private static GameState gameState;
-    public static List<String> randomNames = new ArrayList<>(List.of("The Polar Express", "Arnie", "Alex",
-            "Mircea", "Sherlock", "Schinz", "Salim", "DaBaby", "Cécile", "Sharif", "Eugenio", "Takanori", "Durazo"));
+
     /**
      * Private constructor class for the Game class, we will leave it empty (as we want this class to be non-instantiable)
      */
@@ -39,6 +38,17 @@ public final class Game {
 
        players.forEach((playerId, Player) -> Player.setPlayerName());
        players.forEach((playerId, Player) -> playerNames.put(playerId, Player.choosePlayerName()));
+
+       List<String> randomNames = new ArrayList<>(List.of("The Polar Express", "Arnie", "Alex",
+                "Mircea", "Sherlock", "Schinz", "Salim", "DaBaby", "Cécile", "Sharif", "Eugenio", "Takanori", "Durazo", "Hana"));
+
+        if(playerNames.get(PlayerId.PLAYER_1).isEmpty()) {
+            playerNames.put(PlayerId.PLAYER_1, randomNames.get(rng.nextInt(randomNames.size())));
+            randomNames.remove(playerNames.get(PlayerId.PLAYER_1));
+        }
+        if(playerNames.get(PlayerId.PLAYER_2).isEmpty()) playerNames.put(PlayerId.PLAYER_2, randomNames.get(rng.nextInt(randomNames.size())));
+
+
 
 
         Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);

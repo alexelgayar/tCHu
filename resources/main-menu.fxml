@@ -24,22 +24,22 @@
             <Font name="Kefa Regular" size="19.0" />
          </font>
       </Button>
-      <Label layoutX="112.0" layoutY="3.0" text="tCHu - Main Menu" textAlignment="CENTER" textFill="WHITE">
+      <Label layoutX="113.0" text="tCHu - Main Menu" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Kefa Regular" size="50.0" />
          </font>
       </Label>
-      <Label layoutX="268.0" layoutY="339.0" text="Project By" textFill="WHITE">
+      <Label layoutX="282.0" layoutY="339.0" text="Project By" textFill="WHITE">
          <font>
             <Font name="Kefa Regular" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="244.0" layoutY="355.0" text="Alexandre Iskandar" textFill="WHITE">
+      <Label layoutX="254.0" layoutY="355.0" text="Alexandre Iskandar" textFill="WHITE">
          <font>
             <Font name="Kefa Regular" size="14.0" />
          </font>
       </Label>
-      <Label layoutX="249.0" layoutY="371.0" text="Anirudhh Ramesh" textFill="WHITE">
+      <Label layoutX="259.0" layoutY="371.0" text="Anirudhh Ramesh" textFill="WHITE">
          <font>
             <Font name="Kefa Regular" size="14.0" />
          </font>

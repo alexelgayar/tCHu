@@ -63,6 +63,7 @@ public final class GraphicalPlayer {
     private Color currentColor = null;
 
 
+
     /**
      * Constructor for a GraphicalPlayer that creates the graphical interface
      *
@@ -125,18 +126,14 @@ public final class GraphicalPlayer {
         TextField textField = new TextField();
         textField.setPrefWidth(220);
         textField.getStyleClass().add("txtfield");
-        textField.setPromptText("Laissez vide pour un nom par défaut");
+        textField.setPromptText("Laissez vide pour un nom au hasard");
 
         Button btn = new Button("Soumettre");
         btn.getStyleClass().add("btn");
 
         btn.setOnAction(e -> {
                     try {
-                        Random rng = new Random();
-                        String randomName = Game.randomNames.get(rng.nextInt(Game.randomNames.size()));
-                        Game.randomNames.remove(randomName);
-                        nameHandler.onChooseName(textField.getText().isEmpty() ? randomName : textField.getText());
-
+                       nameHandler.onChooseName(textField.getText());
                         stage.hide();
 
                     } catch (IllegalFormatException e1) {
@@ -171,7 +168,7 @@ public final class GraphicalPlayer {
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
         Text text = new Text(message);
-        //text.setFont(Font.font("Courier New", 13));
+        text.setFont(Font.font("Avenir", 14));
 
         if (message.contains(playerNames.get(id))) currentColor = playerColor(id);
         else if (message.contains(playerNames.get(id.next()))) currentColor = playerColor(id.next());

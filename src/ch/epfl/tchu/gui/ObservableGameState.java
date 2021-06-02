@@ -96,6 +96,7 @@ public final class ObservableGameState {
             boolean routeDoubleNotOwned = true;
 
             for (Route w : routes.keySet()) {
+                if (w.id().equals(route.id())) continue;
                 if (w.stations().containsAll(route.stations())) routeDoubleNotOwned = routes.get(w).get() == null;
             }
 

@@ -48,8 +48,8 @@ final class InfoViewCreator {
         createPlayerStats(playerId, playerNames, gameState, playerStats);
         createPlayerStats(playerId.next(), playerNames, gameState, playerStats);
 
-        Separator separator = new Separator();
-        separator.setOrientation(Orientation.HORIZONTAL);
+//        Separator separator = new Separator();
+//        separator.setOrientation(Orientation.HORIZONTAL);
 
 
         TextFlow textFlow = new TextFlow();
@@ -58,9 +58,10 @@ final class InfoViewCreator {
 
 
 
+
         Bindings.bindContent(textFlow.getChildren(), textList);
 
-        main.getChildren().addAll(playerStats, separator, textFlow);
+        main.getChildren().addAll(playerStats, textFlow);
 
         return main;
     }
@@ -75,6 +76,7 @@ final class InfoViewCreator {
         circle.setRadius(5);
 
         Text text = new Text();
+        text.setFont(Font.font("Avenir"));
        // text.setFont(Font.font("Courier New", 12));
 
         text.textProperty().bind(Bindings.format(StringsFr.PLAYER_STATS,
