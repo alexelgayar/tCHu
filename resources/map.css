@@ -1,7 +1,11 @@
 /* Map */
 
 ImageView {
-    -fx-image: url("map.png");
+    -fx-image: url("dark.png");
+}
+
+.parent {
+    -fx-background-color: #171616;
 }
 
 .track {

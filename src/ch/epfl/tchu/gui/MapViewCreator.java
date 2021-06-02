@@ -52,6 +52,7 @@ final class MapViewCreator implements ActionHandlers {
     public static Pane createMapView(ObservableGameState observableGameState, ObjectProperty<ClaimRouteHandler> claimRouteHandler, CardChooser cardChooser) {
         Pane mapPane = new Pane();
         mapPane.getStylesheets().addAll("map.css", "colors.css");
+        mapPane.getStyleClass().add("parent");
 
         ImageView bgNode = createBGNode();
         mapPane.getChildren().add(bgNode);
@@ -64,7 +65,7 @@ final class MapViewCreator implements ActionHandlers {
 
     //Creates the background view
     private static ImageView createBGNode() {
-        Image map = new Image("map.png");
+        Image map = new Image("dark.png");
         ImageView bg = new ImageView();
         bg.setImage(map);
         return bg;

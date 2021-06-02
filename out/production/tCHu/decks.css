@@ -3,7 +3,7 @@
 .card .outside {
     -fx-arc-width: 10;
     -fx-arc-height: 10;
-    -fx-fill: white;
+    -fx-fill: black;
     -fx-stroke: dimgrey;
 }
 
@@ -51,13 +51,25 @@ Button.gauged {
 }
 Button.gauged .background {
     -fx-fill: white;
+
 }
 Button.gauged .foreground {
-    -fx-fill: darkgray;
+    -fx-fill: gray;
 }
 
-.parent{
+Button.gauged {
+    -fx-background-color: #EA4C88;
+    -fx-text-fill: #FFFFFF;
+}
+
+Button.gauged:hover{
     -fx-background-color: #303138;
+}
+
+
+
+.parent{
+    -fx-background-color: #171616;
 }
 
 

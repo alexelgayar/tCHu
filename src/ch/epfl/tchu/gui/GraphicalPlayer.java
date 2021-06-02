@@ -326,15 +326,22 @@ public final class GraphicalPlayer {
         stage.setOnCloseRequest(Event::consume);
 
         VBox vBox = new VBox();
+        vBox.getStyleClass().add("backgr");
+
 
         button.setText(StringsFr.CHOOSE);
+        button.getStyleClass().add("btn");
 
         Scene scene = new Scene(vBox);
-        scene.getStylesheets().addAll("chooser.css");
+        scene.getStylesheets().addAll("chooser.css", "colors.css");
 
         TextFlow textFlow = new TextFlow();
         Text text = new Text(message);
+        text.setFill(Color.WHITE);
+        text.setFont(Font.font("Avenir"));
         textFlow.getChildren().addAll(text);
+        listView.getStyleClass().add("backgr");
+        listView.setStyle("-fx-control-inner-background: #171616;");
 
         vBox.getChildren().addAll(textFlow, listView, button);
         stage.setScene(scene);

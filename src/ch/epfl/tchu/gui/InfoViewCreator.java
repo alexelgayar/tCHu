@@ -41,6 +41,7 @@ final class InfoViewCreator {
 
         VBox main = new VBox();
         main.getStylesheets().addAll("info.css", "colors.css");
+        main.getStyleClass().add("parent");
 
         VBox playerStats = new VBox();
         playerStats.setId("player-stats");
@@ -77,7 +78,7 @@ final class InfoViewCreator {
 
         Text text = new Text();
         text.setFont(Font.font("Avenir"));
-       // text.setFont(Font.font("Courier New", 12));
+        text.setFill(Color.WHITE);
 
         text.textProperty().bind(Bindings.format(StringsFr.PLAYER_STATS,
                 playerNames.get(id),

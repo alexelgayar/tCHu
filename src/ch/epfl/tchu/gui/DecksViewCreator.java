@@ -58,10 +58,13 @@ final class DecksViewCreator implements ActionHandlers {
     public static HBox createHandView(ObservableGameState observableGameState) {
         HBox main = new HBox();
         main.getStylesheets().addAll("decks.css", "colors.css");
+        main.getStyleClass().add("parent");
 
         //Create the player tickets listView
         ListView<Ticket> playerTickets = new ListView<>(observableGameState.playerTickets());
         playerTickets.setId("tickets");
+        playerTickets.getStyleClass().add("parent");
+        playerTickets.setStyle("-fx-control-inner-background: #171616;");
 
         //Create the player hand cards view
         HBox handPane = createCardsHBox(observableGameState);
@@ -83,6 +86,7 @@ final class DecksViewCreator implements ActionHandlers {
         VBox cardPane = new VBox();
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");
+        cardPane.getStyleClass().add("parent");
 
 
         //Create the ticket button
