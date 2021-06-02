@@ -84,6 +84,7 @@ final class DecksViewCreator implements ActionHandlers {
         cardPane.setId("card-pane");
         cardPane.getStylesheets().addAll("decks.css", "colors.css");
 
+
         //Create the ticket button
         Button ticketsButton = createButtonView(observableGameState.ticketsPercentage(), StringsFr.TICKETS);
         ticketsButton.disableProperty().bind(drawTicketsHandler.isNull());

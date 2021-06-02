@@ -22,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
@@ -90,6 +91,14 @@ public final class GraphicalPlayer {
         mainStage.setScene(scene);
         mainStage.setTitle(T_CHU + StringsFr.EN_DASH_SEPARATOR + playerNames.get(id));
 
+        gameState.getCurrentPlayer().addListener((p, o, n) -> {
+            if(id == n){
+                mainStage.setTitle(T_CHU + StringsFr.EN_DASH_SEPARATOR + playerNames.get(id) + StringsFr.EN_DASH_SEPARATOR + "C'est vote tour!");
+            }
+            else mainStage.setTitle(T_CHU + StringsFr.EN_DASH_SEPARATOR + playerNames.get(id));
+        });
+
+
         mainStage.show();
     }
 
@@ -109,7 +118,7 @@ public final class GraphicalPlayer {
         assert isFxApplicationThread();
 
         Stage stage = new Stage(StageStyle.UTILITY);
-        Label chooseName = new Label("Écrivez votre nom : ");
+        Label chooseName = new Label(" Écrivez votre nom : ");
         chooseName.setTextFill(Color.WHITE);
         chooseName.setFont(new Font("Kefa", 13));
 
@@ -148,7 +157,7 @@ public final class GraphicalPlayer {
 
         stage.setScene(scene);
         //stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle("Choix du nom");
+        stage.setTitle("Saisie du nom");
         stage.setOnCloseRequest(Event::consume);
         stage.show();
     }
@@ -367,7 +376,7 @@ public final class GraphicalPlayer {
     }
 
     private Color playerColor(PlayerId id) {
-        if (id == PlayerId.PLAYER_1) return Color.LIGHTBLUE;
-        else return Color.LIGHTPINK;
+        if (id == PlayerId.PLAYER_1) return Color.CORNFLOWERBLUE;
+        else return Color.LIGHTCORAL;
     }
 }

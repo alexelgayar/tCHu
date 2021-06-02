@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -82,6 +83,7 @@ final class InfoViewCreator {
                 gameState.playerCardsCount(id),
                 gameState.playerCarsCount(id),
                 gameState.playerClaimPoints(id)));
+
 
 
         gameState.getCurrentPlayer().addListener((p, o, n) -> {

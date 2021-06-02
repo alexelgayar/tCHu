@@ -56,6 +56,11 @@ Button.gauged .foreground {
     -fx-fill: darkgray;
 }
 
+.parent{
+    -fx-background-color: #303138;
+}
+
+
 /* Hand pane (tickets and cards held) */
 
 #tickets {
