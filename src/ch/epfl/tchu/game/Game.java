@@ -15,8 +15,8 @@ public final class Game {
 
     private static final Map<PlayerId, Info> infos = new HashMap<>();
     private static GameState gameState;
-    Map<PlayerId, String> playerNames;
-
+    public static List<String> randomNames = new ArrayList<>(List.of("The Polar Express", "Arnie", "Alex",
+            "Mircea", "Sherlock", "Schinz", "Salim", "DaBaby", "Cécile", "Sharif", "Eugenio", "Takanori", "Durazo"));
     /**
      * Private constructor class for the Game class, we will leave it empty (as we want this class to be non-instantiable)
      */
@@ -35,19 +35,10 @@ public final class Game {
     public static void play(Map<PlayerId, Player> players, SortedBag<Ticket> tickets, Random rng) {
 
 
-       Map<PlayerId, String> playerNames = new HashMap<>();
+       Map<PlayerId, String> playerNames = new EnumMap<>(PlayerId.class);
+
        players.forEach((playerId, Player) -> Player.setPlayerName());
-
-           players.forEach((playerId, Player) -> playerNames.put(playerId, Player.choosePlayerName()));
-
-
-       List<String> randomNames = new ArrayList<>(List.of("The Polar Express", "Arnie", "Alex",
-               "Mircea", "Sherlock", "Schinz", "Salim", "DaBaby", "Cécile", "Sharif", "Eugenio", "Takanori", "Durazo"));
-       if(playerNames.get(PlayerId.PLAYER_1).equals("")) {
-           playerNames.put(PlayerId.PLAYER_1, randomNames.get(rng.nextInt(randomNames.size())));
-       randomNames.remove(playerNames.get(PlayerId.PLAYER_1));
-       }
-       if(playerNames.get(PlayerId.PLAYER_2).equals("")) playerNames.put(PlayerId.PLAYER_2, randomNames.get(rng.nextInt(randomNames.size())));
+       players.forEach((playerId, Player) -> playerNames.put(playerId, Player.choosePlayerName()));
 
 
         Preconditions.checkArgument(players.size() == PlayerId.COUNT && playerNames.size() == PlayerId.COUNT);

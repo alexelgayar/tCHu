@@ -71,8 +71,6 @@ public final class RemotePlayerClient {
 
                 String[] list = s.split(Pattern.quote(SPACE), -1);
 
-                System.out.println(MessageId.valueOf(list[0]).name());
-
                 switch (MessageId.valueOf(list[0])) {
 
                     case SET_PLAYER_NAME:

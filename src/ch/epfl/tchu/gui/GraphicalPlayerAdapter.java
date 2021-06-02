@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -70,9 +71,7 @@ public final class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void setPlayerName() {
-        runLater(() -> GraphicalPlayer.choosePlayerName(string ->
-                putInQueue(playerNameQueue, string)
-        ));
+        runLater(() -> GraphicalPlayer.choosePlayerName(string -> putInQueue(playerNameQueue, string)));
     }
 
     @Override

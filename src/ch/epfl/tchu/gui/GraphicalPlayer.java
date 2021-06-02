@@ -29,6 +29,7 @@ import javafx.stage.StageStyle;
 import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import ch.epfl.tchu.gui.ActionHandlers.*;
 import javafx.util.StringConverter;
@@ -103,49 +104,51 @@ public final class GraphicalPlayer {
     public static void choosePlayerName(ChooseNameHandler nameHandler) {
         assert isFxApplicationThread();
 
-        Platform.setImplicitExit(false);
-
         Stage stage = new Stage(StageStyle.UTILITY);
-        Label chooseName = new Label("Écrivez votre nom :");
+        Label chooseName = new Label("Écrivez votre nom : ");
         TextField textField = new TextField();
 
         Button submitButton = new Button("Soumettre");
+
+
+        submitButton.setOnAction(e -> {
+
+                    try {
+                        Random rng = new Random();
+                        String randomName = Game.randomNames.get(rng.nextInt(Game.randomNames.size()));
+                        Game.randomNames.remove(randomName);
+                        nameHandler.onChooseName(textField.getText().isEmpty()? randomName : textField.getText());
+
+                        stage.hide();
+
+                    } catch (IllegalFormatException e1) {
+                        chooseName.setText("Entrez seulement une chaîne de caractères");
+                    }
+                }
+        );
 
         Label warningText = new Label("Entrez une chaine de characteres non vide!");
         warningText.setTextFill(Color.RED);
         warningText.setVisible(false);
 
         GridPane grid = new GridPane();
-        grid.addRow(0, warningText);
+        //grid.addRow(0, warningText);
         grid.addRow(1, chooseName, textField);
         grid.addRow(2, submitButton);
-       // grid.add(submitButton, 0, 1, 1, 1);
+        // grid.add(submitButton, 0, 1, 1, 1);
 
         GridPane.setHalignment(warningText, HPos.CENTER);
         GridPane.setHalignment(submitButton, HPos.CENTER);
 
 
         Scene scene = new Scene(grid);
-       // scene.getStylesheets().add("chooser.css");
+        // scene.getStylesheets().add("chooser.css");
 
         stage.setScene(scene);
         //stage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle("Choix du nom");
         stage.setOnCloseRequest(Event::consume);
         stage.show();
-
-
-        submitButton.setOnAction(e -> {
-                stage.hide();
-                try {
-                    nameHandler.onChooseName(textField.getText());
-                } catch (IllegalFormatException e1) {
-                    chooseName.setText("Entrez seulement une chaîne de caractères");
-                }
-            }
-        );
-
-
     }
 
     /**

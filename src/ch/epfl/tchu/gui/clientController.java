@@ -16,14 +16,22 @@ public class clientController {
     @FXML
     TextField portnumber;
 
+    String defaultName = "localhost";
+    int defaultPort = 5108;
+
 
     public void connectClient(ActionEvent actionEvent) {
 
-        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(), hostname.getText(), Integer.parseInt(portnumber.getText()));
+        ((Node)actionEvent.getSource()).getScene().getWindow().hide();
+
+
+        RemotePlayerClient remotePlayerClient = new RemotePlayerClient(new GraphicalPlayerAdapter(),
+                hostname.getText().isEmpty()? defaultName : hostname.getText(),
+                portnumber.getText().isEmpty()? defaultPort :Integer.parseInt(portnumber.getText()));
 
         new Thread(remotePlayerClient::run).start();
 
-        ((Node)actionEvent.getSource()).getScene().getWindow().hide();
+
 
     }
 }

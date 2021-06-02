@@ -31,9 +31,6 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 public class MainPlayer1 extends Application {
 
-   public static Stage stage;
-
-
 
     public static void main(String[] args) {
 
@@ -47,7 +44,7 @@ public class MainPlayer1 extends Application {
 
         Parent root = FXMLLoader.load(getClass().getResource("/main-menu.fxml"));
 
-        stage = new Stage(StageStyle.UTILITY);
+        Stage stage = new Stage(StageStyle.UTILITY);
 
         stage.setScene(new Scene(root));
         stage.setTitle("Main Menu");

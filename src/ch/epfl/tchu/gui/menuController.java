@@ -26,6 +26,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 public class menuController {
 
     public void hostButton(ActionEvent actionEvent) throws IOException{
+
         ((Node)actionEvent.getSource()).getScene().getWindow().hide();
 
         ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
