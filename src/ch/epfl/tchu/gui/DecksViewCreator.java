@@ -63,8 +63,7 @@ final class DecksViewCreator implements ActionHandlers {
         //Create the player tickets listView
         ListView<Ticket> playerTickets = new ListView<>(observableGameState.playerTickets());
         playerTickets.setId("tickets");
-        playerTickets.getStyleClass().add("parent");
-        playerTickets.setStyle("-fx-control-inner-background: #171616;");
+        playerTickets.getStyleClass().addAll("parent", "list-view");
 
         //Create the player hand cards view
         HBox handPane = createCardsHBox(observableGameState);

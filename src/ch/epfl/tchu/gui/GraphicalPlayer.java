@@ -341,7 +341,8 @@ public final class GraphicalPlayer {
         text.setFont(Font.font("Avenir"));
         textFlow.getChildren().addAll(text);
         listView.getStyleClass().add("backgr");
-        listView.setStyle("-fx-control-inner-background: #171616;");
+        listView.getStylesheets().add("decks.css");
+        listView.getStyleClass().add("list-view");
 
         vBox.getChildren().addAll(textFlow, listView, button);
         stage.setScene(scene);
