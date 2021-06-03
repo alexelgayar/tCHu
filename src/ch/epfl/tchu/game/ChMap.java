@@ -1,12 +1,17 @@
 package ch.epfl.tchu.game;
 
+import ch.epfl.tchu.bot.Graph;
+import ch.epfl.tchu.bot.Node;
 import ch.epfl.tchu.game.Route.Level;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class ChMap {
-    private ChMap() { }
+    private ChMap() {
+    }
 
     public static List<Station> stations() {
         return ALL_STATIONS;
@@ -14,6 +19,10 @@ public final class ChMap {
 
     public static List<Route> routes() {
         return ALL_ROUTES;
+    }
+
+    public static List<Node> nodes() {
+        return ALL_NODES;
     }
 
     public static List<Ticket> tickets() {
@@ -74,6 +83,7 @@ public final class ChMap {
     private static final Station FR2 = new Station(48, "France");
     private static final Station FR3 = new Station(49, "France");
     private static final Station FR4 = new Station(50, "France");
+
 
     // Countries
     private static final List<Station> DE = List.of(DE1, DE2, DE3, DE4, DE5);
@@ -240,4 +250,143 @@ public final class ChMap {
         if (fr != 0) trips.addAll(Trip.all(from, FR, fr));
         return new Ticket(trips);
     }
+
+    private static final Node BAD_NODE = new Node(BAD);
+    private static final Node BAL_NODE = new Node(BAL);
+    private static final Node BEL_NODE = new Node(BEL);
+    private static final Node BER_NODE = new Node(BER);
+    private static final Node BRI_NODE = new Node(BRI);
+    private static final Node BRU_NODE = new Node(BRU);
+    private static final Node COI_NODE = new Node(COI);
+    private static final Node DAV_NODE = new Node(DAV);
+    private static final Node DEL_NODE = new Node(DEL);
+    private static final Node FRI_NODE = new Node(FRI);
+    private static final Node GEN_NODE = new Node(GEN);
+    private static final Node INT_NODE = new Node(INT);
+    private static final Node KRE_NODE = new Node(KRE);
+    private static final Node LAU_NODE = new Node(LAU);
+    private static final Node LCF_NODE = new Node(LCF);
+    private static final Node LOC_NODE = new Node(LOC);
+    private static final Node LUC_NODE = new Node(LUC);
+    private static final Node LUG_NODE = new Node(LUG);
+    private static final Node MAR_NODE = new Node(MAR);
+    private static final Node NEU_NODE = new Node(NEU);
+    private static final Node OLT_NODE = new Node(OLT);
+    private static final Node PFA_NODE = new Node(PFA);
+    private static final Node SAR_NODE = new Node(SAR);
+    private static final Node SCE_NODE = new Node(SCE);
+    private static final Node SCZ_NODE = new Node(SCZ);
+    private static final Node SIO_NODE = new Node(SIO);
+    private static final Node SOL_NODE = new Node(SOL);
+    private static final Node STG_NODE = new Node(STG);
+    private static final Node VAD_NODE = new Node(VAD);
+    private static final Node WAS_NODE = new Node(WAS);
+    private static final Node WIN_NODE = new Node(WIN);
+    private static final Node YVE_NODE = new Node(YVE);
+    private static final Node ZOU_NODE = new Node(ZOU);
+    private static final Node ZUR_NODE = new Node(ZUR);
+
+    // Stations - countries
+    private static final Node DE1_NODE = new Node(DE1);
+    private static final Node DE2_NODE = new Node(DE2);
+    private static final Node DE3_NODE = new Node(DE3);
+    private static final Node DE4_NODE = new Node(DE4);
+    private static final Node DE5_NODE = new Node(DE5);
+    private static final Node AT1_NODE = new Node(AT1);
+    private static final Node AT2_NODE = new Node(AT2);
+    private static final Node AT3_NODE = new Node(AT3);
+    private static final Node IT1_NODE = new Node(IT1);
+    private static final Node IT2_NODE = new Node(IT2);
+    private static final Node IT3_NODE = new Node(IT3);
+    private static final Node IT4_NODE = new Node(IT4);
+    private static final Node IT5_NODE = new Node(IT5);
+    private static final Node FR1_NODE = new Node(FR1);
+    private static final Node FR2_NODE = new Node(FR2);
+    private static final Node FR3_NODE = new Node(FR3);
+    private static final Node FR4_NODE = new Node(FR4);
+
+    //Nodes
+    private static final List<Node> ALL_NODES = List.of(
+            BAD_NODE, BAL_NODE, BEL_NODE, BER_NODE, BRI_NODE, BRU_NODE, COI_NODE, DAV_NODE, DEL_NODE, FRI_NODE, GEN_NODE, INT_NODE, KRE_NODE, LAU_NODE, LCF_NODE, LOC_NODE, LUC_NODE,
+            LUG_NODE, MAR_NODE, NEU_NODE, OLT_NODE, PFA_NODE, SAR_NODE, SCE_NODE, SCZ_NODE, SIO_NODE, SOL_NODE, STG_NODE, VAD_NODE, WAS_NODE, WIN_NODE, YVE_NODE, ZOU_NODE, ZUR_NODE,
+            DE1_NODE, DE2_NODE, DE3_NODE, DE4_NODE, DE5_NODE, AT1_NODE, AT2_NODE, AT3_NODE, IT1_NODE, IT2_NODE, IT3_NODE, IT4_NODE, IT5_NODE, FR1_NODE, FR2_NODE, FR3_NODE, FR4_NODE);
+
+    private static Map<Station, Node> MAPPED_NODES = new HashMap<Station, Node>() {{
+        this.put(BAD, BAD_NODE);
+        this.put(BAL, BAL_NODE);
+        this.put(BEL, BEL_NODE);
+        this.put(BER, BER_NODE);
+        this.put(BRI, BRI_NODE);
+        this.put(BRU, BRU_NODE);
+        this.put(COI, COI_NODE);
+        this.put(DAV, DAV_NODE);
+        this.put(DEL, DEL_NODE);
+        this.put(FRI, FRI_NODE);
+        this.put(GEN, GEN_NODE);
+        this.put(INT, INT_NODE);
+        this.put(KRE, KRE_NODE);
+        this.put(LAU, LAU_NODE);
+        this.put(LCF, LCF_NODE);
+        this.put(LOC, LOC_NODE);
+        this.put(LUC, LUC_NODE);
+        this.put(LUG, LUG_NODE);
+        this.put(MAR, MAR_NODE);
+        this.put(NEU, NEU_NODE);
+        this.put(OLT, OLT_NODE);
+        this.put(PFA, PFA_NODE);
+        this.put(SAR, SAR_NODE);
+        this.put(SCE, SCE_NODE);
+        this.put(SCZ, SCZ_NODE);
+        this.put(SIO, SIO_NODE);
+        this.put(SOL, SOL_NODE);
+        this.put(STG, STG_NODE);
+        this.put(VAD, VAD_NODE);
+        this.put(WAS, WAS_NODE);
+        this.put(WIN, WIN_NODE);
+        this.put(YVE, YVE_NODE);
+        this.put(ZOU, ZOU_NODE);
+        this.put(ZUR, ZUR_NODE);
+        this.put(DE1, DE1_NODE);
+        this.put(DE2, DE2_NODE);
+        this.put(DE3, DE3_NODE);
+        this.put(DE4, DE4_NODE);
+        this.put(DE5, DE5_NODE);
+        this.put(AT1, AT1_NODE);
+        this.put(AT2, AT2_NODE);
+        this.put(AT3, AT3_NODE);
+        this.put(IT1, IT1_NODE);
+        this.put(IT2, IT2_NODE);
+        this.put(IT3, IT3_NODE);
+        this.put(IT4, IT4_NODE);
+        this.put(IT5, IT5_NODE);
+        this.put(FR1, FR1_NODE);
+        this.put(FR2, FR2_NODE);
+        this.put(FR3, FR3_NODE);
+        this.put(FR4, FR4_NODE);
+    }};
+
+    public static Map<Station, Node> mappedNodes() {
+        return MAPPED_NODES;
+    }
+
+    public static boolean isCountry(Node node) {
+        return (DE.contains(node.station()) || AT.contains(node.station()) || IT.contains(node.station()) || FR.contains(node.station()));
+    }
+
+    public static List<Station> stationsGermany() {
+        return DE;
+    }
+
+    public static List<Station> stationsFrance() {
+        return FR;
+    }
+
+    public static List<Station> stationsAustria() {
+        return AT;
+    }
+
+    public static List<Station> stationsItaly() {
+        return IT;
+    }
 }
+

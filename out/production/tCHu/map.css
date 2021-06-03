@@ -1,11 +1,15 @@
 /* Map */
 
 ImageView {
-    -fx-image: url("map.png");
+    -fx-image: url("dark.png");
+}
+
+.parent {
+    -fx-background-color: #171616;
 }
 
 .track {
-    -fx-stroke: dimgray;
+    -fx-stroke: white;
     -fx-stroke-width: 1;
     -fx-stroke-type: outside;
 }
@@ -18,6 +22,11 @@ ImageView {
     -fx-stroke-dash-array: 8 4;
     -fx-stroke-dash-offset: 4;
     -fx-stroke-line-cap: butt;
+}
+
+.DIJKSTRA .track {
+    -fx-stroke: red;
+    -fx-stroke-width: 1.3;
 }
 
 .route:hover .track {

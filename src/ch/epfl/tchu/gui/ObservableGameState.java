@@ -22,6 +22,7 @@ public final class ObservableGameState {
     private PublicGameState publicGameState;
     private PlayerState playerState;
     private final PlayerId playerId;
+    private static Ticket selectedTicket;
 
     private static final int TOTAL_TICKETS_COUNT = ChMap.tickets().size();
 
@@ -31,6 +32,9 @@ public final class ObservableGameState {
     private final IntegerProperty cardsPercentage = new SimpleIntegerProperty();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final Map<Route, ObjectProperty<PlayerId>> routes = createRoutes();
+    private final Map<Ticket, ObservableList<Route>> dijkstraRoutes = initDijkstra(); //TODO: Make it an observableList<Route>?
+
+    private final Map<Route, BooleanProperty> dijkstraBoolRoutes = createPlayerCanClaimRoute();
 
     //PublicPlayerState properties
     private final Map<PlayerId, IntegerProperty> playerTicketsCount = initProperties();
@@ -107,6 +111,32 @@ public final class ObservableGameState {
                             && routeDoubleNotOwned);
         }
 
+
+//        for (Ticket ticket: playerState.tickets().toList()){
+//            dijkstraRoutes.get(ticket).setAll(newGameState.dijkstraRoutes(ticket));
+//        }
+
+        if (playerState.tickets() != null) {
+            for (Route route : dijkstraBoolRoutes.keySet()) {
+                dijkstraBoolRoutes.get(route).set(false);
+            }
+
+            for (Route route : newGameState.dijkstraRoutes((selectedTicket != null) ? selectedTicket : playerState.tickets().get(0))) { //TODO: Set the ticket from selected listView items
+                dijkstraBoolRoutes.get(route).set(true);
+            }
+
+        }
+    }
+
+    public void displaySelectedTicketPath(Ticket ticket) {
+        selectedTicket = ticket;
+        for (Route route : dijkstraBoolRoutes.keySet()) {
+            dijkstraBoolRoutes.get(route).set(false);
+        }
+
+        for (Route route : publicGameState.dijkstraRoutes(ticket)) { //TODO: Set the ticket from selected listView items
+            dijkstraBoolRoutes.get(route).set(true);
+        }
     }
 
     //1. PublicGameState Properties
@@ -149,6 +179,9 @@ public final class ObservableGameState {
         return routes.get(route);
     }
 
+    public ReadOnlyBooleanProperty dijkstraHighlighted(Route route) {
+        return dijkstraBoolRoutes.get(route);
+    }
     //2. PublicPlayerState Properties
 
     /**
@@ -252,7 +285,7 @@ public final class ObservableGameState {
         return FXCollections.unmodifiableObservableList(FXCollections.observableList(playerState.possibleClaimCards(route)));
     }
 
-    public ReadOnlyObjectProperty<PlayerId> getCurrentPlayer(){
+    public ReadOnlyObjectProperty<PlayerId> getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -300,5 +333,14 @@ public final class ObservableGameState {
         return claimRouteMap;
     }
 
+    //Initializes the dijkstra map
+    private static Map<Ticket, ObservableList<Route>> initDijkstra() {
+        Map<Ticket, ObservableList<Route>> dijkstraMap = new HashMap<>();
 
+        for (Ticket ticket : ChMap.tickets()) {
+            dijkstraMap.put(ticket, FXCollections.observableArrayList());
+        }
+
+        return dijkstraMap;
+    }
 }

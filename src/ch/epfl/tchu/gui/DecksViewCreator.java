@@ -6,6 +6,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -64,6 +66,13 @@ final class DecksViewCreator implements ActionHandlers {
         ListView<Ticket> playerTickets = new ListView<>(observableGameState.playerTickets());
         playerTickets.setId("tickets");
         playerTickets.getStyleClass().addAll("parent", "list-view");
+
+        playerTickets.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Ticket>() {
+            @Override
+            public void changed(ObservableValue<? extends Ticket> observable, Ticket oldValue, Ticket newValue) {
+                observableGameState.displaySelectedTicketPath(newValue);
+            }
+        });
 
         //Create the player hand cards view
         HBox handPane = createCardsHBox(observableGameState);

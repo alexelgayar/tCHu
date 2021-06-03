@@ -1,11 +1,12 @@
 package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
+import ch.epfl.tchu.SortedBag;
+import ch.epfl.tchu.bot.Graph;
+import ch.epfl.tchu.bot.Node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.crypto.spec.PSource;
+import java.util.*;
 
 /**
  * @author Alexandre Iskandar (324406)
@@ -111,6 +112,41 @@ public class PublicGameState {
         allRoutes.addAll(playerState.get(currentPlayerId.next()).routes());
 
         return allRoutes;
+    }
+
+    //Property to return the unclaimed routes
+    public List<Route> unclaimedRoutes(){
+        List<Route> allRoutes = new ArrayList<>(ChMap.routes());
+        allRoutes.removeAll(claimedRoutes());
+        return allRoutes;
+    }
+    //Compute dijkstra here
+    public List<Route> dijkstraRoutes(Ticket ticket){
+        Graph graph = new Graph();
+
+        Node source = ChMap.mappedNodes().get(ticket.s1());
+        Node end = ChMap.mappedNodes().get(ticket.s2());
+
+        for (Node node: ChMap.mappedNodes().values()){
+            node.setDistance(Integer.MAX_VALUE);
+            node.setAdjacentNodes(new HashMap<>());
+            node.setShortestRoute(new LinkedList<>());
+            node.setShortestPath(new LinkedList<>());
+            graph.addNode(node);
+        }
+        Graph.generateConnectingNodes();
+        graph = Graph.calculateShortestPathFromSource(graph, source);
+
+        System.out.println(".");
+        Graph.getShortestPathBetweenTwoRoutes(graph, source, end).forEach((route) -> {
+            System.out.print(route.stations() + " ");
+        });
+
+        System.out.println();
+
+        System.out.println("Station size:" + ChMap.stations().size() + " Nodes size: " + ChMap.nodes().size() + " mappedNodes size: " + ChMap.mappedNodes().size());
+
+        return Graph.getShortestPathBetweenTwoRoutes(graph, source, end);
     }
 
     /**

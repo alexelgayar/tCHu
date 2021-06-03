@@ -133,7 +133,7 @@ public final class GraphicalPlayer {
 
         btn.setOnAction(e -> {
                     try {
-                       nameHandler.onChooseName(textField.getText());
+                        nameHandler.onChooseName(textField.getText());
                         stage.hide();
 
                     } catch (IllegalFormatException e1) {

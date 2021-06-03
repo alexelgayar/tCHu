@@ -5,6 +5,8 @@ import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.Route;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -93,6 +95,15 @@ final class MapViewCreator implements ActionHandlers {
         routeGroup.getStyleClass().add(route.color() == null ? "NEUTRAL" : route.color().name());
 
         observableGameState.routeOwner(route).addListener((p, o, n) -> routeGroup.getStyleClass().add(n.name()));
+
+        observableGameState.dijkstraHighlighted(route).addListener((p,o,n) -> {
+            if (n) {
+                routeGroup.getStyleClass().add("DIJKSTRA");
+            } else {
+                routeGroup.getStyleClass().remove("DIJKSTRA");
+            }
+        });
+
         routeGroup.disableProperty().bind(claimRouteHandler.isNull().or(observableGameState.claimable(route).not()));
         routeGroup.setOnMouseClicked(e -> pickClaimCards(observableGameState, route, claimRouteHandler, cardChooser));
 

@@ -12,3 +12,5 @@
 
 .PLAYER_1 .filled { -fx-fill: cornflowerblue; }
 .PLAYER_2 .filled { -fx-fill: lightcoral; }
+
+.backgr{-fx-background-color: #303138;}

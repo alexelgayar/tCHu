@@ -2,6 +2,7 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
+import ch.epfl.tchu.bot.Graph;
 import ch.epfl.tchu.gui.Info;
 
 import java.util.*;
@@ -33,6 +34,7 @@ public final class Game {
      */
     public static void play(Map<PlayerId, Player> players, SortedBag<Ticket> tickets, Random rng) {
 
+        Graph.generateConnectingNodes();
 
        Map<PlayerId, String> playerNames = new EnumMap<>(PlayerId.class);
 
