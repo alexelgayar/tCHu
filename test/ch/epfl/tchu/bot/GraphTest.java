@@ -18,7 +18,7 @@ class GraphTest {
     void generateConnectingNodes() {
         System.out.println(ChMap.nodes().size() + " stations:" + ChMap.stations().size());
 
-        Graph.generateConnectingNodes();
+        Graph.generateConnectingNodes(ChMap.routes());
 
         //Bern
         Node node = ChMap.nodes().get(3);
@@ -39,7 +39,7 @@ class GraphTest {
         Node zurich = ChMap.nodes().get(33); //Zurich
         Node bale = ChMap.nodes().get(1); //Bale
 
-        Graph.generateConnectingNodes();
+        Graph.generateConnectingNodes(ChMap.routes());
 
         startNode.getAdjacentNodes().forEach((adjacentNode, route) -> System.out.println("Node: " + adjacentNode.station() + " Route:" + route.stations() + " length:" + route.length()));
 
@@ -69,7 +69,7 @@ class GraphTest {
         Node midNode2 = ChMap.nodes().get(16); //Lucerne
         Node endNode = ChMap.nodes().get(5); //Brusio
 
-        Graph.generateConnectingNodes();
+        Graph.generateConnectingNodes(ChMap.routes());
         Graph.calculateMinimumDistance(midNode1, 2, startNode); //Correct distance
         Graph.calculateMinimumDistance(midNode2, 3, midNode1); //Correct distance
 
@@ -105,7 +105,7 @@ class GraphTest {
         Node midNode2 = ChMap.nodes().get(16); //Lucerne
         Node endNode = ChMap.nodes().get(5); //Brusio
 
-        Graph.generateConnectingNodes();
+        Graph.generateConnectingNodes(ChMap.routes());
 
         startNode.getAdjacentNodes().forEach((adjacentNode, route) -> {
             System.out.println("Edge weight: " + route.length() + "   initialDist: " + adjacentNode.getDistance());
@@ -194,7 +194,7 @@ class GraphTest {
         Node midNode2 = ChMap.nodes().get(16); //Lucerne
         Node endNode = ChMap.nodes().get(5); //Brusio
 
-        Graph.generateConnectingNodes();
+        Graph.generateConnectingNodes(ChMap.routes());
         graph = Graph.calculateShortestPathFromSource(graph, startNode);
 
         System.out.println(

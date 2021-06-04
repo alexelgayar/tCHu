@@ -9,3 +9,12 @@ ListView {
     -fx-pref-width: 400;
     -fx-pref-height: 150;
 }
+
+.btn{
+    -fx-background-color: #EA4C88;
+    -fx-text-fill: #FFFFFF;
+}
+
+.btn:hover{
+    -fx-background-color: #171717;
+}

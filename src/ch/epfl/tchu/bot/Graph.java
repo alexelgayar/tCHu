@@ -24,14 +24,14 @@ public class Graph {
 
 
     //For each node (station), generate a list of the immediately connecting nodes in the form of Routes
-    public static void generateConnectingNodes() {
+    public static void generateConnectingNodes(List<Route> claimableRoutes) {
 
         //Iterate through all nodes
         for (Node node : ChMap.nodes()) {
             Map<Node, Route> nodeRouteMap = node.getAdjacentNodes();
 
             //Iterate through all routes
-            for (Route route : ChMap.routes()) {
+            for (Route route : claimableRoutes) {
 
                 //(If route.contains(station) then: station.isConnected to route.stationOpposite(station) + route.length
                 if (route.stations().contains(node.station())) {

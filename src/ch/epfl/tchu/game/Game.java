@@ -34,7 +34,7 @@ public final class Game {
      */
     public static void play(Map<PlayerId, Player> players, SortedBag<Ticket> tickets, Random rng) {
 
-        Graph.generateConnectingNodes();
+        Graph.generateConnectingNodes(ChMap.routes());
 
        Map<PlayerId, String> playerNames = new EnumMap<>(PlayerId.class);
 

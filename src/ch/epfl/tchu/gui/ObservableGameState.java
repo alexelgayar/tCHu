@@ -1,15 +1,14 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
+import ch.epfl.tchu.bot.Graph;
+import ch.epfl.tchu.bot.Node;
 import ch.epfl.tchu.game.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ch.epfl.tchu.game.Constants.*;
 
@@ -121,7 +120,7 @@ public final class ObservableGameState {
                 dijkstraBoolRoutes.get(route).set(false);
             }
 
-            for (Route route : newGameState.dijkstraRoutes((selectedTicket != null) ? selectedTicket : playerState.tickets().get(0))) { //TODO: Set the ticket from selected listView items
+            for (Route route : dijkstraRoutes((selectedTicket != null) ? selectedTicket : playerState.tickets().get(0))) { //TODO: Set the ticket from selected listView items
                 dijkstraBoolRoutes.get(route).set(true);
             }
 
@@ -134,9 +133,42 @@ public final class ObservableGameState {
             dijkstraBoolRoutes.get(route).set(false);
         }
 
-        for (Route route : publicGameState.dijkstraRoutes(ticket)) { //TODO: Set the ticket from selected listView items
+        for (Route route : dijkstraRoutes(ticket)) { //TODO: Set the ticket from selected listView items
             dijkstraBoolRoutes.get(route).set(true);
         }
+    }
+
+    public List<Route> dijkstraRoutes(Ticket ticket){
+        Graph graph = new Graph();
+
+        List<Route> claimableRoutes = new ArrayList<>(ChMap.routes());
+        claimableRoutes.removeAll(publicGameState.playerState(playerId.next()).routes());
+
+
+        Node source = ChMap.mappedNodes().get(ticket.s1());
+        Node end = ChMap.mappedNodes().get(ticket.s2());
+
+        for (Node node: ChMap.mappedNodes().values()){
+            node.setDistance(Integer.MAX_VALUE);
+            node.setAdjacentNodes(new HashMap<>());
+            node.setShortestRoute(new LinkedList<>());
+            node.setShortestPath(new LinkedList<>());
+            graph.addNode(node);
+        }
+
+        Graph.generateConnectingNodes(claimableRoutes);
+        graph = Graph.calculateShortestPathFromSource(graph, source);
+
+        System.out.println(".");
+        Graph.getShortestPathBetweenTwoRoutes(graph, source, end).forEach((route) -> {
+            System.out.print(route.stations() + " ");
+        });
+
+        System.out.println();
+
+        System.out.println("Station size:" + ChMap.stations().size() + " Nodes size: " + ChMap.nodes().size() + " mappedNodes size: " + ChMap.mappedNodes().size());
+
+        return Graph.getShortestPathBetweenTwoRoutes(graph, source, end);
     }
 
     //1. PublicGameState Properties

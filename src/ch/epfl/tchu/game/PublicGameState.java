@@ -114,41 +114,6 @@ public class PublicGameState {
         return allRoutes;
     }
 
-    //Property to return the unclaimed routes
-    public List<Route> unclaimedRoutes(){
-        List<Route> allRoutes = new ArrayList<>(ChMap.routes());
-        allRoutes.removeAll(claimedRoutes());
-        return allRoutes;
-    }
-    //Compute dijkstra here
-    public List<Route> dijkstraRoutes(Ticket ticket){
-        Graph graph = new Graph();
-
-        Node source = ChMap.mappedNodes().get(ticket.s1());
-        Node end = ChMap.mappedNodes().get(ticket.s2());
-
-        for (Node node: ChMap.mappedNodes().values()){
-            node.setDistance(Integer.MAX_VALUE);
-            node.setAdjacentNodes(new HashMap<>());
-            node.setShortestRoute(new LinkedList<>());
-            node.setShortestPath(new LinkedList<>());
-            graph.addNode(node);
-        }
-        Graph.generateConnectingNodes();
-        graph = Graph.calculateShortestPathFromSource(graph, source);
-
-        System.out.println(".");
-        Graph.getShortestPathBetweenTwoRoutes(graph, source, end).forEach((route) -> {
-            System.out.print(route.stations() + " ");
-        });
-
-        System.out.println();
-
-        System.out.println("Station size:" + ChMap.stations().size() + " Nodes size: " + ChMap.nodes().size() + " mappedNodes size: " + ChMap.mappedNodes().size());
-
-        return Graph.getShortestPathBetweenTwoRoutes(graph, source, end);
-    }
-
     /**
      * Returns the identity of the last player, or null if they are not yet known (such as if the last round has not started)
      * @return the identity of the last player, or null if they are not yet known (such as if the last round has not started)
