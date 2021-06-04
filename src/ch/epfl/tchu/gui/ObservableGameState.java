@@ -116,7 +116,7 @@ public final class ObservableGameState {
 //            dijkstraRoutes.get(ticket).setAll(newGameState.dijkstraRoutes(ticket));
 //        }
 
-        if (playerState.tickets() != null) {
+        if (playerState.tickets() != null && !playerState.tickets().isEmpty()) {
             for (Route route : dijkstraBoolRoutes.keySet()) {
                 dijkstraBoolRoutes.get(route).set(false);
             }
